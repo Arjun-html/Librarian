@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ar's Reading Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #f9f7f4;
+            --light-taupe: #e8e4df;
+            --warm-gray: #a89f95;
+            --dark-gray: #4a4440;
+            --accent: #8b7a6f;
+            --soft-black: #2a2420;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--cream);
+            color: var(--soft-black);
+            line-height: 1.6;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: var(--cream);
+            border-bottom: 1px solid var(--light-taupe);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1.5rem 2rem;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--soft-black);
+            letter-spacing: -0.5px;
+        }
+
+        nav a {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            margin-left: 2rem;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section - Currently Reading */
+        .hero {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--light-taupe) 100%);
+            padding: 6rem 2rem;
+            border-bottom: 1px solid var(--light-taupe);
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--soft-black);
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        .currently-reading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .reading-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--light-taupe);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .reading-card:hover {
+            box-shadow: 0 8px 24px rgba(42, 36, 32, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .reading-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--soft-black);
+        }
+
+        .reading-card .author {
+            font-size: 0.95rem;
+            color: var(--warm-gray);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .reading-card .progress {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .library-section {
+            margin-bottom: 5rem;
+        }
+
+        .library-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--soft-black);
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-taupe);
+            letter-spacing: -0.5px;
+        }
+
+        .books-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Book Card */
+        .book-card {
+            background: white;
+            border: 1px solid var(--light-taupe);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            box-shadow: 0 4px 16px rgba(42, 36, 32, 0.06);
+            border-color: var(--accent);
+        }
+
+        .book-header {
+            padding: 1.5rem;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .book-title-group {
+            flex: 1;
+        }
+
+        .book-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--soft-black);
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+
+        .book-author {
+            font-size: 0.95rem;
+            color: var(--warm-gray);
+            font-weight: 500;
+        }
+
+        .book-status {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 3px;
+            margin-left: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .status-read {
+            background-color: #f0f0f0;
+            color: #666;
+        }
+
+        .status-reading {
+            background-color: #fffbeb;
+            color: #92400e;
+        }
+
+        .status-list {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .expand-icon {
+            margin-left: 1rem;
+            color: var(--accent);
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .book-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Expanded Content */
+        .book-details {
+            display: none;
+            padding: 0 1.5rem 1.5rem;
+            border-top: 1px solid var(--light-taupe);
+            background-color: #fafaf8;
+        }
+
+        .book-card.expanded .book-details {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .book-content {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .book-cover {
+            width: 150px;
+            height: 225px;
+            background: linear-gradient(135deg, var(--light-taupe), var(--cream));
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .book-cover.no-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--warm-gray);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .book-text {
+            flex: 1;
+        }
+
+        .my-notes {
+            margin-bottom: 1.5rem;
+        }
+
+        .my-notes-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .my-notes-text {
+            font-style: italic;
+            color: var(--dark-gray);
+            line-height: 1.7;
+        }
+
+        .summary {
+            margin-bottom: 2rem;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .summary-text {
+            color: var(--dark-gray);
+            line-height: 1.7;
+        }
+
+        .comments-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-taupe);
+        }
+
+        .comments-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #fafaf8;
+            border-top: 1px solid var(--light-taupe);
+            padding: 3rem 2rem;
+            margin-top: 5rem;
+        }
+
+        footer p {
+            max-width: 1200px;
+            margin: 0 auto;
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+
+            .book-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .book-status {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+
+            .book-content {
+                grid-template-columns: 1fr;
+            }
+
+            .book-cover {
+                margin: 0 auto;
+            }
+
+            nav a {
+                display: none;
+            }
+
+            .currently-reading-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Ar's Library</div>
+            <div>
+                <a href="#currently-reading">Reading</a>
+                <a href="#library">Library</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero - Currently Reading -->
+    <section class="hero" id="currently-reading">
+        <div class="hero-content">
+            <h1>Currently Reading</h1>
+            <p>Six books in progress. Each one a different perspective on engineering, finance, and the world.</p>
+            <div class="currently-reading-grid">
+                <div class="reading-card">
+                    <h3>Python for Finance</h3>
+                    <div class="author">Yves Hilpisch</div>
+                    <div class="progress">Halfway through</div>
+                </div>
+                <div class="reading-card">
+                    <h3>Java Software Solutions</h3>
+                    <div class="author">Lewis J. Loftus</div>
+                    <div class="progress">Almost finished</div>
+                </div>
+                <div class="reading-card">
+                    <h3>Pleasures of Probability</h3>
+                    <div class="author">Richard Isaac</div>
+                    <div class="progress">First chapters covered</div>
+                </div>
+                <div class="reading-card">
+                    <h3>A Practical Guide to Quantitative Finance Interviews</h3>
+                    <div class="author">Xinfeng Zhou</div>
+                    <div class="progress">Brainteaser sections</div>
+                </div>
+                <div class="reading-card">
+                    <h3>Options, Volatility and Pricing</h3>
+                    <div class="author">Sheldon Natenberg</div>
+                    <div class="progress">Last two chapters</div>
+                </div>
+                <div class="reading-card">
+                    <h3>The Prize: The Epic Quest for Oil, Money & Power</h3>
+                    <div class="author">Daniel Yergin</div>
+                    <div class="progress">700 pages in</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Library -->
+    <main id="library">
+        <!-- Software Related Books -->
+        <section class="library-section">
+            <h2>Software Related Books</h2>
+            <div class="books-container">
+                <!-- Python for Finance -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Python for Finance</div>
+                            <div class="book-author">Yves Hilpisch</div>
+                        </div>
+                        <div class="book-status status-reading">Reading</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9781491945283-M.jpg" alt="Python for Finance" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">I am halfway through, good book that clearly shows what resources do and need</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">A comprehensive guide to financial analysis using Python. Covers data analysis, visualization, and algorithmic trading. Practical approach to implementing financial concepts in Python, making it accessible for practitioners.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Java Software Solutions -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Java Software Solutions</div>
+                            <div class="book-author">Lewis J. Loftus</div>
+                        </div>
+                        <div class="book-status status-reading">Reading</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780134462608-M.jpg" alt="Java Software Solutions" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Almost finished the book, was doing it for my java course this semester, even a middle schooler can read and work through this book</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">An introductory Java programming textbook that emphasizes problem-solving and object-oriented programming concepts. Known for its clear explanations, detailed examples, and approachable style that makes it accessible even to beginners.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Designing Data-Intensive Applications -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Designing Data-Intensive Applications</div>
+                            <div class="book-author">Martin Kleppmann</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9781491923869-M.jpg" alt="Designing Data-Intensive Applications" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">A deep dive into the principles and architecture of modern distributed systems. Covers databases, data processing, messaging systems, and distributed architectures. Essential reading for understanding how to build scalable systems that handle massive amounts of data.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Computer Architecture -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Computer Architecture</div>
+                            <div class="book-author">John L. Hennessy & David A. Patterson</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780128119051-M.jpg" alt="Computer Architecture" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">The definitive text on computer architecture covering processor design, memory hierarchies, parallelism, and system organization. Known for its rigorous approach and comprehensive treatment of both classical and modern architectural concepts.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Python for Data Analysis -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Python for Data Analysis</div>
+                            <div class="book-author">Wes McKinney</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9781491957660-M.jpg" alt="Python for Data Analysis" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Practical guide to data manipulation, cleaning, and analysis using Python with pandas library. Covers data structures, handling missing data, time series, and statistical analysis. Essential for anyone working with data in Python.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Engineering & Mathematics -->
+        <section class="library-section">
+            <h2>Engineering & Mathematics</h2>
+            <div class="books-container">
+                <!-- Fundamentals of Electric Circuits -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Fundamentals of Electric Circuits</div>
+                            <div class="book-author">Charles K. Alexander & Matthew N.O. Sadiku</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780073402550-M.jpg" alt="Fundamentals of Electric Circuits" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Worked through a lot of this book for a university course</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">A comprehensive textbook covering circuit analysis fundamentals including Ohm's law, Kirchhoff's laws, nodal analysis, mesh analysis, and AC circuit analysis. Uses systematic problem-solving approaches with practical applications.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reducing Traffic Injury -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Reducing Traffic Injury</div>
+                            <div class="book-author">G.W. Trinica</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover no-image">
+                                <span>No cover available</span>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Had to read this one for my internship at a traffic analysis research firm</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Focuses on methods and strategies for reducing traffic injuries and fatalities. Covers traffic safety engineering, human factors, and data analysis for identifying risk factors and implementing interventions.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Signals and Linear Systems -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Signals and Linear Systems</div>
+                            <div class="book-author">Alan V. Oppenheim & Alan S. Willsky</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780138147624-M.jpg" alt="Signals and Linear Systems" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Amazing book I worked through for my course in university with the same name. Really interested in building something that involves these topics</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">A comprehensive treatment of continuous-time and discrete-time signals and linear systems. Covers Fourier analysis, Laplace transforms, Z-transforms, and their applications. Fundamental for signal processing and communications.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Design -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Digital Design</div>
+                            <div class="book-author">Morris Mano</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780133606379-M.jpg" alt="Digital Design" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Classic introductory textbook on digital logic design and computer organization. Covers Boolean algebra, combinational circuits, sequential circuits, and the design of digital systems from logic gates to complete processors.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Microelectronic Circuits -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Microelectronic Circuits</div>
+                            <div class="book-author">Adel S. Sedra & Kenneth C. Smith</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780190853976-M.jpg" alt="Microelectronic Circuits" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Comprehensive treatment of analog and digital integrated circuits. Covers transistor operation, amplifier design, frequency response, and feedback systems. Essential for understanding electronic design at the component level.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bayesian Statistics the Fun Way -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Bayesian Statistics the Fun Way</div>
+                            <div class="book-author">Will Kurt</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9781593279288-M.jpg" alt="Bayesian Statistics the Fun Way" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">An accessible introduction to Bayesian statistics using intuitive examples and visualizations. Covers probability, Bayes' theorem, and practical applications without heavy mathematical notation. Great for building intuition.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Elements of Statistical Learning -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Elements of Statistical Learning</div>
+                            <div class="book-author">Trevor Hastie, Robert Tibshirani & Jerome Friedman</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780387848587-M.jpg" alt="The Elements of Statistical Learning" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">A comprehensive reference on supervised and unsupervised learning methods. Covers regression, classification, tree-based methods, boosting, neural networks, and high-dimensional problems. Rigorous mathematical treatment with practical examples.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finite Markov Chains -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Finite Markov Chains</div>
+                            <div class="book-author">John G. Kemeny & J. Laurie Snell</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover no-image">
+                                <span>No cover available</span>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Mathematical treatment of finite-state Markov chains covering transition probabilities, steady-state distributions, and applications. Fundamental for understanding stochastic processes and their applications in various fields.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pleasures of Probability -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Pleasures of Probability</div>
+                            <div class="book-author">Richard Isaac</div>
+                        </div>
+                        <div class="book-status status-reading">Reading</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780387987850-M.jpg" alt="Pleasures of Probability" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Covered the first few chapters</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">An intuitive introduction to probability theory emphasizing conceptual understanding. Uses games, puzzles, and real-world examples to build probability intuition. Accessible yet mathematically sound.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mathematical Introduction to Linear Programming and Game Theory -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Mathematical Introduction to Linear Programming and Game Theory</div>
+                            <div class="book-author">Louis J. Billera & Susan Ott</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover no-image">
+                                <span>No cover available</span>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Introduction to optimization theory and game theory with emphasis on mathematical rigor. Covers linear programming, simplex method, duality, and applications in game-theoretic settings.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Why Math? -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Why Math?</div>
+                            <div class="book-author">R.D. Driver</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover no-image">
+                                <span>No cover available</span>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Explores the fundamental reasons why mathematics works and its applications across science and engineering. Discusses mathematical modeling and the philosophy behind mathematical thinking.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Linear Algebra Done Right -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Linear Algebra Done Right</div>
+                            <div class="book-author">Sheldon Axler</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9783319110790-M.jpg" alt="Linear Algebra Done Right" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">A modern approach to linear algebra emphasizing understanding over computation. Covers vector spaces, linear transformations, eigenvalues, and inner product spaces. Known for its clear exposition and novel insights.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quantitative Finance -->
+        <section class="library-section">
+            <h2>Quantitative Finance</h2>
+            <div class="books-container">
+                <!-- A Practical Guide to Quantitative Finance Interviews -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">A Practical Guide to Quantitative Finance Interviews</div>
+                            <div class="book-author">Xinfeng Zhou</div>
+                        </div>
+                        <div class="book-status status-reading">Reading</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9781440156304-M.jpg" alt="A Practical Guide to Quantitative Finance Interviews" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Almost done with the brainteaser sections</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">A practical resource for preparing for quantitative finance job interviews. Covers probability, statistics, derivatives pricing, and brainteasers commonly asked in interviews at hedge funds and trading firms.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A Random Walk Down Wall Street -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">A Random Walk Down Wall Street</div>
+                            <div class="book-author">Burton G. Malkiel</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780393352245-M.jpg" alt="A Random Walk Down Wall Street" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Finished the book, found it nice that he gave due respect to every method before absolutely blasting their returns compared to the buy and hold</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">A classic critique of active vs. passive investing. Covers market efficiency, stock valuation methods, and technical analysis, ultimately advocating for index investing. Balanced in acknowledging various approaches before discussing their relative performance.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Black Swan -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Black Swan</div>
+                            <div class="book-author">Nassim Nicholas Taleb</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780679604181-M.jpg" alt="The Black Swan" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Read it in year 1, gave my first introduction into how do people think about risk</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Explores the impact of rare, unpredictable events (black swans) on society and markets. Challenges conventional thinking about probability and risk, emphasizing the importance of thinking about tail events and their extreme impact.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Options, Volatility and Pricing -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Options, Volatility and Pricing</div>
+                            <div class="book-author">Sheldon Natenberg</div>
+                        </div>
+                        <div class="book-status status-reading">Reading</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9781264268054-M.jpg" alt="Options, Volatility and Pricing" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Only the last two chapters left. Found the book really interesting and loved the concepts of how volatility, the greeks affect an option's price, but couldn't really find a way how I can use these techniques of options trading without working at one of the prop firms or financial institutions</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Comprehensive guide to options trading and pricing. Covers option mechanics, the greeks (delta, gamma, vega, theta), volatility concepts, and practical trading strategies. Written from a trader's perspective.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flash Boys -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Flash Boys</div>
+                            <div class="book-author">Michael Lewis</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780393052151-M.jpg" alt="Flash Boys" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Amazing book, showed a lot of insight into how high frequency thinking works and how picks and shovels work</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Investigative narrative about high-frequency trading and its impact on markets. Exposes the arms race for speed advantage and discusses the hidden realities of modern electronic markets, with focus on the infrastructure and competitive dynamics.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Man Who Solved the Markets -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Man Who Solved the Markets</div>
+                            <div class="book-author">Gregory Zuckerman</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9781591843771-M.jpg" alt="The Man Who Solved the Markets" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Gave a lot of motivation in the first half when learning about Jim Simons journey and a lot of horror in the second half when I saw what his underlings did with all the money - get their politicians in. Showed that you need to be an active thinker</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Biography of Jim Simons and the Renaissance Technologies hedge fund. Chronicles his journey from pure mathematician to creating one of the most successful quant funds. Also covers the ethical complexities and personal consequences of extreme wealth and power.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Little Book of Common Sense Investing -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Little Book of Common Sense Investing</div>
+                            <div class="book-author">John C. Bogle</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9789386540935-M.jpg" alt="The Little Book of Common Sense Investing" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Investment philosophy focused on low-cost index investing for long-term wealth building. Emphasizes the power of compound returns and the importance of minimizing fees. Written by the founder of Vanguard.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The General Theory of Employment, Interest and Money -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The General Theory of Employment, Interest and Money</div>
+                            <div class="book-author">John Maynard Keynes</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780230007468-M.jpg" alt="The General Theory of Employment, Interest and Money" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Foundational work in macroeconomics that challenged classical economics. Introduces concepts of aggregate demand, multiplier effects, and the role of government spending in economic cycles. Dense but essential for understanding modern economics.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Options, Futures and Other Derivatives -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Options, Futures and Other Derivatives</div>
+                            <div class="book-author">John C. Hull</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780136939909-M.jpg" alt="Options, Futures and Other Derivatives" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Standard reference for derivatives pricing and risk management. Covers binomial models, Black-Scholes formula, exotic options, interest rate derivatives, and credit derivatives. Mathematical rigor with practical applications.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inside the Black Box -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Inside the Black Box: A Simple Guide to Systematic Trading</div>
+                            <div class="book-author">Rishi Narang</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780470877449-M.jpg" alt="Inside the Black Box: A Simple Guide to Systematic Trading" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Practical guide to quantitative and algorithmic trading. Covers systematic approach to developing trading strategies, backtesting, risk management, and implementation challenges. Balances theory with real-world considerations.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Greater Awareness & Philosophy -->
+        <section class="library-section">
+            <h2>Greater Awareness & Philosophy</h2>
+            <div class="books-container">
+                <!-- The Coddling of the American Mind -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Coddling of the American Mind</div>
+                            <div class="book-author">Greg Lukianoff & Jonathan Haidt</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9781250144010-M.jpg" alt="The Coddling of the American Mind" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Read it in year 1, recommended to me by Ariel, can't say it opened my eyes on what was happening in colleges around the world because I kind of knew but helped me understand it better</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Examines the decline of mental resilience in American youth and its relationship to educational and parenting practices. Argues that overprotection and cognitive distortions limit the development of coping skills and emotional maturity.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Prize -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Prize: The Epic Quest for Oil, Money & Power</div>
+                            <div class="book-author">Daniel Yergin</div>
+                        </div>
+                        <div class="book-status status-reading">Reading</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780671502454-M.jpg" alt="The Prize" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">700 pages in, reading in year 2, such an interesting history of oil, and how countries on both sides weren't really saints or devils</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Comprehensive history of the oil industry from its origins to the late 1980s. Covers geopolitics, economic interests, and the complex relationships between nations, corporations, and individuals in the struggle for control of petroleum resources.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How to Become a Straight-A Student -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">How to Become a Straight-A Student</div>
+                            <div class="book-author">Cal Newport</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780767922715-M.jpg" alt="How to Become a Straight-A Student" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Read it second semester, year 1, I keep going back to refresh the tips</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Practical study techniques based on interviews with high-achieving students. Covers note-taking strategies, test preparation, time management, and academic planning. Focused on working smarter rather than harder.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sun and Steel -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Sun and Steel</div>
+                            <div class="book-author">Yukio Mishima</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780374524197-M.jpg" alt="Sun and Steel" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Very invigorating book, but almost made me laugh at times with how contrived Mishima makes his own self out to be</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Autobiographical essay exploring Mishima's philosophy of the body, aesthetics, and martial spirit. Reflects on his transformation from intellectual to bodybuilder and his search for meaning through physical discipline and beauty.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cows, Pigs, Wars, and Witches -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Cows, Pigs, Wars, and Witches</div>
+                            <div class="book-author">Marvin Harris</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780679724629-M.jpg" alt="Cows, Pigs, Wars, and Witches" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Really interesting book I read in my year 1, still remember the stark feelings created by the cargo cults and how we are often blind to what reality is</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Anthropological exploration of cultural practices and beliefs from a materialist perspective. Explains seemingly irrational behaviors (like Hindu taboos on cattle) through practical and economic reasoning, challenging assumptions about human irrationality.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sapiens -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Sapiens: A Brief History of Humankind</div>
+                            <div class="book-author">Yuval Noah Harari</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780062316097-M.jpg" alt="Sapiens" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Interesting book, I knew a lot of it even before reading</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Big-picture narrative of human history covering cognitive revolution, agricultural revolution, and scientific revolution. Traces how humans went from unimportant animals to dominant species, and explores the myths and structures that hold civilization together.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maus -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Maus: A Survivor's Tale</div>
+                            <div class="book-author">Art Spiegelman</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780394747231-M.jpg" alt="Maus" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Nice story with cool visuals</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Groundbreaking graphic novel depicting the author's father's experiences as a Holocaust survivor. Told through comics with Jews portrayed as mice and Nazis as cats, blending personal narrative with historical testimony in an innovative visual medium.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Molecule of More -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Molecule of More</div>
+                            <div class="book-author">Daniel Z. Lieberman & Michael E. Long</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780393634631-M.jpg" alt="The Molecule of More" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Really good book, I loved the sections where they talk about the various hormones and how the different hormones give us different sort of pleasures. Additionally, the two different types of dopamines gave me a lot of clarity</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Neuroscience-based exploration of human behavior through the lens of dopamine and other neurochemicals. Explains how different neurochemical systems drive desire, addiction, social bonding, and satisfaction, providing insight into human motivation.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Stranger -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Stranger</div>
+                            <div class="book-author">Albert Camus</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780679720201-M.jpg" alt="The Stranger" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Very somber book, I appreciate the quality of writing and the way Camus describes the town and the scenes, painting a very vivid picture, but don't particularly agree with, or feel enthralled by the ending</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Existential novel about an emotionally detached man's indifferent response to his mother's death and his subsequent trial. Explores themes of absurdism, alienation, and society's demand for conventional emotional expression and meaning.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Alchemist -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">The Alchemist</div>
+                            <div class="book-author">Paulo Coelho</div>
+                        </div>
+                        <div class="book-status status-read">Read</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780062315007-M.jpg" alt="The Alchemist" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="my-notes">
+                                    <span class="my-notes-label">My Notes</span>
+                                    <div class="my-notes-text">Amazing book, warms my heart whenever I read through it, gave me goosebumps the first time I read it</div>
+                                </div>
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Philosophical parable following a shepherd boy's journey in search of treasure. Emphasizes following personal legends, listening to the heart, and trusting in destiny. A meditation on purpose, meaning, and spiritual fulfillment.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Competitive Strategy -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Competitive Strategy</div>
+                            <div class="book-author">Michael E. Porter</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780684841489-M.jpg" alt="Competitive Strategy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Seminal work on business strategy examining how companies compete and maintain advantage. Introduces frameworks like Porter's Five Forces and generic strategies. Essential for understanding strategic positioning in industries.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- I, Robot -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">I, Robot</div>
+                            <div class="book-author">Isaac Asimov</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780553382563-M.jpg" alt="I, Robot" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Influential science fiction short story collection exploring artificial intelligence and ethics. Presents Asimov's "Three Laws of Robotics" and examines their implications through various scenarios, raising questions about machine consciousness and morality.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Babel -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Babel: An Arcane History</div>
+                            <div class="book-author">R.F. Kuang</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780062688729-M.jpg" alt="Babel" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Historical fantasy novel set in an alternate Oxford where magical power derives from language and translation. Explores colonialism, power dynamics, and the politics of knowledge through the lens of a magical university system.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Amusing Ourselves to Death -->
+                <div class="book-card">
+                    <div class="book-header">
+                        <div class="book-title-group">
+                            <div class="book-title">Amusing Ourselves to Death</div>
+                            <div class="book-author">Neil Postman</div>
+                        </div>
+                        <div class="book-status status-list">Reading List</div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-content">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780143035305-M.jpg" alt="Amusing Ourselves to Death" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="no-image" style="display:none;">No cover available</div>
+                            </div>
+                            <div class="book-text">
+                                <div class="summary">
+                                    <span class="summary-label">About</span>
+                                    <div class="summary-text">Media criticism examining how television transformed American culture and discourse. Argues that entertainment-based media undermines rational thought and serious engagement with important issues, creating a culture prioritizing amusement over depth.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <span class="comments-label">Comments</span>
+                            <script src="https://utteranc.es/client.js"
+                                repo="Arjun-html/Librarian"
+                                issue-term="pathname"
+                                theme="light"
+                                crossorigin="anonymous"
+                                async>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>A personal library maintained since Year 2 of my degree. Updated May 2, 2026.</p>
+    </footer>
+
+    <script>
+        // Handle book card expansion
+        document.querySelectorAll('.book-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't close if clicking on utterances comment section
+                if (e.target.closest('.comments-section') || e.target.closest('iframe')) {
+                    return;
+                }
+
+                this.classList.toggle('expanded');
+            });
+        });
+
+        // Allow clicking on header to expand as well
+        document.querySelectorAll('.book-header').forEach(header => {
+            header.style.cursor = 'pointer';
+        });
+    </script>
+</body>
+</html>
