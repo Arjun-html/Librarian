@@ -1,5 +1,5 @@
 # University Reading Library
-**Started: Year 2 of Electrical/Mechanical Engineering and Computer Science**
+**Started: Year 2 of Electronics Engineering**
 
 ---
 
@@ -8,7 +8,7 @@
 ### 1. Python for Finance
 **Author:** Yves Hilpisch  
 **Status:** Reading  
-**My Notes:** I am halfway through, good book that clearly shows what resources do and need
+**My Notes:** I am halfway through, good book that clearly shows what resources do and need in python
 
 **AI Notes:** A comprehensive guide to financial analysis using Python. Covers data analysis, visualization, and algorithmic trading. Practical approach to implementing financial concepts in Python, making it accessible for practitioners.
 
