@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python check_sync.py",
+            "if": "Edit(index.html)|Write(index.html)",
+            "statusMessage": "Checking hero/library ISBN sync..."
+          }
+        ]
+      }
+    ]
+  }
+}
