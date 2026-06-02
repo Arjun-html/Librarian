@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Reading Queue — Arjun's Archives</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #f9f7f4;
+            --light-taupe: #e8e4df;
+            --warm-gray: #a89f95;
+            --dark-gray: #4a4440;
+            --accent: #8b7a6f;
+            --soft-black: #2a2420;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--cream);
+            color: var(--soft-black);
+            line-height: 1.6;
+        }
+
+        /* ── Header ── */
+        header {
+            background-color: var(--cream);
+            border-bottom: 1px solid var(--light-taupe);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1.5rem 2rem;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--soft-black);
+            letter-spacing: -0.5px;
+        }
+
+        nav a {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            margin-left: 2rem;
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        /* ── Newspaper ── */
+        .newspaper-page {
+            background: #f2efe8;
+            border-bottom: 3px solid #111;
+        }
+
+        /* Masthead */
+        .masthead {
+            padding: 1.4rem 3rem 0;
+            text-align: center;
+        }
+
+        .masthead-vol {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 0.68rem;
+            color: #666;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.5rem;
+        }
+
+        .masthead-name {
+            font-family: 'IM Fell English', 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.6rem, 6.5vw, 5.2rem);
+            color: #0a0a0a;
+            line-height: 0.9;
+            letter-spacing: -3px;
+            margin: 0 0 0.6rem;
+        }
+
+        .masthead-rule {
+            border: none;
+            border-top: 1px solid #888;
+            margin: 0;
+        }
+
+        .masthead-tagline {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 0.7rem;
+            color: #666;
+            font-style: italic;
+            padding: 0.3rem 0 0.9rem;
+        }
+
+        /* Section banner */
+        .section-banner {
+            background: #111;
+            color: #f2efe8;
+            text-align: center;
+            padding: 0.28rem 3rem;
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+        }
+
+        /* Section separator between book categories */
+        .section-break {
+            border-top: 2px solid #333;
+            margin: 0;
+        }
+
+        .newspaper-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ── Standard top grid: lead (2/3) + 2 sides stacked (1/3) ── */
+        .newspaper-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            border-bottom: 2px solid #222;
+        }
+
+        .story-lead {
+            grid-column: 1 / 3;
+            grid-row: 1 / 3;
+            padding: 1.5rem 2rem 1.5rem 0;
+            border-right: 1px solid #aaa;
+            cursor: default;
+        }
+
+        .story-side {
+            grid-column: 3;
+            padding: 1.2rem 0 1.2rem 1.5rem;
+        }
+
+        .story-side + .story-side {
+            border-top: 1px solid #aaa;
+        }
+
+        /* ── 2-col top: lead (2/3) + 1 side (1/3) ── */
+        .newspaper-top-2col {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto;
+            border-bottom: 2px solid #222;
+        }
+
+        .newspaper-top-2col .story-lead {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .newspaper-top-2col .story-side {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        /* ── Bottom rows ── */
+        .newspaper-bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .newspaper-bottom-row.cols-1 { grid-template-columns: 1fr; }
+        .newspaper-bottom-row.cols-2 { grid-template-columns: 1fr 1fr; }
+
+        .story-bottom {
+            padding: 1.1rem 1.4rem 1.4rem;
+        }
+
+        .story-bottom + .story-bottom {
+            border-left: 1px solid #aaa;
+        }
+
+        /* Bottom row with top-border separating from the row above */
+        .newspaper-bottom-row.has-top-border {
+            border-top: 1px solid #aaa;
+        }
+
+        /* ── Story typography ── */
+        .story-kicker {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #111;
+            border-bottom: 2px solid #111;
+            display: inline-block;
+            padding-bottom: 2px;
+            margin-bottom: 0.7rem;
+        }
+
+        .story-headline-lead {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.55rem, 2.6vw, 2.3rem);
+            line-height: 1.12;
+            color: #0a0a0a;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .story-headline {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.1rem;
+            line-height: 1.22;
+            color: #0a0a0a;
+            margin-bottom: 0.35rem;
+            font-weight: 700;
+        }
+
+        .story-headline-sm {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.98rem;
+            line-height: 1.25;
+            color: #0a0a0a;
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .story-deck {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-style: italic;
+            font-size: 0.85rem;
+            color: #444;
+            margin-bottom: 0.7rem;
+            line-height: 1.55;
+        }
+
+        .story-byline {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 0.63rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #777;
+            padding-bottom: 0.55rem;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 0.85rem;
+        }
+
+        .story-body {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 0.82rem;
+            line-height: 1.72;
+            color: #222;
+            text-align: justify;
+        }
+
+        .story-body::first-letter {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3.6rem;
+            font-weight: 700;
+            line-height: 0.78;
+            float: left;
+            margin-right: 0.08em;
+            margin-top: 0.06em;
+            color: #0a0a0a;
+        }
+
+        .story-queue {
+            display: inline-block;
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 0.64rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 0.8rem;
+            padding: 0.18rem 0.5rem;
+            border: 1px solid #aaa;
+        }
+
+        /* Book cover images */
+        .story-img-lead {
+            float: right;
+            width: 155px;
+            height: 215px;
+            margin: 0 0 1rem 1.5rem;
+            overflow: hidden;
+            border: 1px solid #bbb;
+            flex-shrink: 0;
+        }
+
+        .story-img-lead img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1) contrast(1.15) brightness(0.9);
+            display: block;
+        }
+
+        .story-img-sm {
+            float: right;
+            width: 62px;
+            height: 88px;
+            margin: 0 0 0.5rem 0.8rem;
+            overflow: hidden;
+            border: 1px solid #bbb;
+        }
+
+        .story-img-sm img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1) contrast(1.15) brightness(0.9);
+            display: block;
+        }
+
+        /* Page-load animation */
+        @keyframes newsEntrance {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .newspaper-page { animation: newsEntrance 0.45s ease forwards; }
+
+        /* Footer */
+        footer {
+            background-color: #fafaf8;
+            border-top: 1px solid var(--light-taupe);
+            padding: 3rem 2rem;
+            margin-top: 0;
+        }
+
+        footer p {
+            max-width: 1200px;
+            margin: 0 auto;
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .masthead { padding: 1rem 1.5rem 0; }
+            .masthead-name { font-size: 2.4rem; letter-spacing: -1px; }
+            .masthead-vol { flex-direction: column; gap: 0.15rem; text-align: center; }
+
+            .newspaper-top,
+            .newspaper-top-2col {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .story-lead,
+            .newspaper-top-2col .story-lead { grid-column: 1; grid-row: auto; border-right: none; border-bottom: 1px solid #aaa; padding-right: 0; }
+            .story-side,
+            .newspaper-top-2col .story-side { grid-column: 1; padding-left: 0; border-top: 1px solid #aaa; }
+
+            .newspaper-bottom-row,
+            .newspaper-bottom-row.cols-2 { grid-template-columns: 1fr; }
+            .story-bottom + .story-bottom { border-left: none; border-top: 1px solid #aaa; }
+
+            nav a { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">Arjun's Archives</div>
+            <div>
+                <a href="index.html">Front Page</a>
+                <a href="archive.html">Archive</a>
+                <a href="index.html#library">Library</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="newspaper-page">
+
+        <!-- ── Masthead ── -->
+        <div class="masthead">
+            <div class="masthead-vol">
+                <span>Vol. I &nbsp;&middot;&nbsp; Queue Edition &nbsp;&middot;&nbsp; Eighteen Volumes</span>
+                <span>Monday, 2 June 2026</span>
+            </div>
+            <div class="masthead-name">The Arjun Dispatch</div>
+            <hr class="masthead-rule">
+            <div class="masthead-tagline">"The Reading Queue — Titles Catalogued for Future Study Across Four Disciplines"</div>
+        </div>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             SOFTWARE ENGINEERING  (3 books)
+             Top: DDIA (lead) + Computer Architecture (side)
+             Bottom 1-col: Python for Data Analysis
+        ══════════════════════════════════════════════════════ -->
+
+        <div class="section-banner">Software Engineering &nbsp;&middot;&nbsp; Three Volumes Queued</div>
+
+        <div class="newspaper-content">
+
+            <div class="newspaper-top newspaper-top-2col">
+
+                <!-- Lead: Designing Data-Intensive Applications -->
+                <div class="story-lead">
+                    <div class="story-kicker">Distributed Systems</div>
+                    <div class="story-img-lead">
+                        <img src="https://covers.openlibrary.org/b/isbn/9781449373320-M.jpg" alt="Designing Data-Intensive Applications" onerror="this.style.display='none'">
+                    </div>
+                    <h2 class="story-headline-lead">Kleppmann's Architecture Bible: How Modern Databases Manage the Data Deluge</h2>
+                    <div class="story-deck">A meticulous examination of the principles behind distributed data storage, streaming systems, and the engineering trade-offs that every serious practitioner must eventually confront</div>
+                    <div class="story-byline">By Martin Kleppmann</div>
+                    <p class="story-body">Martin Kleppmann's treatise on data-intensive applications has become the standard reference for engineers who wish to reason seriously about databases, data pipelines, and distributed systems. It opens with a deceptively simple question — what does it mean to handle large amounts of data reliably, efficiently, and at scale? — and proceeds to answer it with characteristic rigour. Replication strategies, consensus algorithms, stream processing, and the subtle nature of consistency guarantees each receive thorough treatment. Few technical books earn genuine authority; this one has, and it is queued accordingly.</p>
+                    <span class="story-queue">&#9744;&nbsp; Queued for Reading</span>
+                </div>
+
+                <!-- Side: Computer Architecture -->
+                <div class="story-side">
+                    <div class="story-kicker">Computer Science</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780128119051-M.jpg" alt="Computer Architecture" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline">Hennessy &amp; Patterson: The Architects Who Wrote the Book on Architecture</h3>
+                    <div class="story-deck">From RISC to the multicore era — the canonical text on how processors are designed and why it matters</div>
+                    <div class="story-byline">By Hennessy &amp; Patterson</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+            </div><!-- /newspaper-top-2col -->
+
+            <!-- Bottom: Python for Data Analysis -->
+            <div class="newspaper-bottom-row cols-1">
+                <div class="story-bottom">
+                    <div class="story-kicker">Data Engineering</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9781491957660-M.jpg" alt="Python for Data Analysis" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline-sm">McKinney's Pandas Manual: Taming Data with Python's Most Powerful Library</h3>
+                    <div class="story-deck">The creator of pandas explains his creation — practical data wrangling from first principles, by the man who built the tool</div>
+                    <div class="story-byline">By Wes McKinney</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+            </div>
+
+        </div><!-- /newspaper-content SOFTWARE -->
+
+
+        <!-- ══════════════════════════════════════════════════════
+             ENGINEERING & MATHEMATICS  (8 books)
+             Top: Sedra & Smith (lead) + Digital Design (side) + Bayesian (side)
+             Bottom 3-col: ESL + Markov Chains + LP & Game Theory
+             Extra 2-col: Why Math? + Linear Algebra Done Right
+        ══════════════════════════════════════════════════════ -->
+
+        <div class="section-break"></div>
+        <div class="section-banner">Engineering &amp; Mathematics &nbsp;&middot;&nbsp; Eight Volumes Queued</div>
+
+        <div class="newspaper-content">
+
+            <div class="newspaper-top">
+
+                <!-- Lead: Microelectronic Circuits -->
+                <div class="story-lead">
+                    <div class="story-kicker">Electronics Engineering</div>
+                    <div class="story-img-lead">
+                        <img src="book_covers_additional/Microelectronics__82622.jpg" alt="Microelectronic Circuits" onerror="this.style.display='none'">
+                    </div>
+                    <h2 class="story-headline-lead">Sedra &amp; Smith's Circuit Compendium: Every Engineer's Indispensable Reference on Analogue Design</h2>
+                    <div class="story-deck">From the bipolar junction transistor to CMOS amplifiers — the definitive treatment of microelectronic circuit design for the practising engineer</div>
+                    <div class="story-byline">By Adel S. Sedra &amp; Kenneth C. Smith</div>
+                    <p class="story-body">Few textbooks earn the epithet "bible" without irony; Microelectronic Circuits earns it without equivocation. Sedra and Smith guide the reader through the fundamentals of analogue electronics with a clarity that belies the subject's genuine complexity. Transistor biasing, small-signal models, feedback theory, and frequency response each receive treatment rigorous enough to form the basis of professional practice. The book sits on every practising electronics engineer's shelf within arm's reach — its spine worn smooth through years of consultation. Queued in readiness for the advanced circuit design modules ahead.</p>
+                    <span class="story-queue">&#9744;&nbsp; Queued for Reading</span>
+                </div>
+
+                <!-- Side 1: Digital Design -->
+                <div class="story-side">
+                    <div class="story-kicker">Digital Logic</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780131989245-M.jpg" alt="Digital Design" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline">Mano's Digital Logic Primer: Gates, Flip-Flops, and the Binary World Beneath</h3>
+                    <div class="story-deck">The foundational text on combinational and sequential circuit design — Boolean algebra made rigorous</div>
+                    <div class="story-byline">By Morris Mano</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+                <!-- Side 2: Bayesian Statistics the Fun Way -->
+                <div class="story-side">
+                    <div class="story-kicker">Statistics</div>
+                    <div class="story-img-sm">
+                        <img src="book_covers_additional/bayesian_statistics_the_fun_way.jpg" alt="Bayesian Statistics the Fun Way" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline">Kurt's Bayesian Primer: Probability Theory Made Accessible Without Sacrificing Rigour</h3>
+                    <div class="story-deck">An introduction that teaches Bayes through intuition and real examples rather than front-loading measure theory</div>
+                    <div class="story-byline">By Will Kurt</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+            </div><!-- /newspaper-top -->
+
+            <!-- Bottom row 1: ESL + Markov Chains + LP & Game Theory -->
+            <div class="newspaper-bottom-row">
+
+                <div class="story-bottom">
+                    <div class="story-kicker">Machine Learning</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780387848570-M.jpg" alt="The Elements of Statistical Learning" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline-sm">Hastie, Tibshirani &amp; Friedman: The Statistical Learning Reference Every Data Scientist Eventually Cites</h3>
+                    <div class="story-deck">From regression to gradient boosting — a rigorous tour through modern supervised and unsupervised learning</div>
+                    <div class="story-byline">By Hastie, Tibshirani &amp; Friedman</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+                <div class="story-bottom">
+                    <div class="story-kicker">Stochastic Processes</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780387901923-M.jpg" alt="Finite Markov Chains" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline-sm">Kemeny &amp; Snell's Markov Theory: Chains, States, and Steady-State Distributions From First Principles</h3>
+                    <div class="story-deck">The mathematical foundation for understanding probabilistic state transitions and their long-run behaviour</div>
+                    <div class="story-byline">By J.G. Kemeny &amp; J.L. Snell</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+                <div class="story-bottom">
+                    <div class="story-kicker">Optimisation Theory</div>
+                    <h3 class="story-headline-sm">Linear Programming and Game Theory: The Mathematical Language of Strategic Optimisation</h3>
+                    <div class="story-deck">Optimisation theory meets strategic interaction in a framework where every decision has a dual — and every dual illuminates the primal</div>
+                    <div class="story-byline">By Louis Billera &amp; Susan Ott</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+            </div><!-- /bottom row 1 -->
+
+            <!-- Bottom row 2: Why Math? + Linear Algebra Done Right -->
+            <div class="newspaper-bottom-row cols-2 has-top-border">
+
+                <div class="story-bottom">
+                    <div class="story-kicker">Philosophy of Mathematics</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780387944838-M.jpg" alt="Why Math?" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline-sm">Driver Poses the Fundamental Question: Why Does Mathematics Describe Physical Reality at All?</h3>
+                    <div class="story-deck">An inquiry into mathematical modelling and the unreasonable effectiveness of abstraction in science and engineering</div>
+                    <div class="story-byline">By R.D. Driver</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+                <div class="story-bottom">
+                    <div class="story-kicker">Linear Algebra</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9783319307657-M.jpg" alt="Linear Algebra Done Right" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline-sm">Axler's Linear Algebra Without Determinants: A Modern Treatment Built on Understanding Rather Than Computation</h3>
+                    <div class="story-deck">Vector spaces and linear maps take centre stage; determinants are relegated to their proper place at the end</div>
+                    <div class="story-byline">By Sheldon Axler</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+            </div><!-- /bottom row 2 -->
+
+        </div><!-- /newspaper-content ENGINEERING -->
+
+
+        <!-- ══════════════════════════════════════════════════════
+             QUANTITATIVE FINANCE  (4 books)
+             Top: Hull (lead) + Keynes (side) + Bogle (side)
+             Bottom 1-col: Inside the Black Box
+        ══════════════════════════════════════════════════════ -->
+
+        <div class="section-break"></div>
+        <div class="section-banner">Quantitative Finance &nbsp;&middot;&nbsp; Four Volumes Queued</div>
+
+        <div class="newspaper-content">
+
+            <div class="newspaper-top">
+
+                <!-- Lead: Options, Futures and Other Derivatives -->
+                <div class="story-lead">
+                    <div class="story-kicker">Derivatives</div>
+                    <div class="story-img-lead">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780131499089-M.jpg" alt="Options, Futures and Other Derivatives" onerror="this.style.display='none'">
+                    </div>
+                    <h2 class="story-headline-lead">Hull's Derivatives Standard: The Textbook That Has Defined Quant Finance Education for Three Decades</h2>
+                    <div class="story-deck">Black-Scholes, term structure models, credit derivatives — every derivative instrument examined with the mathematical precision the subject demands</div>
+                    <div class="story-byline">By John C. Hull</div>
+                    <p class="story-body">John Hull's Options, Futures and Other Derivatives has occupied the syllabus of every quantitative finance programme since its first edition, for the simple reason that no text rivals its combination of breadth and mathematical precision. From the no-arbitrage principle and the binomial model to exotic options, interest rate derivatives, and credit risk — Hull treats each topic with a clarity that allows the reader to move directly from theory to application. Already acquainted with derivatives through Natenberg; Hull will provide the formal mathematical scaffolding that trading intuition alone cannot supply.</p>
+                    <span class="story-queue">&#9744;&nbsp; Queued for Reading</span>
+                </div>
+
+                <!-- Side 1: The General Theory -->
+                <div class="story-side">
+                    <div class="story-kicker">Macroeconomics</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9781603864527-M.jpg" alt="The General Theory" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline">Keynes' General Theory: The Work That Invented Modern Macroeconomics and Made Aggregate Demand a Policy Instrument</h3>
+                    <div class="story-deck">Dense but essential — the source text for every subsequent debate about government, markets, and the business cycle</div>
+                    <div class="story-byline">By John Maynard Keynes</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+                <!-- Side 2: The Little Book -->
+                <div class="story-side">
+                    <div class="story-kicker">Investing</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9781119404507-M.jpg" alt="The Little Book of Common Sense Investing" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline">Bogle's Index Fund Gospel: The Case for Passive Investing, Still Undefeated After Fifty Years</h3>
+                    <div class="story-deck">The Vanguard founder's argument for low-cost index funds — brief, clear, and yet to be refuted</div>
+                    <div class="story-byline">By John C. Bogle</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+            </div><!-- /newspaper-top -->
+
+            <!-- Bottom: Inside the Black Box -->
+            <div class="newspaper-bottom-row cols-1">
+                <div class="story-bottom">
+                    <div class="story-kicker">Systematic Trading</div>
+                    <div class="story-img-sm">
+                        <img src="book_covers_additional/inside_the_black_box.jpg" alt="Inside the Black Box" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline-sm">Narang Lifts the Lid: A Practitioner's Account of What Actually Happens Inside Quantitative Funds</h3>
+                    <div class="story-deck">Alpha generation, risk management, and the realities of systematic trading — demystified by someone who built and ran one</div>
+                    <div class="story-byline">By Rishi Narang</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+            </div>
+
+        </div><!-- /newspaper-content QUANT FINANCE -->
+
+
+        <!-- ══════════════════════════════════════════════════════
+             GREATER AWARENESS & PHILOSOPHY  (3 books)
+             Top: Amusing Ourselves (lead) + I, Robot (side)
+             Bottom 1-col: Competitive Strategy
+        ══════════════════════════════════════════════════════ -->
+
+        <div class="section-break"></div>
+        <div class="section-banner">Greater Awareness &amp; Philosophy &nbsp;&middot;&nbsp; Three Volumes Queued</div>
+
+        <div class="newspaper-content">
+
+            <div class="newspaper-top newspaper-top-2col">
+
+                <!-- Lead: Amusing Ourselves to Death -->
+                <div class="story-lead">
+                    <div class="story-kicker">Media Theory</div>
+                    <div class="story-img-lead">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780143036592-M.jpg" alt="Amusing Ourselves to Death" onerror="this.style.display='none'">
+                    </div>
+                    <h2 class="story-headline-lead">Postman's Warning, Forty Years On: Entertainment Has Not Merely Changed Discourse — It Has Replaced It</h2>
+                    <div class="story-deck">Written about television in 1985, proved correct by the internet in 2025 — Postman's diagnosis of the entertainment imperative grows more urgent with each passing year</div>
+                    <div class="story-byline">By Neil Postman</div>
+                    <p class="story-body">Neil Postman wrote Amusing Ourselves to Death worried about television. He could not have anticipated the smartphone. His argument — that the medium of communication fundamentally shapes the kind of thought possible within it, and that the entertainment imperative of television was degrading public discourse to something resembling a continuous variety show — reads today as understatement. Where Orwell feared a government that would impose truth, Postman feared a culture that would choose distraction. Both were prescient. One man's prophecy; another generation's lived reality. Queued with some urgency.</p>
+                    <span class="story-queue">&#9744;&nbsp; Queued for Reading</span>
+                </div>
+
+                <!-- Side: I, Robot -->
+                <div class="story-side">
+                    <div class="story-kicker">Science Fiction</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780553382563-M.jpg" alt="I, Robot" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline">Asimov's Three Laws and Their Limits: The Science Fiction That Anticipated Every Modern Question About Machine Intelligence</h3>
+                    <div class="story-deck">Short stories that, taken together, constitute a remarkably thorough philosophical examination of AI ethics</div>
+                    <div class="story-byline">By Isaac Asimov</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+
+            </div><!-- /newspaper-top-2col -->
+
+            <!-- Bottom: Competitive Strategy -->
+            <div class="newspaper-bottom-row cols-1">
+                <div class="story-bottom">
+                    <div class="story-kicker">Business Strategy</div>
+                    <div class="story-img-sm">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780684841489-M.jpg" alt="Competitive Strategy" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="story-headline-sm">Porter's Five Forces: The Strategic Framework That Taught a Generation of Business Leaders to Think Structurally About Competition</h3>
+                    <div class="story-deck">Industry analysis, competitive positioning, and the architecture of sustainable advantage — the seminal work that still defines how strategy is taught</div>
+                    <div class="story-byline">By Michael E. Porter</div>
+                    <span class="story-queue">&#9744;&nbsp; Queued</span>
+                </div>
+            </div>
+
+        </div><!-- /newspaper-content PHILOSOPHY -->
+
+    </section><!-- /newspaper-page -->
+
+    <footer>
+        <p>Arjun's Archives &mdash; Reading Queue &mdash; Eighteen volumes catalogued for future study &mdash; <a href="index.html" style="color: var(--accent); text-decoration: none;">Return to Front Page</a></p>
+    </footer>
+
+</body>
+</html>
