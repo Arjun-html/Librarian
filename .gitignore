@@ -1,0 +1,8 @@
+library.db
+__pycache__/
+*.pyc
+
+# Screenshots and PDFs
+*.png
+*.pdf
+.playwright-mcp/
