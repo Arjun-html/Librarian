@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+      // Arriving via a page-flip? Skip the entrance fade so it doesn't blink.
+      try {
+        if (Date.now() - (parseInt(sessionStorage.getItem('arjun_flip_at'), 10) || 0) < 4000)
+          document.documentElement.classList.add('flip-arriving');
+      } catch (e) {}
+    </script>
     <title>The Reading Queue — Arjun's Archives</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,6 +30,8 @@
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--cream);
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23b)' opacity='0.035'/%3E%3C/svg%3E");
             color: var(--soft-black);
             line-height: 1.6;
         }
@@ -65,8 +74,23 @@
 
         /* ── Newspaper ── */
         .newspaper-page {
-            background: #f2efe8;
-            border-bottom: 3px solid #111;
+            position: relative;
+            border-bottom: 4px solid #111;
+            background-color: #f1ece1;
+            background-image:
+                radial-gradient(120% 90% at 18% 8%, rgba(214,196,158,0.30) 0%, transparent 45%),
+                radial-gradient(110% 80% at 92% 96%, rgba(204,182,140,0.34) 0%, transparent 50%),
+                radial-gradient(140% 120% at 50% 50%, transparent 58%, rgba(120,96,58,0.10) 100%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+        }
+
+        .newspaper-page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: #111;
+            box-shadow: 0 4px 0 -2.5px #111;
         }
 
         /* Masthead */
@@ -97,7 +121,7 @@
 
         .masthead-rule {
             border: none;
-            border-top: 1px solid #888;
+            border-top: 4px double #111;
             margin: 0;
         }
 
@@ -332,6 +356,7 @@
         }
 
         .newspaper-page { animation: newsEntrance 0.45s ease forwards; }
+        .flip-arriving .newspaper-page { animation: none; }
 
         /* Footer */
         footer {
@@ -661,7 +686,7 @@
                 <div class="story-lead">
                     <div class="story-kicker">Media Theory</div>
                     <div class="story-img-lead">
-                        <img src="https://covers.openlibrary.org/b/isbn/9780143036592-M.jpg" alt="Amusing Ourselves to Death" onerror="this.style.display='none'">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780143036531-M.jpg" alt="Amusing Ourselves to Death" onerror="this.style.display='none'">
                     </div>
                     <h2 class="story-headline-lead">Postman's Warning, Forty Years On: Entertainment Has Not Merely Changed Discourse — It Has Replaced It</h2>
                     <div class="story-deck">Written about television in 1985, proved correct by the internet in 2025 — Postman's diagnosis of the entertainment imperative grows more urgent with each passing year</div>
@@ -706,5 +731,7 @@
         <p>Arjun's Archives &mdash; Reading Queue &mdash; Eighteen volumes catalogued for future study &mdash; <a href="index.html" style="color: var(--accent); text-decoration: none;">Return to Front Page</a></p>
     </footer>
 
+    <script src="html2canvas.min.js"></script>
+    <script src="page-transition.js?v=5"></script>
 </body>
 </html>
