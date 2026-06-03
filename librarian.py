@@ -15,7 +15,7 @@ Commands:
 import sqlite3
 import sys
 import html as html_lib
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT     = Path(__file__).parent
@@ -165,7 +165,7 @@ def render_hero(conn):
 
     n = conn.execute("SELECT COUNT(*) FROM books WHERE status='reading'").fetchone()[0]
     volume_word = f"{n} Volume{'s' if n != 1 else ''}"
-    banner = f'        <div class="section-banner">Currently In Progress &nbsp;&middot;&nbsp; {volume_word} Under Active Review</div>'
+    banner = f'        <div class="section-banner">{volume_word} Under Active Review</div>'
 
     lead    = [b for b in books if b['hero_slot'] == 'lead']
     sides   = [b for b in books if b['hero_slot'] == 'side']
@@ -257,6 +257,11 @@ def cmd_generate():
     template = TEMPLATE.read_text(encoding='utf-8')
 
     template = template.replace('%%NEWSPAPER_DYNAMIC%%', render_hero(conn))
+
+    # Masthead date: current date in Hong Kong (UTC+8), e.g. "Sunday, 26 June 2026, <i>Hong Kong</i>"
+    hk_now = datetime.now(timezone(timedelta(hours=8)))
+    masthead_date = f"{hk_now.strftime('%A')}, {hk_now.day} {hk_now.strftime('%B')} {hk_now.year}, <i>Hong Kong</i>"
+    template = template.replace('%%MASTHEAD_DATE%%', masthead_date)
 
     for sec in SECTIONS:
         books = conn.execute(

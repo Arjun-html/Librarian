@@ -3,13 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-      // Arriving via a page-flip? Skip the entrance fade so it doesn't blink.
-      try {
-        if (Date.now() - (parseInt(sessionStorage.getItem('arjun_flip_at'), 10) || 0) < 4000)
-          document.documentElement.classList.add('flip-arriving');
-      } catch (e) {}
-    </script>
     <title>Ar's Reading Library</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,8 +30,6 @@
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--cream);
-            background-image:
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23b)' opacity='0.035'/%3E%3C/svg%3E");
             color: var(--soft-black);
             line-height: 1.6;
         }
@@ -83,25 +74,8 @@
 
         /* ── NEWSPAPER HERO ──────────────────────────────────── */
         .newspaper-hero {
-            position: relative;
-            border-bottom: 4px solid #111;
-            /* Aged newsprint: warm uneven tint + foxing + fine grain. */
-            background-color: #f1ece1;
-            background-image:
-                radial-gradient(120% 90% at 18% 8%, rgba(214,196,158,0.30) 0%, transparent 45%),
-                radial-gradient(110% 80% at 92% 96%, rgba(204,182,140,0.34) 0%, transparent 50%),
-                radial-gradient(140% 120% at 50% 50%, transparent 58%, rgba(120,96,58,0.10) 100%),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
-        }
-
-        /* Top hairline rule above the masthead — FT-style trim. */
-        .newspaper-hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: #111;
-            box-shadow: 0 4px 0 -2.5px #111;  /* thin companion rule below */
+            background: #f2efe8;
+            border-bottom: 3px solid #111;
         }
 
         /* Masthead */
@@ -132,7 +106,7 @@
 
         .masthead-rule {
             border: none;
-            border-top: 4px double #111;   /* classic newspaper double rule */
+            border-top: 1px solid #888;
             margin: 0;
         }
 
@@ -327,13 +301,13 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: sepia(0.35) saturate(1.1);
+            filter: grayscale(1) contrast(1.15) brightness(0.9);
             display: block;
             transition: filter 0.3s;
         }
 
         .story-lead:hover .story-img-lead img {
-            filter: sepia(0.35) saturate(1.1);
+            filter: grayscale(0.6) contrast(1.05) brightness(0.95);
         }
 
         .story-img-sm {
@@ -349,14 +323,14 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: sepia(0.35) saturate(1.1);
+            filter: grayscale(1) contrast(1.15) brightness(0.9);
             display: block;
             transition: filter 0.3s;
         }
 
         .story-side:hover .story-img-sm img,
         .story-bottom:hover .story-img-sm img {
-            filter: sepia(0.35) saturate(1.1);
+            filter: grayscale(0.5) contrast(1.05) brightness(0.95);
         }
 
         /* Page-load animation */
@@ -366,7 +340,6 @@
         }
 
         .newspaper-hero { animation: newsEntrance 0.45s ease forwards; }
-        .flip-arriving .newspaper-hero { animation: none; }
 
         /* Mobile */
         @media (max-width: 768px) {
@@ -541,7 +514,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: sepia(0.35) saturate(1.1);
         }
 
         .book-cover.no-image {
@@ -676,14 +648,14 @@
         <div class="masthead">
             <div class="masthead-vol">
                 <span>Vol. I &nbsp;&middot;&nbsp; No. 1</span>
-                <span>Sunday, 25 May 2026</span>
+                <span>Wednesday, 3 June 2026, <i>Hong Kong</i></span>
             </div>
             <div class="masthead-name">The Arjun Dispatch</div>
             <hr class="masthead-rule">
             <div class="masthead-tagline">"A reader lives a thousand lives before he dies — Personal Chronicle of Works Currently in Hand"</div>
         </div>
 
-        <div class="section-banner">Currently In Progress &nbsp;&middot;&nbsp; 6 Volumes Under Active Review</div>
+        <div class="section-banner">6 Volumes Under Active Review</div>
 
         <div class="newspaper-content">
 
@@ -1527,7 +1499,7 @@
                     </div>
                     <div class="book-details">
                         <div class="book-content">
-                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9780735217980-M.jpg" alt="The Man Who Solved the Markets" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
+                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9781591843771-M.jpg" alt="The Man Who Solved the Markets" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                             <div class="book-text">
                                 <div class="my-notes">
                                     <span class="my-notes-label">My Notes</span>
@@ -1693,7 +1665,7 @@
                     </div>
                     <div class="book-details">
                         <div class="book-content">
-                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9780735224919-M.jpg" alt="The Coddling of the American Mind" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
+                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9781250144010-M.jpg" alt="The Coddling of the American Mind" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                             <div class="book-text">
                                 <div class="my-notes">
                                     <span class="my-notes-label">My Notes</span>
@@ -1833,7 +1805,7 @@
                     </div>
                     <div class="book-details">
                         <div class="book-content">
-                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9780679724681-M.jpg" alt="Cows, Pigs, Wars, and Witches" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
+                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9780679724629-M.jpg" alt="Cows, Pigs, Wars, and Witches" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                             <div class="book-text">
                                 <div class="my-notes">
                                     <span class="my-notes-label">My Notes</span>
@@ -1938,7 +1910,7 @@
                     </div>
                     <div class="book-details">
                         <div class="book-content">
-                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9781948836586-M.jpg" alt="The Molecule of More" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
+                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9780393634631-M.jpg" alt="The Molecule of More" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                             <div class="book-text">
                                 <div class="my-notes">
                                     <span class="my-notes-label">My Notes</span>
@@ -2105,7 +2077,7 @@
                     </div>
                     <div class="book-details">
                         <div class="book-content">
-                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9780143036531-M.jpg" alt="Amusing Ourselves to Death" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
+                            <div class="book-cover"><img src="https://covers.openlibrary.org/b/isbn/9780143035305-M.jpg" alt="Amusing Ourselves to Death" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                             <div class="book-text">
                                 <div class="summary">
                                     <span class="summary-label">About</span>
@@ -2131,7 +2103,7 @@
 
     <!-- Footer -->
     <footer>
-        <p>A personal library maintained since Year 2 of my degree. Updated June 2, 2026.</p>
+        <p>A personal library maintained since Year 2 of my degree. Updated June 3, 2026.</p>
     </footer>
 
     <script>
@@ -2152,7 +2124,5 @@
             header.style.cursor = 'pointer';
         });
     </script>
-    <script src="html2canvas.min.js"></script>
-    <script src="page-transition.js?v=5"></script>
 </body>
 </html>
