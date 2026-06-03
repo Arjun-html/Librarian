@@ -362,16 +362,7 @@
 
 ---
 
-### 13. Babel: An Arcane History
-**Author:** R.F. Kuang  
-**Status:** Reading List  
-**My Notes:** —
-
-**AI Notes:** Historical fantasy novel set in an alternate Oxford where magical power derives from language and translation. Explores colonialism, power dynamics, and the politics of knowledge through the lens of a magical university system.
-
----
-
-### 14. Amusing Ourselves to Death
+### 13. Amusing Ourselves to Death
 **Author:** Neil Postman  
 **Status:** Reading List  
 **My Notes:** —
@@ -400,5 +391,5 @@
 
 ---
 
-**Last Updated:** May 2, 2026  
-**Total Books:** 41 (27 Read, 6 Reading, 8 Reading List)
+**Last Updated:** June 2, 2026  
+**Total Books:** 40 (16 Read, 6 Reading, 18 Reading List)
