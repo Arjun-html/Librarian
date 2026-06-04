@@ -4,7 +4,7 @@ librarian_gui.py — a dead-simple desktop front end for Arjun's reading library
 
 Reuses the existing engine in librarian.py:
   - library.db is the source of truth
-  - librarian.cmd_generate() rebuilds index.html + library.md from the database
+  - librarian.cmd_generate() rebuilds index.html, library.html, books/*.html + library.md from the database
 
 This window lets you add / edit / delete books, pick a cover image, write notes,
 set status, and regenerate the site — no terminal, no Claude Code.
@@ -489,7 +489,7 @@ class LibrarianGUI(tk.Tk):
         except Exception as exc:
             messagebox.showerror('Generate failed', str(exc))
             return
-        self.status(prefix + 'Regenerated index.html + library.md.')
+        self.status(prefix + 'Regenerated index.html, library.html, books/ + library.md.')
 
 
 if __name__ == '__main__':
