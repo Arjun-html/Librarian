@@ -9,13 +9,15 @@
  *
  * The destination page loads in an iframe beneath the canvas and is uncovered
  * as the current sheet peels from the right edge toward the left.
+ *
+ * The turn comes in three randomised variants (slowDramatic / mediumCrisp /
+ * snapWithPeel) that vary duration, easing, curl depth, and an optional brief
+ * skew-peel hesitation before the roll. See VARIANTS below.
  */
 (function () {
   'use strict';
 
   const SEEN_KEY  = 'arjun_flip_seen';
-  const T_FIRST   = 1150;
-  const T_REPEAT  = 640;
   const DPR       = Math.min(window.devicePixelRatio || 1, 2);
 
   /* ── Cached viewport snapshot ─────────────────────────────────────────── */
@@ -76,7 +78,7 @@
    * The contact line sweeps right→left; the lifted right portion curls up
    * and over toward the left as a single cylinder.
    */
-  function draw(ctx, W, H, p) {
+  function draw(ctx, W, H, p, curl = 1) {
     ctx.clearRect(0, 0, W, H);
     const sheet = snap || fallbackSnap || (fallbackSnap = buildFallbackSnap());
     const sc = sheet.width / W;
@@ -84,7 +86,7 @@
     if (p <= 0.0006) { ctx.drawImage(sheet, 0, 0, sheet.width, sheet.height, 0, 0, W, H); return; }
     if (p >= 0.9994) return;
 
-    const R  = Math.max(74, W * 0.14);            // curl radius
+    const R  = Math.max(74, W * 0.14) * curl;     // curl radius (variant-scaled depth)
     // The fold sweeps from the right edge all the way PAST the left edge, so
     // the whole sheet rolls cleanly off-screen and the turn actually finishes
     // — rather than the canvas blanking out from under a leftover curl.
@@ -173,17 +175,59 @@
     return { cv, ctx, W, H };
   }
 
-  function getDuration() {
-    if (sessionStorage.getItem(SEEN_KEY)) return T_REPEAT;
+  /* ── Animation variants ───────────────────────────────────────────────── *
+   * Three named profiles. One is chosen at random per turn (weighted toward
+   * the dramatic turn on the very first navigation, equal thereafter).
+   *   duration  total ms of the rolling motion (preDelay is on top)
+   *   easingFn  eases p ∈ [0,1] over the roll
+   *   preDelay  ms to hesitate (with a skew peel) before the roll begins
+   *   peelSkew  skewX magnitude applied during the hesitation
+   *   curl      curl-radius multiplier (< 1 = shallower, snappier curl)
+   */
+  const VARIANTS = {
+    slowDramatic: { duration: 1100, easingFn: easeInOut, preDelay: 0,  peelSkew: 0,    curl: 1.0 },
+    mediumCrisp:  { duration: 650,  easingFn: easeOut,   preDelay: 0,  peelSkew: 0,    curl: 0.7 },
+    snapWithPeel: { duration: 900,  easingFn: easeInOut, preDelay: 80, peelSkew: 0.05, curl: 1.0 },
+  };
+  const VARIANT_NAMES = ['slowDramatic', 'mediumCrisp', 'snapWithPeel'];
+
+  function pickVariant() {
+    const firstTurn = !sessionStorage.getItem(SEEN_KEY);
     sessionStorage.setItem(SEEN_KEY, '1');
-    return T_FIRST;
+    if (firstTurn) {
+      // 60 / 20 / 20 toward slowDramatic to preserve the memorable first impression.
+      const r = Math.random();
+      const name = r < 0.6 ? 'slowDramatic' : r < 0.8 ? 'mediumCrisp' : 'snapWithPeel';
+      return VARIANTS[name];
+    }
+    return VARIANTS[VARIANT_NAMES[Math.floor(Math.random() * VARIANT_NAMES.length)]];
+  }
+
+  /* Brief pre-roll for snapWithPeel: the flat sheet leans with a slight skewX,
+   * hinting the lift before the main curl begins. */
+  function drawPrePeel(ctx, W, H, skew, t) {
+    const sheet = snap || fallbackSnap || (fallbackSnap = buildFallbackSnap());
+    const k = skew * Math.min(Math.max(t, 0), 1);
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bodyBg();                     // fill first so the skew gap shows paper, not the destination
+    ctx.fillRect(0, 0, W, H);
+    ctx.save();
+    ctx.transform(1, 0, -k, 1, 0, 0);             // skewX: the sheet leans as its right edge starts to lift
+    ctx.drawImage(sheet, 0, 0, sheet.width, sheet.height, 0, 0, W, H);
+    ctx.restore();
+    // faint specular along the right edge where the lift begins
+    const g = ctx.createLinearGradient(W - 64, 0, W, 0);
+    g.addColorStop(0, 'rgba(255,251,238,0)');
+    g.addColorStop(1, `rgba(255,251,238,${(0.35 * Math.min(t, 1)).toFixed(3)})`);
+    ctx.fillStyle = g;
+    ctx.fillRect(W - 64, 0, 64, H);
   }
 
   /* ── Exit: current page peels away, destination revealed beneath ──────── */
 
   let flipping = false;
 
-  async function flipOut(href, dur) {
+  async function flipOut(href, variant) {
     if (flipping) return;
     flipping = true;
 
@@ -202,12 +246,18 @@
     document.body.appendChild(ifr);
 
     const o = makeCanvas();
-    const ease = dur === T_FIRST ? easeInOut : easeOut;
+    const { duration, easingFn, preDelay, peelSkew, curl } = variant;
     const t0 = performance.now();
 
     (function tick(now) {
-      const raw = Math.min((now - t0) / dur, 1);
-      draw(o.ctx, o.W, o.H, ease(raw));
+      const elapsed = now - t0;
+      if (elapsed < preDelay) {                       // hesitation + skew peel, before the roll
+        drawPrePeel(o.ctx, o.W, o.H, peelSkew, elapsed / preDelay);
+        requestAnimationFrame(tick);
+        return;
+      }
+      const raw = Math.min((elapsed - preDelay) / duration, 1);
+      draw(o.ctx, o.W, o.H, easingFn(raw), curl);
       if (raw < 1) requestAnimationFrame(tick);
       else window.location.href = href;
     }(performance.now()));
@@ -234,7 +284,7 @@
         || href.startsWith('tel')) return;
 
       e.preventDefault();
-      flipOut(href, getDuration());
+      flipOut(href, pickVariant());
     }, true);
   }
 
