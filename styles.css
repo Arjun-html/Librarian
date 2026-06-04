@@ -694,8 +694,17 @@ footer p {
 
 .book-tiles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    /* Mobile-first: 2 across, growing to a maximum of 4 on wider screens. */
+    grid-template-columns: repeat(2, 1fr);
     gap: 2.4rem 1.6rem;
+}
+
+@media (min-width: 640px) {
+    .book-tiles-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 960px) {
+    .book-tiles-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 .book-tile {
@@ -777,10 +786,7 @@ footer p {
 
 @media (max-width: 768px) {
     .library-page { padding: 2.5rem 1.2rem 3rem; }
-    .book-tiles-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 1.8rem 1.1rem;
-    }
+    .book-tiles-grid { gap: 1.8rem 1.1rem; }
 }
 
 /* ── PER-BOOK PAGE (books/[slug].html) ────────────────── */
