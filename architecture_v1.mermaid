@@ -1,0 +1,215 @@
+%% Arjun's Archives — Codebase Architecture (v2.0)
+%% Three diagrams: Data Flow, File Map, User Navigation
+
+---
+
+%%
+  DIAGRAM 1: Data & Build Flow
+  How content gets from the database into the website
+%%
+
+flowchart TD
+    subgraph SOURCE["📦 Single Source of Truth"]
+        DB[(library.db\nSQLite)]
+    end
+
+    subgraph EDITING["✏️ Three Ways to Edit"]
+        CLI["librarian.py\nCLI\npython librarian.py add / update / hero"]
+        GUI["librarian_gui.py\nTkinter Desktop GUI"]
+        DIRECT["Direct DB edit\n sqlite3 library.db"]
+    end
+
+    subgraph GENERATOR["⚙️ Generator — librarian.py generate"]
+        GEN["cmd_generate()"]
+        FN1["render_hero()"]
+        FN2["render_book_card()\n+ render_notes_preview()"]
+        FN3["render_book_tile()"]
+        FN4["render_book_page()"]
+        FN5["_generate_md()"]
+        SLUG["slugify(title)"]
+    end
+
+    subgraph TEMPLATES["📄 Templates — hand-edited, never overwritten"]
+        T1["templates/index_base.html"]
+        T2["templates/library_base.html"]
+        T3["templates/book_base.html"]
+    end
+
+    subgraph GENERATED["🤖 Generated Output — never hand-edit"]
+        OUT1["index.html"]
+        OUT2["library.html"]
+        OUT3["books/the-prize.html\nbooks/skin-in-the-game.html\nbooks/...html\n one per read/reading book"]
+        OUT4["library.md"]
+    end
+
+    subgraph PRESENTATION["🎨 Presentation — hand-edited, never touched by generator"]
+        CSS["styles.css\ncolours · textures · layout · sepia"]
+        APPJS["app.js\ncard expand/collapse"]
+        FLIPJS["flip-init.js\nsuppresses entrance fade on flip"]
+        PTJS["page-transition.js\n3 randomised page-turn variants"]
+        H2C["html2canvas.min.js\nvendored · viewport snapshot"]
+    end
+
+    subgraph GUARD["🔒 Quality Guard"]
+        HOOK["check_sync.py\nPostToolUse hook\nverifies hero/library ISBN consistency"]
+        TESTS["test_librarian.py\nsmoke tests: DB · renderers · slugs"]
+    end
+
+    CLI --> DB
+    GUI --> DB
+    DIRECT --> DB
+
+    DB --> GEN
+    T1 --> GEN
+    T2 --> GEN
+    T3 --> GEN
+
+    GEN --> FN1 --> OUT1
+    GEN --> FN2 --> OUT1
+    GEN --> FN3 --> OUT2
+    GEN --> FN4 --> SLUG --> OUT3
+    GEN --> FN5 --> OUT4
+
+    OUT1 --> |loads| CSS
+    OUT1 --> |loads| APPJS
+    OUT1 --> |loads| FLIPJS
+    OUT1 --> |loads| PTJS
+    OUT1 --> |loads| H2C
+
+    OUT2 --> |loads| CSS
+    OUT2 --> |loads| FLIPJS
+    OUT2 --> |loads| PTJS
+    OUT2 --> |loads| H2C
+
+    OUT3 --> |loads| CSS
+    OUT3 --> |loads| FLIPJS
+    OUT3 --> |loads| PTJS
+    OUT3 --> |loads| H2C
+
+    OUT1 --> |triggers on write| HOOK
+    DB --> TESTS
+
+    style SOURCE fill:#f5f0e8,stroke:#8b7a6f,color:#1a1a1a
+    style EDITING fill:#eef3f8,stroke:#5a7a9a,color:#1a1a1a
+    style GENERATOR fill:#f0ede8,stroke:#8b7a6f,color:#1a1a1a
+    style TEMPLATES fill:#f8f5ee,stroke:#a89880,color:#1a1a1a
+    style GENERATED fill:#fdecea,stroke:#c0705a,color:#1a1a1a
+    style PRESENTATION fill:#edf5ec,stroke:#5a8a6a,color:#1a1a1a
+    style GUARD fill:#f0edf8,stroke:#7a6a9a,color:#1a1a1a
+
+---
+
+%%
+  DIAGRAM 2: Repository File Map
+  Every file, what it does, and whether you can hand-edit it
+%%
+
+flowchart LR
+    subgraph ROOT["Project Root"]
+        subgraph DB_FILES["Data"]
+            DB2[(library.db)]
+        end
+
+        subgraph PY_FILES["Python"]
+            PY1[librarian.py\nGenerator + CLI]
+            PY2[librarian_gui.py\nTkinter GUI]
+            PY3[test_librarian.py\nSmoke tests]
+            PY4[check_sync.py\nISBN sync hook]
+        end
+
+        subgraph TMPL["templates/  ✏️ hand-edit OK"]
+            TM1[index_base.html]
+            TM2[library_base.html]
+            TM3[book_base.html]
+        end
+
+        subgraph STATIC["Static Assets  ✏️ hand-edit OK"]
+            ST1[styles.css]
+            ST2[app.js]
+            ST3[flip-init.js]
+            ST4[page-transition.js]
+            ST5[html2canvas.min.js\nvendored]
+        end
+
+        subgraph GEN_ROOT["Generated  🚫 never hand-edit"]
+            GR1[index.html]
+            GR2[library.html]
+            GR3[library.md]
+        end
+
+        subgraph BOOKS_DIR["books/  🚫 never hand-edit"]
+            BK["[slug].html × N\none per read or reading book"]
+        end
+
+        subgraph ESSAYS_DIR["essays/  ✏️ hand-edit OK  TBD"]
+            ES1[index.html]
+            ES2["[slug].html × N"]
+        end
+
+        subgraph ASSETS["book_covers_additional/"]
+            AV["local cover images\n.jpg / .png"]
+        end
+
+        subgraph CONFIG[".claude/"]
+            CF1[settings.json\nhook config]
+            CF2[CLAUDE.md\nproject instructions]
+        end
+    end
+
+    style DB_FILES fill:#f5f0e8,stroke:#8b7a6f,color:#1a1a1a
+    style PY_FILES fill:#eef3f8,stroke:#5a7a9a,color:#1a1a1a
+    style TMPL fill:#f8f5ee,stroke:#a89880,color:#1a1a1a
+    style STATIC fill:#edf5ec,stroke:#5a8a6a,color:#1a1a1a
+    style GEN_ROOT fill:#fdecea,stroke:#c0705a,color:#1a1a1a
+    style BOOKS_DIR fill:#fdecea,stroke:#c0705a,color:#1a1a1a
+    style ESSAYS_DIR fill:#f0edf8,stroke:#7a6a9a,color:#1a1a1a
+    style ASSETS fill:#f5f0e8,stroke:#8b7a6f,color:#1a1a1a
+    style CONFIG fill:#f0f0f0,stroke:#999,color:#1a1a1a
+
+---
+
+%%
+  DIAGRAM 3: User Navigation & Page Relationships
+  What a visitor sees and how the pages connect
+%%
+
+flowchart TD
+    subgraph SITE["Arjun's Archives — Site Map"]
+
+        NAV["🗞️ Nav Bar\nFront Page · Library · Essays and Thoughts"]
+
+        INDEX["index.html\nFront Page\n─────────────────\nNewspaper masthead\nStrapline + About column\nHero: currently reading books\nBook cards with truncated notes\n+ Read full entry link\nSocial links GitHub LinkedIn"]
+
+        LIB["library.html\nLibrary\n─────────────────\nAll read + reading books\nSorted A → Z\nCover · Title · Author · Status chip\nClick any tile to open book page"]
+
+        BOOK["books/slug.html\nPer-Book Page × N\n─────────────────\nLarge sepia cover\nTitle · Author\nSection + Status\nFull personal notes 100-400 words\n← Back to Library"]
+
+        ESSAYS["essays/index.html\nEssays and Thoughts\n─────────────────\nTitle listing\nClick to open essay\nDesign TBD"]
+
+        ESSAY_PAGE["essays/slug.html\nIndividual Essay × N\n─────────────────\nFull essay text\nMay include images"]
+
+        DB_ONLY["🗄️ DB Only — not on website\nReading list books status=list\nAccessible via CLI and GUI only"]
+    end
+
+    NAV --> INDEX
+    NAV --> LIB
+    NAV --> ESSAYS
+
+    INDEX -->|"page-turn animation\nRead full entry →"| BOOK
+    INDEX -.->|"teaser link"| ESSAYS
+
+    LIB -->|"page-turn animation\nclick tile"| BOOK
+    BOOK -->|"page-turn animation\n← Back to Library"| LIB
+
+    ESSAYS --> ESSAY_PAGE
+    ESSAY_PAGE -->|back| ESSAYS
+
+    DB_ONLY -.->|"invisible to visitors\nmanaged via librarian.py / GUI"| DB_ONLY
+
+    style INDEX fill:#f5f0e8,stroke:#8b7a6f,color:#1a1a1a
+    style LIB fill:#eef3f8,stroke:#5a7a9a,color:#1a1a1a
+    style BOOK fill:#edf5ec,stroke:#5a8a6a,color:#1a1a1a
+    style ESSAYS fill:#f0edf8,stroke:#7a6a9a,color:#1a1a1a
+    style ESSAY_PAGE fill:#f0edf8,stroke:#7a6a9a,color:#1a1a1a
+    style DB_ONLY fill:#f0f0f0,stroke:#999,stroke-dasharray:5 5,color:#555
+    style NAV fill:#1a1a1a,stroke:#1a1a1a,color:#f5f0e8

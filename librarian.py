@@ -24,25 +24,15 @@ TEMPLATE = ROOT / 'templates' / 'index_base.html'
 INDEX    = ROOT / 'index.html'
 MD_FILE  = ROOT / 'library.md'
 
-SECTIONS = ['software', 'engineering', 'quant', 'philosophy']
+SECTIONS = ['software', 'engineering', 'finance', 'philosophy']
 SECTION_NAMES = {
     'software':    'Software Related Books',
     'engineering': 'Engineering & Mathematics',
-    'quant':       'Quantitative Finance',
+    'finance':     'Finance',
     'philosophy':  'Greater Awareness & Philosophy',
 }
 STATUS_LABEL = {'read': 'Read', 'reading': 'Reading', 'list': 'Reading List'}
 STATUS_CLASS  = {'read': 'status-read', 'reading': 'status-reading', 'list': 'status-list'}
-
-UTTERANCES = (
-    '            <script src="https://utteranc.es/client.js"\n'
-    '                repo="Arjun-html/Librarian"\n'
-    '                issue-term="pathname"\n'
-    '                theme="light"\n'
-    '                crossorigin="anonymous"\n'
-    '                async>\n'
-    '            </script>'
-)
 
 # ── Database ──────────────────────────────────────────────────────────────────
 
@@ -59,7 +49,7 @@ def ensure_schema():
         title             TEXT    NOT NULL,
         author            TEXT    NOT NULL,
         isbn              TEXT,
-        section           TEXT    NOT NULL CHECK(section IN ('software','engineering','quant','philosophy')),
+        section           TEXT    NOT NULL CHECK(section IN ('software','engineering','finance','philosophy')),
         status            TEXT    NOT NULL CHECK(status IN ('read','reading','list')),
         my_notes          TEXT,
         ai_notes          TEXT,
@@ -138,10 +128,6 @@ def render_book_card(book):
         f'                            {cover}\n'
         f'                            <div class="book-text">{notes_block}{ai_block}\n'
         f'                            </div>\n'
-        f'                        </div>\n'
-        f'                        <div class="comments-section">\n'
-        f'                            <span class="comments-label">Comments</span>\n'
-        f'{UTTERANCES}\n'
         f'                        </div>\n'
         f'                    </div>\n'
         f'                </div>'
@@ -682,12 +668,12 @@ BOOKS_DATA = [
         'ai_notes': 'A modern approach to linear algebra emphasizing understanding over computation. Covers vector spaces, linear transformations, eigenvalues, and inner product spaces. Known for its clear exposition and novel insights.',
     },
 
-    # ── Quantitative Finance ──────────────────────────────────────────────────
+    # ── Finance ───────────────────────────────────────────────────────────────
     {
         'title': 'A Practical Guide to Quantitative Finance Interviews',
         'author': 'Xinfeng Zhou',
         'local_cover_path': 'book_covers_additional/A Practical Guide to Quantitative Finance Interviews.jpg',
-        'section': 'quant', 'status': 'reading', 'sort_order': 1,
+        'section': 'finance', 'status': 'reading', 'sort_order': 1,
         'my_notes': 'Almost done with the brainteaser sections',
         'ai_notes': 'A practical resource for preparing for quantitative finance job interviews. Covers probability, statistics, derivatives pricing, and brainteasers commonly asked in interviews at hedge funds and trading firms.',
         'hero_slot': 'bottom', 'hero_sort': 3,
@@ -699,19 +685,19 @@ BOOKS_DATA = [
     },
     {
         'title': 'A Random Walk Down Wall Street', 'author': 'Burton G. Malkiel',
-        'isbn': '9780393330335', 'section': 'quant', 'status': 'read', 'sort_order': 2,
+        'isbn': '9780393330335', 'section': 'finance', 'status': 'read', 'sort_order': 2,
         'my_notes': 'Finished the book, found it nice that he gave due respect to every method before absolutely blasting their returns compared to the buy and hold',
         'ai_notes': 'A classic critique of active vs. passive investing. Covers market efficiency, stock valuation methods, and technical analysis, ultimately advocating for index investing. Balanced in acknowledging various approaches before discussing their relative performance.',
     },
     {
         'title': 'The Black Swan', 'author': 'Nassim Nicholas Taleb',
-        'isbn': '9780679604181', 'section': 'quant', 'status': 'read', 'sort_order': 3,
+        'isbn': '9780679604181', 'section': 'finance', 'status': 'read', 'sort_order': 3,
         'my_notes': 'Read it in year 1, gave my first introduction into how do people think about risk',
         'ai_notes': 'Explores the impact of rare, unpredictable events (black swans) on society and markets. Challenges conventional thinking about probability and risk, emphasizing the importance of thinking about tail events and their extreme impact.',
     },
     {
         'title': 'Options, Volatility and Pricing', 'author': 'Sheldon Natenberg',
-        'isbn': '9780071818773', 'section': 'quant', 'status': 'reading', 'sort_order': 4,
+        'isbn': '9780071818773', 'section': 'finance', 'status': 'reading', 'sort_order': 4,
         'my_notes': "Only the last two chapters left. Found the book really interesting and loved the concepts of how volatility, the greeks affect an option's price, but couldn't really find a way how I can use these techniques of options trading without working at one of the prop firms or financial institutions",
         'ai_notes': "Comprehensive guide to options trading and pricing. Covers option mechanics, the greeks (delta, gamma, vega, theta), volatility concepts, and practical trading strategies. Written from a trader's perspective.",
         'hero_slot': 'side', 'hero_sort': 2,
@@ -723,37 +709,37 @@ BOOKS_DATA = [
     },
     {
         'title': 'Flash Boys', 'author': 'Michael Lewis',
-        'isbn': '9780393351590', 'section': 'quant', 'status': 'read', 'sort_order': 5,
+        'isbn': '9780393351590', 'section': 'finance', 'status': 'read', 'sort_order': 5,
         'my_notes': 'Amazing book, showed a lot of insight into how high frequency thinking works and how picks and shovels work',
         'ai_notes': 'Investigative narrative about high-frequency trading and its impact on markets. Exposes the arms race for speed advantage and discusses the hidden realities of modern electronic markets, with focus on the infrastructure and competitive dynamics.',
     },
     {
         'title': 'The Man Who Solved the Markets', 'author': 'Gregory Zuckerman',
-        'isbn': '9780735217980', 'section': 'quant', 'status': 'read', 'sort_order': 6,
+        'isbn': '9780735217980', 'section': 'finance', 'status': 'read', 'sort_order': 6,
         'my_notes': 'Gave a lot of motivation in the first half when learning about Jim Simons journey and a lot of horror in the second half when I saw what his underlings did with all the money - get their politicians in. Showed that you need to be an active thinker',
         'ai_notes': 'Biography of Jim Simons and the Renaissance Technologies hedge fund. Chronicles his journey from pure mathematician to creating one of the most successful quant funds. Also covers the ethical complexities and personal consequences of extreme wealth and power.',
     },
     {
         'title': 'The Little Book of Common Sense Investing', 'author': 'John C. Bogle',
-        'isbn': '9781119404507', 'section': 'quant', 'status': 'list', 'sort_order': 7,
+        'isbn': '9781119404507', 'section': 'finance', 'status': 'list', 'sort_order': 7,
         'ai_notes': 'Investment philosophy focused on low-cost index investing for long-term wealth building. Emphasizes the power of compound returns and the importance of minimizing fees. Written by the founder of Vanguard.',
     },
     {
         'title': 'The General Theory of Employment, Interest and Money',
         'author': 'John Maynard Keynes',
-        'isbn': '9780230007468', 'section': 'quant', 'status': 'list', 'sort_order': 8,
+        'isbn': '9780230007468', 'section': 'finance', 'status': 'list', 'sort_order': 8,
         'ai_notes': 'Foundational work in macroeconomics that challenged classical economics. Introduces concepts of aggregate demand, multiplier effects, and the role of government spending in economic cycles. Dense but essential for understanding modern economics.',
     },
     {
         'title': 'Options, Futures and Other Derivatives', 'author': 'John C. Hull',
-        'isbn': '9780133456318', 'section': 'quant', 'status': 'list', 'sort_order': 9,
+        'isbn': '9780133456318', 'section': 'finance', 'status': 'list', 'sort_order': 9,
         'ai_notes': 'Standard reference for derivatives pricing and risk management. Covers binomial models, Black-Scholes formula, exotic options, interest rate derivatives, and credit derivatives. Mathematical rigor with practical applications.',
     },
     {
         'title': 'Inside the Black Box: A Simple Guide to Systematic Trading',
         'author': 'Rishi Narang',
         'local_cover_path': 'book_covers_additional/inside_the_black_box.jpg',
-        'section': 'quant', 'status': 'list', 'sort_order': 10,
+        'section': 'finance', 'status': 'list', 'sort_order': 10,
         'ai_notes': 'Practical guide to quantitative and algorithmic trading. Covers systematic approach to developing trading strategies, backtesting, risk management, and implementation challenges. Balances theory with real-world considerations.',
     },
 
@@ -855,7 +841,7 @@ Usage: python librarian.py <command> [args]
 Commands:
   migrate          Populate library.db from built-in data (run once; --force to reset)
   add              Interactively add a new book
-  list             List books  [--section software|engineering|quant|philosophy]
+  list             List books  [--section software|engineering|finance|philosophy]
                                [--status read|reading|list]
   update <id>      Edit a book's fields
   remove <id>      Delete a book

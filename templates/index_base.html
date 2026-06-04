@@ -16,10 +16,9 @@
         <nav>
             <div class="logo">Arjun's Archives</div>
             <div>
-                <a href="#currently-reading">Reading</a>
-                <a href="reading-list.html">Reading List</a>
-                <a href="archive.html">Archive</a>
-                <a href="#library">Library</a>
+                <a href="index.html">Front Page</a>
+                <a href="library.html">Library</a>
+                <a href="essays/index.html">Essays &amp; Thoughts</a>
             </div>
         </nav>
     </header>
@@ -34,12 +33,37 @@
                 <span>%%MASTHEAD_DATE%%</span>
             </div>
             <div class="masthead-name">The Arjun Dispatch</div>
+            <div class="masthead-strapline">A personal record of books read, annotated, and lived with</div>
             <hr class="masthead-rule">
             <div class="masthead-tagline">"On the Desk"</div>
         </div>
 
 %%NEWSPAPER_DYNAMIC%%
     </section>
+
+    <!-- About this publication -->
+    <aside class="about-publication">
+        <div class="about-inner">
+            <h2 class="about-heading">About this Publication</h2>
+            <p>
+                <em>The Arjun Dispatch</em> is the personal reading journal of Arjun, a
+                university student of Electrical/Mechanical Engineering and Computer Science.
+                It records the books he reads &mdash; software, engineering and mathematics,
+                finance, and philosophy &mdash; alongside the notes and reflections each one leaves behind.
+            </p>
+            <p>
+                Think of it less as a catalogue and more as a desk: works currently under review
+                lead the front page, while the full shelf lives in the
+                <a href="library.html">Library</a>. Longer reflections appear in
+                <a href="essays/index.html">Essays &amp; Thoughts</a>.
+            </p>
+            <p class="about-links">
+                <a href="https://github.com/" rel="me">GitHub</a>
+                <span aria-hidden="true">&middot;</span>
+                <a href="https://www.linkedin.com/" rel="me">LinkedIn</a>
+            </p>
+        </div>
+    </aside>
 
     <!-- Main Library -->
     <main id="library">
@@ -59,11 +83,11 @@
             </div>
         </section>
 
-        <!-- Quantitative Finance -->
+        <!-- Finance -->
         <section class="library-section">
-            <h2>Quantitative Finance</h2>
+            <h2>Finance</h2>
             <div class="books-container">
-%%BOOKS_quant%%
+%%BOOKS_finance%%
             </div>
         </section>
 

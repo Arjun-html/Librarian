@@ -160,7 +160,7 @@
 
 ---
 
-## Quantitative Finance
+## Finance
 
 ### 1. A Practical Guide to Quantitative Finance Interviews
 **Author:** Xinfeng Zhou  
@@ -391,5 +391,5 @@
 
 ---
 
-**Last Updated:** June 3, 2026  
+**Last Updated:** June 4, 2026  
 **Total Books:** 40 (16 Read, 6 Reading, 18 Reading List)

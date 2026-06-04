@@ -119,6 +119,18 @@ nav a:hover {
     margin: 0;
 }
 
+.masthead-strapline {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--accent);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 auto 0.7rem;
+    max-width: 46ch;
+}
+
 .masthead-tagline {
     font-family: 'Libre Baskerville', Georgia, serif;
     font-size: 0.7rem;
@@ -143,6 +155,58 @@ nav a:hover {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem;
+}
+
+/* About this publication */
+.about-publication {
+    background-color: var(--cream);
+    border-bottom: 1px solid var(--light-taupe);
+}
+
+.about-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 3rem;
+    text-align: center;
+}
+
+.about-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--soft-black);
+    letter-spacing: -0.3px;
+    margin-bottom: 1rem;
+}
+
+.about-inner p {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.95rem;
+    color: var(--dark-gray);
+    line-height: 1.75;
+    margin-bottom: 0.9rem;
+}
+
+.about-inner a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--light-taupe);
+    transition: color 0.3s;
+}
+
+.about-inner a:hover {
+    color: var(--soft-black);
+}
+
+.about-links {
+    margin-top: 1.2rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.about-links span {
+    color: var(--warm-gray);
+    margin: 0 0.5rem;
 }
 
 /* Top grid: lead (2 cols) + right sidebar (1 col, 2 stories stacked) */
@@ -578,22 +642,6 @@ main {
 .summary-text {
     color: var(--dark-gray);
     line-height: 1.7;
-}
-
-.comments-section {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--light-taupe);
-}
-
-.comments-label {
-    font-weight: 600;
-    color: var(--dark-gray);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 1.5rem;
-    display: block;
 }
 
 /* Footer */
