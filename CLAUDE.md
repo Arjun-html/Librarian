@@ -16,8 +16,8 @@ The authoritative design document is **`ClaudeAi_SPEC_v2.md`** (the v2 vision). 
 
 ### Build status (what exists today vs. the v2 roadmap)
 
-- **Built:** front page (`index.html`), `library.md` export, the SQLite source of truth, CLI + Tkinter GUI, dynamic newspaper hero, page-turn animation, sync-check hook. **Utterances comments have been removed.**
-- **Roadmap (not yet built — see v2 spec §6, §10, §11):** `library.html`, per-book `books/[slug].html` pages, `slugify()` + collision handling, `render_book_tile` / `render_book_page` / `render_notes_preview`, masthead strapline + "About" blurb, three page-turn animation variants, nav updated to **Front Page | Library | Essays & Thoughts**.
+- **Built:** front page (`index.html`), the generated **`library.html`** listing, the generated per-book **`books/[slug].html`** pages, `library.md` export, the SQLite source of truth, CLI + Tkinter GUI, dynamic newspaper hero, page-turn animation, sync-check hook, masthead strapline + "About" blurb, nav updated to **Front Page | Library | Essays & Thoughts**, `slugify()` + collision handling (`assign_slugs`), `render_book_tile` / `render_book_page`. **Utterances comments have been removed.** The hand-authored `archive.html` and `reading-list.html` have been **retired** (deleted) — `library.html` replaces them. Library tiles now link to real per-book pages.
+- **Roadmap (not yet built — see v2 spec §6, §12):** front-page `my_notes` previews truncated with a `Read full entry →` link (`render_notes_preview`), three page-turn animation variants, the `essays/` section.
 
 Do **not** assume roadmap items exist; verify in the code before referencing them.
 
@@ -38,7 +38,9 @@ Generated output (`index.html`, `library.md`, and — once built — `library.ht
 | The newspaper hero stories/headlines | `library.db` hero fields (GUI hero form) | `python librarian.py generate` |
 | Colours, layout, fonts, textures | `styles.css` | nothing — it's loaded directly |
 | Page-flip animation / behaviour | `page-transition.js`, `app.js`, `flip-init.js` | nothing — loaded directly |
-| Masthead / nav / strapline / about blurb / skeleton | the relevant file in `templates/` | `python librarian.py generate` |
+| Front-page masthead / nav / strapline / about blurb / skeleton | `templates/index_base.html` | `python librarian.py generate` |
+| Library-page banner / nav / skeleton | `templates/library_base.html` | `python librarian.py generate` |
+| Per-book page masthead / nav / skeleton | `templates/book_base.html` | `python librarian.py generate` |
 
 `generate` only ever writes the generated artifacts. It never touches the presentation files, so editing them is always safe.
 
@@ -56,7 +58,12 @@ python librarian.py hero <id>        # set newspaper hero fields for a Reading b
 python librarian.py generate         # rebuild generated files from library.db
 ```
 
-`cmd_generate` reads the template(s) under `templates/`, fills placeholders (`%%BOOKS_software%%`, `%%BOOKS_engineering%%`, `%%BOOKS_finance%%`, `%%BOOKS_philosophy%%`, `%%NEWSPAPER_DYNAMIC%%`, `%%MASTHEAD_DATE%%`, `%%FOOTER_DATE%%`) via `render_book_card` / `render_hero`, and writes the output files. `render_hero` derives the banner count ("N Volumes Under Active Review") and the masthead date (current Hong Kong / UTC+8 date) automatically.
+`cmd_generate` reads the template(s) under `templates/` and writes the output files:
+
+- **`index.html`** — from `templates/index_base.html`, filling `%%BOOKS_software%%`, `%%BOOKS_engineering%%`, `%%BOOKS_finance%%`, `%%BOOKS_philosophy%%`, `%%NEWSPAPER_DYNAMIC%%`, `%%MASTHEAD_DATE%%`, `%%FOOTER_DATE%%` via `render_book_card` / `render_hero`. `render_hero` derives the banner count ("N Volumes Under Active Review") and the masthead date (current Hong Kong / UTC+8 date) automatically.
+- **`library.html`** — `_generate_library` reads `templates/library_base.html` and fills `%%BOOK_TILES%%`, `%%MASTHEAD_DATE%%`, `%%LIBRARY_COUNT%%`. It queries `status IN ('read','reading')` ordered alphabetically by title (`list` books excluded), assigns a stable URL slug per book via `slugify` + `assign_slugs` (collisions get `--2`, `--3`, …), and renders each as a `.book-tile` (`render_book_tile`) linking to `books/[slug].html`.
+- **`books/[slug].html`** — `_generate_books` reads `templates/book_base.html` and writes one page per `read`/`reading` book (`render_book_page` fills `%%BOOK_CONTENT%%`, plus `%%BOOK_TITLE%%`). It uses the *same* query + `assign_slugs` as the library, so slugs/filenames match the tile links exactly. Each page shows the large sepia cover, title, author, section label, status chip, and full `my_notes` (no `ai_notes`, no comments), with a `← Back to Library` link. Stale pages (from removed/renamed books) are pruned each run. Asset/links use `../` since the pages live one level deep. **`books/` is entirely generated — never hand-edit it.**
+- **`library.md`** — the sectioned Markdown export (`_generate_md`).
 
 `librarian_gui.py` is a Tkinter GUI over the same DB; its "Save + Regenerate" button calls `cmd_generate`.
 
@@ -66,7 +73,7 @@ python librarian.py generate         # rebuild generated files from library.db
 
 Sections: `software` (Software Related Books), `engineering` (Engineering & Mathematics), `finance` (Finance), `philosophy` (Greater Awareness & Philosophy).
 
-> The former `quant` / "Quantitative Finance" section was renamed to the `finance` key / "Finance" label (key, DB rows, CHECK constraint, `%%BOOKS_finance%%` placeholder, and template all updated). Hand-authored legacy pages (`archive.html`, `reading-list.html`, slated for retirement in v2) still show the old "Quantitative Finance" banner; they are not DB-driven.
+> The former `quant` / "Quantitative Finance" section was renamed to the `finance` key / "Finance" label (key, DB rows, CHECK constraint, `%%BOOKS_finance%%` placeholder, and template all updated). The hand-authored legacy pages that still carried the old "Quantitative Finance" banner (`archive.html`, `reading-list.html`) have now been retired/deleted, replaced by the generated `library.html`.
 
 | Status | Label | Class | On the website? |
 |---|---|---|---|

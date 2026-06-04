@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="flip-init.js"></script>
+    <title>Library — Arjun's Archives</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Arjun's Archives</div>
+            <div>
+                <a href="index.html">Front Page</a>
+                <a href="library.html">Library</a>
+                <a href="essays/index.html">Essays &amp; Thoughts</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Library banner (no full front-page masthead treatment) -->
+    <section class="newspaper-hero">
+        <div class="masthead">
+            <div class="masthead-vol">
+                <span>Vol. I &nbsp;&middot;&nbsp; The Complete Shelf</span>
+                <span>%%MASTHEAD_DATE%%</span>
+            </div>
+            <div class="masthead-name">The Arjun Dispatch</div>
+            <div class="masthead-strapline">The Library &mdash; Every Volume Read and Under Review</div>
+            <hr class="masthead-rule">
+            <div class="masthead-tagline">"The Complete Shelf, Set in Order"</div>
+        </div>
+        <div class="section-banner">%%LIBRARY_COUNT%% &nbsp;&middot;&nbsp; Arranged A&ndash;Z by Title</div>
+    </section>
+
+    <!-- Library grid -->
+    <main class="library-page">
+        <div class="book-tiles-grid">
+%%BOOK_TILES%%
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>Arjun's Archives &mdash; The Library &mdash; <a href="index.html" style="color: var(--accent); text-decoration: none;">Return to Front Page</a>.</p>
+    </footer>
+
+    <script src="html2canvas.min.js"></script>
+    <script src="page-transition.js?v=5"></script>
+</body>
+</html>

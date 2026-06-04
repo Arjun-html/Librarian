@@ -684,3 +684,238 @@ footer p {
         display: none;
     }
 }
+
+/* ── LIBRARY PAGE (library.html) ──────────────────────── */
+.library-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3.5rem 2rem 4rem;
+}
+
+.book-tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 2.4rem 1.6rem;
+}
+
+.book-tile {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease;
+}
+
+.book-tile:hover {
+    transform: translateY(-3px);
+}
+
+.tile-cover {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    background: linear-gradient(135deg, var(--light-taupe), var(--cream));
+    border: 1px solid var(--light-taupe);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(42, 36, 32, 0.06);
+    transition: box-shadow 0.25s ease;
+}
+
+.book-tile:hover .tile-cover {
+    box-shadow: 0 8px 22px rgba(42, 36, 32, 0.14);
+}
+
+.tile-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(0.35) saturate(1.1);
+}
+
+.tile-cover.no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--warm-gray);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+.tile-meta {
+    padding-top: 0.75rem;
+}
+
+.tile-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    line-height: 1.3;
+    color: var(--soft-black);
+    margin-bottom: 0.2rem;
+}
+
+.book-tile:hover .tile-title {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+}
+
+.tile-author {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--warm-gray);
+    margin-bottom: 0.55rem;
+}
+
+.book-tile .book-status {
+    display: inline-block;
+    margin-left: 0;
+    font-size: 0.62rem;
+    padding: 0.25rem 0.55rem;
+}
+
+@media (max-width: 768px) {
+    .library-page { padding: 2.5rem 1.2rem 3rem; }
+    .book-tiles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 1.8rem 1.1rem;
+    }
+}
+
+/* ── PER-BOOK PAGE (books/[slug].html) ────────────────── */
+.book-page-hero .masthead {
+    padding: 1.3rem 2rem;
+}
+
+.book-page-hero .masthead-name {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    letter-spacing: -2px;
+    margin: 0;
+}
+
+.book-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+}
+
+.back-to-library {
+    display: inline-block;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    margin-bottom: 2.5rem;
+    transition: color 0.3s;
+}
+
+.back-to-library:hover {
+    color: var(--soft-black);
+}
+
+.detail-labels {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.detail-section {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #111;
+    border-bottom: 2px solid #111;
+    padding-bottom: 2px;
+}
+
+.book-detail .book-status {
+    display: inline-block;
+    margin-left: 0;
+}
+
+.detail-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.12;
+    color: var(--soft-black);
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.detail-author {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--warm-gray);
+    margin-bottom: 2.2rem;
+}
+
+.detail-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+.detail-cover {
+    width: 220px;
+    aspect-ratio: 2 / 3;
+    background: linear-gradient(135deg, var(--light-taupe), var(--cream));
+    border: 1px solid var(--light-taupe);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(42, 36, 32, 0.10);
+}
+
+.detail-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(0.35) saturate(1.1);
+}
+
+.detail-cover.no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--warm-gray);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+.detail-notes-label {
+    display: block;
+    font-weight: 600;
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.8rem;
+}
+
+.detail-notes-text {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--dark-gray);
+    text-align: justify;
+}
+
+.detail-notes-empty {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-style: italic;
+    color: var(--warm-gray);
+}
+
+@media (max-width: 768px) {
+    .book-page { padding: 2rem 1.2rem 3rem; }
+    .detail-body { grid-template-columns: 1fr; gap: 1.5rem; }
+    .detail-cover { margin: 0 auto; }
+}

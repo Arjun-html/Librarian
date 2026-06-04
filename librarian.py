@@ -9,20 +9,26 @@ Commands:
   update <id>      Edit a book's fields
   remove <id>      Delete a book
   hero <id>        Set newspaper hero fields for a Reading book
-  generate         Regenerate index.html and library.md from the database
+  generate         Regenerate index.html, library.html, books/*.html and library.md
 """
 
+import re
 import sqlite3
 import sys
 import html as html_lib
+import unicodedata
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-ROOT     = Path(__file__).parent
-DB       = ROOT / 'library.db'
-TEMPLATE = ROOT / 'templates' / 'index_base.html'
-INDEX    = ROOT / 'index.html'
-MD_FILE  = ROOT / 'library.md'
+ROOT          = Path(__file__).parent
+DB            = ROOT / 'library.db'
+TEMPLATE      = ROOT / 'templates' / 'index_base.html'
+LIB_TEMPLATE  = ROOT / 'templates' / 'library_base.html'
+BOOK_TEMPLATE = ROOT / 'templates' / 'book_base.html'
+INDEX         = ROOT / 'index.html'
+LIBRARY       = ROOT / 'library.html'
+BOOKS_DIR     = ROOT / 'books'
+MD_FILE       = ROOT / 'library.md'
 
 SECTIONS = ['software', 'engineering', 'finance', 'philosophy']
 SECTION_NAMES = {
@@ -131,6 +137,118 @@ def render_book_card(book):
         f'                        </div>\n'
         f'                    </div>\n'
         f'                </div>'
+    )
+
+
+def slugify(title):
+    """Turn a book title into a URL-safe slug. e.g. 'The Prize' -> 'the-prize'."""
+    title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore').decode()
+    title = title.lower().strip()
+    title = re.sub(r'[^\w\s-]', '', title)
+    title = re.sub(r'[\s_]+', '-', title)
+    title = re.sub(r'-+', '-', title).strip('-')
+    return title
+
+
+def assign_slugs(books):
+    """Map each book id to a unique slug, resolving collisions with --2, --3, …
+
+    `books` is processed in the given order, so the first occurrence of a slug
+    keeps the bare form and later duplicates get the numeric suffix.
+    """
+    seen, slugs = {}, {}
+    for b in books:
+        base = slugify(b['title']) or f"book-{b['id']}"
+        n = seen.get(base, 0) + 1
+        seen[base] = n
+        slugs[b['id']] = base if n == 1 else f"{base}--{n}"
+    return slugs
+
+
+def _tile_cover(book):
+    """Cover block for a library tile (sepia, falls back to 'No cover available')."""
+    if book['local_cover_path']:
+        src = e(book['local_cover_path'])
+    elif book['isbn']:
+        src = f"https://covers.openlibrary.org/b/isbn/{book['isbn']}-M.jpg"
+    else:
+        return '<div class="tile-cover no-image"><span>No cover available</span></div>'
+    return (
+        f'<div class="tile-cover">'
+        f'<img src="{src}" alt="{e(book["title"])}" '
+        f'onerror="this.parentElement.classList.add(\'no-image\'); this.style.display=\'none\';">'
+        f'<div class="no-image" style="display:none;">No cover available</div>'
+        f'</div>'
+    )
+
+
+def render_book_tile(book, slug):
+    """Emit a .book-tile linking to the book's per-book page (books/<slug>.html)."""
+    status_label = STATUS_LABEL[book['status']]
+    status_class = STATUS_CLASS[book['status']]
+    cover = _tile_cover(book)
+    return (
+        f'            <a class="book-tile" href="books/{slug}.html">\n'
+        f'                {cover}\n'
+        f'                <div class="tile-meta">\n'
+        f'                    <div class="tile-title">{e(book["title"])}</div>\n'
+        f'                    <div class="tile-author">{e(book["author"])}</div>\n'
+        f'                    <span class="book-status {status_class}">{status_label}</span>\n'
+        f'                </div>\n'
+        f'            </a>'
+    )
+
+
+def _detail_cover(book):
+    """Large cover block for a per-book page. Paths are relative to books/ (../)."""
+    if book['local_cover_path']:
+        src = '../' + e(book['local_cover_path'])
+    elif book['isbn']:
+        src = f"https://covers.openlibrary.org/b/isbn/{book['isbn']}-L.jpg"
+    else:
+        return '<div class="detail-cover no-image"><span>No cover available</span></div>'
+    return (
+        f'<div class="detail-cover">'
+        f'<img src="{src}" alt="{e(book["title"])}" '
+        f'onerror="this.parentElement.classList.add(\'no-image\'); this.style.display=\'none\';">'
+        f'<div class="no-image" style="display:none;">No cover available</div>'
+        f'</div>'
+    )
+
+
+def render_book_page(book, slug):
+    """Emit the <article> body for books/<slug>.html (filled into %%BOOK_CONTENT%%).
+
+    Shows cover + title + author + section/status + full my_notes. No ai_notes.
+    """
+    status_label = STATUS_LABEL[book['status']]
+    status_class = STATUS_CLASS[book['status']]
+    section_name = SECTION_NAMES[book['section']]
+    cover        = _detail_cover(book)
+
+    if book['my_notes'] and book['my_notes'] != '—':
+        notes_html = (
+            '<div class="detail-notes">\n'
+            '                    <span class="detail-notes-label">My Notes</span>\n'
+            f'                    <div class="detail-notes-text">{e(book["my_notes"])}</div>\n'
+            '                </div>'
+        )
+    else:
+        notes_html = '<div class="detail-notes"><p class="detail-notes-empty">No notes recorded yet.</p></div>'
+
+    return (
+        f'        <article class="book-detail">\n'
+        f'            <div class="detail-labels">\n'
+        f'                <span class="detail-section">{e(section_name)}</span>\n'
+        f'                <span class="book-status {status_class}">{status_label}</span>\n'
+        f'            </div>\n'
+        f'            <h1 class="detail-title">{e(book["title"])}</h1>\n'
+        f'            <div class="detail-author">By {e(book["author"])}</div>\n'
+        f'            <div class="detail-body">\n'
+        f'                {cover}\n'
+        f'                {notes_html}\n'
+        f'            </div>\n'
+        f'        </article>'
     )
 
 
@@ -262,8 +380,71 @@ def cmd_generate():
     INDEX.write_text(template, encoding='utf-8')
     print(f'Generated {INDEX.name}')
 
+    _generate_library(conn)
+    _generate_books(conn)
     _generate_md(conn)
     conn.close()
+
+
+def _generate_library(conn):
+    """Build library.html: every read/reading book as an alphabetical grid of tiles."""
+    if not LIB_TEMPLATE.exists():
+        sys.exit(f'Error: library template not found at {LIB_TEMPLATE}')
+
+    books = conn.execute(
+        "SELECT * FROM books WHERE status IN ('read','reading') "
+        "ORDER BY title COLLATE NOCASE"
+    ).fetchall()
+    slugs = assign_slugs(books)
+    tiles = '\n'.join(render_book_tile(b, slugs[b['id']]) for b in books)
+
+    template = LIB_TEMPLATE.read_text(encoding='utf-8')
+    template = template.replace('%%BOOK_TILES%%', tiles)
+
+    hk_now = datetime.now(timezone(timedelta(hours=8)))
+    masthead_date = f"{hk_now.strftime('%A')}, {hk_now.day} {hk_now.strftime('%B')} {hk_now.year}, <i>Hong Kong</i>"
+    template = template.replace('%%MASTHEAD_DATE%%', masthead_date)
+
+    n = len(books)
+    template = template.replace('%%LIBRARY_COUNT%%', f"{n} Volume{'s' if n != 1 else ''}")
+
+    LIBRARY.write_text(template, encoding='utf-8')
+    print(f'Generated {LIBRARY.name}')
+
+
+def _generate_books(conn):
+    """Build one books/<slug>.html per read/reading book; prune stale pages.
+
+    Uses the same query + assign_slugs as _generate_library, so slugs (and thus
+    the tile links in library.html) match the generated filenames exactly.
+    """
+    if not BOOK_TEMPLATE.exists():
+        sys.exit(f'Error: book template not found at {BOOK_TEMPLATE}')
+
+    books = conn.execute(
+        "SELECT * FROM books WHERE status IN ('read','reading') "
+        "ORDER BY title COLLATE NOCASE"
+    ).fetchall()
+    slugs = assign_slugs(books)
+
+    BOOKS_DIR.mkdir(exist_ok=True)
+    template = BOOK_TEMPLATE.read_text(encoding='utf-8')
+
+    wanted = set()
+    for b in books:
+        slug = slugs[b['id']]
+        filename = f'{slug}.html'
+        wanted.add(filename)
+        page = template.replace('%%BOOK_TITLE%%', e(b['title']))
+        page = page.replace('%%BOOK_CONTENT%%', render_book_page(b, slug))
+        (BOOKS_DIR / filename).write_text(page, encoding='utf-8')
+
+    # Prune pages for books that were removed/renamed since the last build.
+    for stale in BOOKS_DIR.glob('*.html'):
+        if stale.name not in wanted:
+            stale.unlink()
+
+    print(f'Generated {len(books)} pages in {BOOKS_DIR.name}/')
 
 
 def _generate_md(conn):
@@ -846,7 +1027,7 @@ Commands:
   update <id>      Edit a book's fields
   remove <id>      Delete a book
   hero <id>        Set newspaper hero fields for a Reading book
-  generate         Regenerate index.html and library.md from the database
+  generate         Regenerate index.html, library.html, books/*.html and library.md
 """
 
 def main():
