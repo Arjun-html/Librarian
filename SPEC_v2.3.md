@@ -2,7 +2,7 @@
 
 *A complete A‑to‑Z technical and design specification of the personal reading‑library website.*
 
-**Spec version:** 2.3 — essays section fully specced: Obsidian → Markdown → generated `essays/index.html` + `essays/[slug].html`, option B listing layout (featured hero + chronological grid), YAML frontmatter manifest, shared book categories.
+**Spec version:** 2.3 — essays section **built and shipping**: Obsidian → Markdown → generated `essays/index.html` + `essays/[slug].html`, option B listing layout (featured hero + chronological grid), YAML frontmatter, shared book categories, wired into `librarian.py generate`. Also adds a **mobile hamburger nav** across all pages.
 
 ---
 
@@ -26,7 +26,6 @@ The v2.0 draft was written partly aspirationally. This is what is **actually in 
 ### ❌ Described in the v2.0 draft but NOT built (still roadmap)
 - **Three randomised page-turn variants** (`slowDramatic` / `mediumCrisp` / `snapWithPeel`). These were added (cache-buster `v6`) then **reverted** to the single transition (`v7`). The codebase has **one** transition today.
 - **Truncated `my_notes` preview + `Read full entry →` link** on the front page (`render_notes_preview`). Front-page cards still show the **full** `my_notes` *and* the `ai_notes` "About" block via expand/collapse — exactly as in v1.
-- **`essays/` section** — fully specced in v2.3 (see §12). Not yet built.
 - `%%ABOUT_BLURB%%` / `%%MASTHEAD_STRAPLINE%%` as **placeholders** — these are hard-coded in `templates/index_base.html`, and `cmd_generate` does not substitute them.
 
 ### ✅ v2.2 work items — all shipped (June 2026)
@@ -39,6 +38,12 @@ All three v2.2 tasks are now implemented, generated, and verified (including a l
 
 3. **Hero book clicks → per-book page** — **Done.** `render_hero()` computes the slug map itself (same read/reading query + `assign_slugs` as `_generate_books`, so hrefs match filenames) and wraps each hero book's cover image and headline in `<a href="books/<slug>.html">` across all three slots. The page-turn animation fires automatically (`page-transition.js` intercepts any internal `a[href]` click) — no JS change. Verified live: clicking the lead headline flips to `books/the-prize-the-epic-quest-for-oil-money-power.html`.
 
+### ✅ v2.3 work items — all shipped (June 2026)
+
+1. **Essays section** — **Done.** `_generate_essays()` + `parse_essay` / `render_essay_featured` / `render_essay_tile` / `render_essay_page` in `librarian.py`, plus `templates/essays_index_base.html` and `templates/essay_base.html`, and `.essay-featured` / `.essay-grid` / `.essay-tile` / `.essay-detail` CSS. Reads `essays/src/*.md`, renders Option B (featured hero + chronological grid), prunes stale pages. **Wired into `cmd_generate()`** — plain `python librarian.py generate` now rebuilds essays as the fifth output. Guarded `import yaml` (PyYAML) parses frontmatter with a minimal fallback. The header nav `Essays & Thoughts` link now resolves. Verified live in the browser.
+
+2. **Mobile hamburger navigation** — **Done.** All five templates carry a `<button class="nav-hamburger">` plus a `.nav-links` wrapper; a shared `nav.js` toggles `nav-open` and closes the menu on link click. `styles.css` collapses the links into a vertical, newspaper-styled dropdown at `≤640px` and keeps them inline on desktop (the old "hide nav links on mobile" rule was removed). No external libraries. Verified live across desktop, mobile, and a nested essays page.
+
 ### ⚠️ Drift / quirks to be aware of
 - The **live `library.db` has 41 books** (17 `read`, 7 `reading`, 17 `list`) and has diverged from the `BOOKS_DATA` seed (e.g. *I, Robot* is now `read`; *Money, War, Sex, Karma* added as `reading`). `BOOKS_DATA` is the one-time migration seed only — do not treat it as current content. A `library.db.bak-prequant` backup exists from the quant→finance rename.
 - `ai_notes` is still authored and **still displayed on front-page cards** ("About" block); it is **omitted** on per-book pages. It is not "phased out" yet.
@@ -49,9 +54,9 @@ All three v2.2 tasks are now implemented, generated, and verified (including a l
 
 **Arjun's Archives** is a personal website for a Year‑2 university student studying Electrical/Mechanical Engineering and Computer Science. It has three distinct sections:
 
-1. **Front page (`index.html`)** — A Financial Times‑style newspaper front page: masthead, editorial hero featuring currently‑reading books, a brief "About" column, social links, and per-section book cards (expand/collapse, full notes). This is the only page that must look and feel exactly like a broadsheet front page. *(The v2 vision of truncating each card to a short preview + "Read full entry →" link is not yet built — see §0.)*
+1. **Front page (`index.html`)** — A Financial Times‑style newspaper front page: masthead + strapline, an editorial hero featuring currently‑reading books (each linking to its per-book page), and an "About this Publication" aside with social links. This is the only page that must look and feel exactly like a broadsheet front page. *(The per-section book-card grid was removed in v2.2 — the full listing lives on `library.html`.)*
 2. **Library (`library.html`)** — All books read or currently reading, sorted alphabetically, displayed as cover + title + author + status chip. Each book links to its own dedicated page. Books with `status = list` are excluded from the website entirely but remain in the database for CLI/GUI use.
-3. **Essays & Thoughts (`essays/index.html`)** — A listing of personal essays and reflections. *(Design to be discussed separately; placeholder in this spec.)*
+3. **Essays & Thoughts (`essays/index.html`)** — A generated listing of personal essays (featured hero + chronological grid), each linking to its own `essays/[slug].html` page. Authored as Obsidian Markdown in `essays/src/`; built by `librarian.py generate`. *(See §12.)*
 
 The site is **static** (no server, no build step to view — just open the HTML), but `index.html`, `library.html`, and all files under `books/` are **generated artifacts** produced by `librarian.py` from `library.db`. The essays section uses flat Markdown/HTML files with a separate manifest.
 
@@ -97,10 +102,11 @@ A signature feature is the **page‑turn animation** (`page-transition.js`) that
 | `essays/[slug].html` | **Generated** individual essay pages | **NO** |
 | `templates/essays_index_base.html` | Skeleton for `essays/index.html` | yes |
 | `templates/essay_base.html` | Skeleton for `essays/[slug].html` | yes |
-| `styles.css` | All shared presentation (layout, colours, textures, sepia) | yes |
-| `app.js` | Book‑card expand/collapse (index.html) | yes |
+| `styles.css` | All shared presentation (layout, colours, textures, sepia, essay + nav styles) | yes |
+| `app.js` | Empty stub (per‑section grid removed in v2.2) | yes |
+| `nav.js` | Mobile hamburger nav toggle (shared, all pages) | yes |
 | `flip-init.js` | Early script: marks a page as arriving via flip | yes |
-| `page-transition.js` | Page‑turn animation engine (three variants) | yes |
+| `page-transition.js` | Page‑turn animation engine (single transition) | yes |
 | `html2canvas.min.js` | Vendored rasteriser (v1.4.1) | vendored |
 | `book_covers_additional/` | Local cover images | assets |
 | `CLAUDE.md` | Project instructions for Claude Code | yes |
@@ -205,7 +211,7 @@ python librarian.py generate         # rebuild all generated files
 
 ### `cmd_generate()` — the build pipeline
 
-The generator now produces **four sets of outputs** in a single run:
+The generator produces **five sets of outputs** in a single run — `index.html`, `library.html`, `books/[slug].html`, `essays/` (`_generate_essays`, see §12), and `library.md`:
 
 1. **`index.html`** — from `templates/index_base.html`. `cmd_generate` substitutes exactly these placeholders: `%%NEWSPAPER_DYNAMIC%%`, `%%MASTHEAD_DATE%%`, `%%BOOKS_software%%` / `%%BOOKS_engineering%%` / `%%BOOKS_finance%%` / `%%BOOKS_philosophy%%`, and `%%FOOTER_DATE%%`.
    - The "About this Publication" box and masthead strapline are **static text in `index_base.html`** — there is **no** `%%ABOUT_BLURB%%` / `%%MASTHEAD_STRAPLINE%%` placeholder to fill.
@@ -311,6 +317,11 @@ All existing rules (tokens, texture, hero, cards, covers) are preserved. New rul
 
 ### `app.js` (v2.2 updated)
 The book-card expand/collapse logic that served the per-section grid is **removed** (the grid itself is removed — see §7 / §0). `app.js` is now an **empty stub** (a comment only); it is still referenced by the `index.html` `<script>` tag but does nothing.
+
+### `nav.js` (new — mobile navigation)
+A shared script loaded by **all** templates (root path on `index`/`library`, `../nav.js` on `books/` and `essays/` pages). A single delegated `click` listener toggles `nav-open` on the `<nav>` when the hamburger (`.nav-hamburger`) is clicked, and removes it when a `.nav-links a` is clicked. It coexists with `page-transition.js` (which still handles the actual flip-navigation — `preventDefault` there does not stop `nav.js`'s bubble-phase listener). No external libraries.
+
+**Responsive nav CSS (`styles.css`):** at `≤640px` the inline links collapse — `.nav-hamburger` shows, `.nav-links` hides, and `nav.nav-open .nav-links` becomes a vertical, newspaper-styled dropdown (same fonts/colours, stacked with rule separators; the header's existing `border-bottom` divides it from the page). Desktop (`≥641px`) keeps the links inline and hides the hamburger. The old `nav a { display: none; }` mobile rule (which simply hid the links) was removed.
 
 ### `flip-init.js` (unchanged)
 Suppresses entrance fade on flip‑arriving pages.
@@ -485,7 +496,7 @@ Note: `essays/index.html` lives one level deep (inside `essays/`), so all asset 
 - Headline: Playfair Display, large (~28px), tight line-height.
 - Deck: Libre Baskerville italic, muted, ~15px.
 - Date: small, taupe.
-- The whole block is a link (`<a href="essays/[slug].html">`) — page-turn fires automatically.
+- The whole block is a link (`<a href="[slug].html">` — same-directory, since `essays/index.html` already lives in `essays/`) — page-turn fires automatically.
 
 **Essay grid (`.essay-grid`):**
 - CSS Grid, 2 columns, `gap: 0` — tiles separated by 0.5px border rules (same as the option B mockup).
@@ -533,7 +544,7 @@ To unpublish: move the `.md` file out of `essays/src/` (e.g. to `essays/drafts/`
 
 ### Images in essays
 
-Images referenced in essay Markdown (e.g. `![caption](images/my-photo.jpg)`) are resolved relative to `essays/src/`. Store images in `essays/images/` and reference them as `../images/my-photo.jpg` in Markdown (since the generated HTML lives one level up in `essays/`). The generator does not copy or process image files — they must be placed in `essays/images/` manually. Broken image paths degrade gracefully (browser shows alt text).
+Store images in `essays/images/` and reference them in Markdown as `images/my-photo.jpg` (e.g. `![caption](images/my-photo.jpg)`). The generator does **not** rewrite image paths — the path you write is used verbatim in the generated page. Because each generated essay page lives in `essays/` (a sibling of `essays/images/`, **not** one level above it), the correct relative path is `images/…`, not `../images/…`. The generator does not copy or process image files — place them in `essays/images/` manually. Broken image paths degrade gracefully (browser shows alt text). *(Verified: the test essay loads `essays/images/workbench.jpg` via `images/workbench.jpg`.)*
 
 ---
 
@@ -642,7 +653,7 @@ Unchanged. Guards ISBN consistency between hero and library sections of `index.h
 **Carried over from the v2.0 draft but not yet built** (see §0 for the authoritative status):
 - Front-page `render_notes_preview` — truncate each card's `my_notes` and add a `Read full entry →` link to the per-book page.
 - Reintroduce randomised page-turn variants (or deliberately keep the single transition — decide and record).
-- `essays/` section: **fully specced in v2.3** (§12). Ready to build — fix the currently-dead nav link as part of the build.
+- ~~`essays/` section~~ — **shipped** (§12); wired into `cmd_generate()`, nav link now resolves.
 - Extend `test_librarian.py` to cover slug generation, `library.html`, `books/` output, and essay generation.
 - Decide the fate of `ai_notes` (keep on front page, or finally phase out of display).
 

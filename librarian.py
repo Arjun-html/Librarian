@@ -540,6 +540,7 @@ def cmd_generate():
 
     _generate_library(conn)
     _generate_books(conn)
+    _generate_essays(conn)
     _generate_md(conn)
     conn.close()
 
