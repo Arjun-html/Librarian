@@ -55,7 +55,10 @@ nav {
 nav a {
     color: var(--dark-gray);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     transition: color 0.3s;
     margin-left: 2rem;
 }
@@ -689,10 +692,10 @@ main {
     line-height: 1.7;
 }
 
-/* Footer */
+/* Footer — newspaper colophon */
 footer {
     background-color: #fafaf8;
-    border-top: 1px solid var(--light-taupe);
+    border-top: 0.5px solid var(--light-taupe);
     padding: 3rem 2rem;
     margin-top: 5rem;
 }
@@ -700,8 +703,9 @@ footer {
 footer p {
     max-width: 1200px;
     margin: 0 auto;
-    color: var(--dark-gray);
-    font-size: 0.95rem;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    color: var(--warm-gray);
+    font-size: 0.75rem;
     text-align: center;
 }
 
@@ -977,6 +981,7 @@ footer p {
 /* Category chips — same pill shape as book status, tinted per category. */
 .essay-category {
     display: inline-block;
+    font-family: 'Libre Baskerville', Georgia, serif;
     font-size: 0.62rem;
     padding: 0.25rem 0.6rem;
     border-radius: 3px;

@@ -121,50 +121,6 @@ def _cover_div(book):
     )
 
 
-def render_book_card(book):
-    cover        = _cover_div(book)
-    status_label = STATUS_LABEL[book['status']]
-    status_class = STATUS_CLASS[book['status']]
-
-    notes_block = ''
-    if book['my_notes'] and book['my_notes'] != '—':
-        notes_block = (
-            '\n                                <div class="my-notes">'
-            f'\n                                    <span class="my-notes-label">My Notes</span>'
-            f'\n                                    <div class="my-notes-text">{e(book["my_notes"])}</div>'
-            '\n                                </div>'
-        )
-
-    ai_block = ''
-    if book['ai_notes']:
-        ai_block = (
-            '\n                                <div class="summary">'
-            f'\n                                    <span class="summary-label">About</span>'
-            f'\n                                    <div class="summary-text">{e(book["ai_notes"])}</div>'
-            '\n                                </div>'
-        )
-
-    return (
-        f'                <div class="book-card">\n'
-        f'                    <div class="book-header">\n'
-        f'                        <div class="book-title-group">\n'
-        f'                            <div class="book-title">{e(book["title"])}</div>\n'
-        f'                            <div class="book-author">{e(book["author"])}</div>\n'
-        f'                        </div>\n'
-        f'                        <div class="book-status {status_class}">{status_label}</div>\n'
-        f'                        <div class="expand-icon">▼</div>\n'
-        f'                    </div>\n'
-        f'                    <div class="book-details">\n'
-        f'                        <div class="book-content">\n'
-        f'                            {cover}\n'
-        f'                            <div class="book-text">{notes_block}{ai_block}\n'
-        f'                            </div>\n'
-        f'                        </div>\n'
-        f'                    </div>\n'
-        f'                </div>'
-    )
-
-
 def slugify(title):
     """Turn a book title into a URL-safe slug. e.g. 'The Prize' -> 'the-prize'."""
     title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore').decode()
