@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../flip-init.js"></script>
-    <title>%%BOOK_TITLE%% — Arjun's Archives</title>
+    <title>Essays &amp; Thoughts · Arjun's Dispatch</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,27 +19,38 @@
             <div class="nav-links">
                 <a href="../index.html">Front Page</a>
                 <a href="../library.html">Library</a>
-                <a href="../essays/index.html">Essays &amp; Thoughts</a>
+                <a href="index.html">Essays &amp; Thoughts</a>
             </div>
         </nav>
     </header>
 
-    <!-- Minimal masthead (name only) -->
-    <section class="newspaper-hero book-page-hero">
+    <!-- Essays banner -->
+    <section class="newspaper-hero">
         <div class="masthead">
+            <div class="masthead-vol">
+                <span>Vol. I &nbsp;&middot;&nbsp; The Commonplace Book</span>
+                <span>%%MASTHEAD_DATE%%</span>
+            </div>
             <div class="masthead-name">The Arjun Dispatch</div>
+            <div class="masthead-strapline">Essays &amp; Thoughts &mdash; Columns, Reflections &amp; Dispatches</div>
+            <hr class="masthead-rule">
+            <div class="masthead-tagline">"From the Commonplace Book"</div>
         </div>
+        <div class="section-banner">%%ESSAY_COUNT%%</div>
     </section>
 
-    <!-- Book entry -->
-    <main class="book-page">
-        <a class="back-to-library" href="../library.html">&larr; Back to Library</a>
-%%BOOK_CONTENT%%
+    <!-- Essays listing (Option B: featured hero + chronological grid) -->
+    <main class="essays-page">
+%%ESSAYS_FEATURED%%
+        <hr class="essays-divider">
+        <div class="essay-grid">
+%%ESSAYS_GRID%%
+        </div>
     </main>
 
     <!-- Footer -->
     <footer>
-        <p>Arjun's Archives &mdash; <a href="../library.html" style="color: var(--accent); text-decoration: none;">Back to the Library</a>.</p>
+        <p>Arjun's Archives &mdash; Essays &amp; Thoughts &mdash; <a href="../index.html" style="color: var(--accent); text-decoration: none;">Return to Front Page</a>.</p>
     </footer>
 
     <script src="../nav.js"></script>

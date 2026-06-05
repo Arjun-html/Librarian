@@ -25,6 +25,11 @@ try:
 except ImportError:
     _markdown = None
 
+try:
+    import yaml as _yaml
+except ImportError:
+    _yaml = None
+
 ROOT          = Path(__file__).parent
 DB            = ROOT / 'library.db'
 TEMPLATE      = ROOT / 'templates' / 'index_base.html'
@@ -35,6 +40,13 @@ LIBRARY       = ROOT / 'library.html'
 BOOKS_DIR     = ROOT / 'books'
 MD_FILE       = ROOT / 'library.md'
 
+ESSAYS_DIR            = ROOT / 'essays'
+ESSAYS_SRC            = ESSAYS_DIR / 'src'
+ESSAYS_IMG            = ESSAYS_DIR / 'images'
+ESSAYS_INDEX          = ESSAYS_DIR / 'index.html'
+ESSAYS_INDEX_TEMPLATE = ROOT / 'templates' / 'essays_index_base.html'
+ESSAY_TEMPLATE        = ROOT / 'templates' / 'essay_base.html'
+
 SECTIONS = ['software', 'engineering', 'finance', 'philosophy']
 SECTION_NAMES = {
     'software':    'Software Related Books',
@@ -44,6 +56,14 @@ SECTION_NAMES = {
 }
 STATUS_LABEL = {'read': 'Read', 'reading': 'Reading', 'list': 'Reading List'}
 STATUS_CLASS  = {'read': 'status-read', 'reading': 'status-reading', 'list': 'status-list'}
+
+# Essay categories share the book section keys, but use short display names.
+ESSAY_CATEGORIES = {
+    'software':    'Software',
+    'engineering': 'Engineering',
+    'finance':     'Finance',
+    'philosophy':  'Philosophy',
+}
 
 # ── Database ──────────────────────────────────────────────────────────────────
 
@@ -271,6 +291,119 @@ def render_book_page(book, slug):
     )
 
 
+# ── Essays ────────────────────────────────────────────────────────────────────
+
+def _parse_yaml(raw):
+    """Parse a YAML frontmatter block to a dict. Falls back to a minimal
+    key: value line parser if PyYAML is unavailable."""
+    if _yaml is not None:
+        data = _yaml.safe_load(raw)
+        return data if isinstance(data, dict) else {}
+    meta = {}
+    for line in raw.splitlines():
+        if ':' in line and not line.strip().startswith('#'):
+            k, v = line.split(':', 1)
+            meta[k.strip()] = v.strip().strip('"').strip("'")
+    return meta
+
+
+def _split_frontmatter(text):
+    """Return (meta_dict, body_str) from a Markdown file that starts with a
+    YAML `--- ... ---` frontmatter block. No frontmatter → ({}, whole text)."""
+    text = text.lstrip('﻿')  # strip a leading BOM if present
+    m = re.match(r'^---\s*\n(.*?)\n---\s*\n?(.*)$', text, re.DOTALL)
+    if m:
+        return _parse_yaml(m.group(1)), m.group(2).strip()
+    return {}, text.strip()
+
+
+def _coerce_date(value, path):
+    """Normalise a frontmatter date to a datetime.date; warn + use today on miss."""
+    if value is None:
+        print(f'  Warning: {path.name} has no date; using today')
+        return date.today()
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    try:
+        return datetime.strptime(str(value).strip(), '%Y-%m-%d').date()
+    except ValueError:
+        print(f'  Warning: {path.name} has invalid date "{value}"; using today')
+        return date.today()
+
+
+def parse_essay(path):
+    """Read an essays/src/*.md file, returning a dict with title, date,
+    date_display, category, category_name, deck, slug, body_html."""
+    meta, body = _split_frontmatter(path.read_text(encoding='utf-8'))
+
+    title = str(meta.get('title') or path.stem).strip()
+
+    cat = str(meta.get('category') or '').strip().lower()
+    if cat in ESSAY_CATEGORIES:
+        category, category_name = cat, ESSAY_CATEGORIES[cat]
+    else:
+        if cat:
+            print(f'  Warning: unknown essay category "{cat}" in {path.name}; using Uncategorised')
+        category, category_name = 'uncategorised', 'Uncategorised'
+
+    d = _coerce_date(meta.get('date'), path)
+
+    return {
+        'source':        path.name,
+        'title':         title,
+        'date':          d,
+        'date_display':  f'{d.day} {d.strftime("%B")} {d.year}',
+        'category':      category,
+        'category_name': category_name,
+        'deck':          str(meta.get('deck') or '').strip(),
+        'slug':          slugify(title),
+        'body_html':     _notes_to_html(body),
+    }
+
+
+def render_essay_featured(essay):
+    """Emit the .essay-featured hero block for essays/index.html (whole block links
+    to the essay; links are same-directory since index.html lives in essays/)."""
+    deck = f'\n            <p class="essay-featured-deck">{e(essay["deck"])}</p>' if essay['deck'] else ''
+    return (
+        f'        <a class="essay-featured" href="{essay["slug"]}.html">\n'
+        f'            <div class="essay-kicker">{e(essay["category_name"])}</div>\n'
+        f'            <h2 class="essay-featured-headline">{e(essay["title"])}</h2>{deck}\n'
+        f'            <div class="essay-date">{e(essay["date_display"])}</div>\n'
+        f'        </a>'
+    )
+
+
+def render_essay_tile(essay):
+    """Emit a .essay-tile card (title, category chip, date) for the grid."""
+    return (
+        f'            <a class="essay-tile" href="{essay["slug"]}.html">\n'
+        f'                <span class="essay-category essay-category-{essay["category"]}">{e(essay["category_name"])}</span>\n'
+        f'                <h3 class="essay-tile-title">{e(essay["title"])}</h3>\n'
+        f'                <div class="essay-date">{e(essay["date_display"])}</div>\n'
+        f'            </a>'
+    )
+
+
+def render_essay_page(essay):
+    """Emit the <article class="essay-detail"> body for an individual essay page."""
+    deck = f'\n            <p class="essay-detail-deck">{e(essay["deck"])}</p>' if essay['deck'] else ''
+    return (
+        f'        <article class="essay-detail">\n'
+        f'            <div class="essay-detail-labels">\n'
+        f'                <span class="essay-category essay-category-{essay["category"]}">{e(essay["category_name"])}</span>\n'
+        f'                <span class="essay-date">{e(essay["date_display"])}</span>\n'
+        f'            </div>\n'
+        f'            <h1 class="essay-detail-title">{e(essay["title"])}</h1>{deck}\n'
+        f'            <div class="essay-detail-body">\n'
+        f'                {essay["body_html"]}\n'
+        f'            </div>\n'
+        f'        </article>'
+    )
+
+
 def _hero_cover_src(book):
     if book['local_cover_path']:
         return book['local_cover_path']
@@ -470,6 +603,72 @@ def _generate_books(conn):
             stale.unlink()
 
     print(f'Generated {len(books)} pages in {BOOKS_DIR.name}/')
+
+
+def _generate_essays(conn=None):
+    """Build essays/index.html + one essays/<slug>.html per essays/src/*.md.
+
+    Essays are file-driven (they never touch the DB; `conn` is accepted only for
+    signature parity with the other _generate_* helpers). Layout = Option B:
+    the newest-dated essay becomes the featured hero, the rest form a
+    chronological grid. Stale pages (slugs with no source .md) are pruned.
+    """
+    if not ESSAYS_INDEX_TEMPLATE.exists() or not ESSAY_TEMPLATE.exists():
+        sys.exit(f'Error: essay templates not found in {ESSAYS_INDEX_TEMPLATE.parent}')
+
+    ESSAYS_SRC.mkdir(parents=True, exist_ok=True)
+    ESSAYS_IMG.mkdir(parents=True, exist_ok=True)
+
+    essays = []
+    for path in sorted(ESSAYS_SRC.glob('*.md')):
+        try:
+            essays.append(parse_essay(path))
+        except Exception as exc:
+            print(f'  Skipping {path.name}: {exc}')
+
+    # Newest first; the first essay is featured, the remainder fill the grid.
+    essays.sort(key=lambda es: es['date'], reverse=True)
+
+    # Unique, stable slugs (collisions -> --2, --3, …), same scheme as books.
+    seen = {}
+    for es in essays:
+        base = slugify(es['title']) or 'essay'
+        n = seen.get(base, 0) + 1
+        seen[base] = n
+        es['slug'] = base if n == 1 else f'{base}--{n}'
+
+    # Individual essay pages.
+    page_tpl = ESSAY_TEMPLATE.read_text(encoding='utf-8')
+    wanted = set()
+    for es in essays:
+        filename = f'{es["slug"]}.html'
+        wanted.add(filename)
+        page = page_tpl.replace('%%ESSAY_TITLE%%', e(es['title']))
+        page = page.replace('%%ESSAY_CONTENT%%', render_essay_page(es))
+        (ESSAYS_DIR / filename).write_text(page, encoding='utf-8')
+
+    # Listing page.
+    featured = render_essay_featured(essays[0]) if essays else '<p class="essays-empty">No essays yet.</p>'
+    grid = '\n'.join(render_essay_tile(es) for es in essays[1:])
+
+    hk_now = datetime.now(timezone(timedelta(hours=8)))
+    masthead_date = f"{hk_now.strftime('%A')}, {hk_now.day} {hk_now.strftime('%B')} {hk_now.year}, <i>Hong Kong</i>"
+    n = len(essays)
+    count = f"{n} Dispatch{'es' if n != 1 else ''}"
+
+    index = ESSAYS_INDEX_TEMPLATE.read_text(encoding='utf-8')
+    index = index.replace('%%ESSAYS_FEATURED%%', featured)
+    index = index.replace('%%ESSAYS_GRID%%', grid)
+    index = index.replace('%%MASTHEAD_DATE%%', masthead_date)
+    index = index.replace('%%ESSAY_COUNT%%', count)
+    ESSAYS_INDEX.write_text(index, encoding='utf-8')
+
+    # Prune stale essay pages (keep index.html).
+    for stale in ESSAYS_DIR.glob('*.html'):
+        if stale.name != 'index.html' and stale.name not in wanted:
+            stale.unlink()
+
+    print(f'Generated essays/index.html + {n} essay page(s)')
 
 
 def _generate_md(conn):

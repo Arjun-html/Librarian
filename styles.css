@@ -64,6 +64,51 @@ nav a:hover {
     color: var(--accent);
 }
 
+/* Hamburger button — hidden on desktop, shown at ≤640px. */
+.nav-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--dark-gray);
+    padding: 0;
+    transition: color 0.3s;
+}
+
+.nav-hamburger:hover {
+    color: var(--accent);
+}
+
+/* Mobile: collapse the links into a hamburger-toggled vertical dropdown.
+   The header already has a border-bottom that separates the open menu from
+   the page content below. */
+@media (max-width: 640px) {
+    nav { flex-wrap: wrap; }
+
+    .nav-hamburger { display: block; }
+
+    .nav-links {
+        display: none;
+        flex-basis: 100%;
+    }
+
+    nav.nav-open .nav-links {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1rem;
+        border-top: 1px solid var(--light-taupe);
+    }
+
+    nav.nav-open .nav-links a {
+        margin-left: 0;
+        padding: 0.8rem 0.25rem;
+        font-size: 1rem;
+        border-bottom: 1px solid var(--light-taupe);
+    }
+}
+
 /* ── NEWSPAPER HERO ──────────────────────────────────── */
 .newspaper-hero {
     position: relative;
@@ -679,10 +724,6 @@ footer p {
     .book-cover {
         margin: 0 auto;
     }
-
-    nav a {
-        display: none;
-    }
 }
 
 /* ── LIBRARY PAGE (library.html) ──────────────────────── */
@@ -924,4 +965,248 @@ footer p {
     .book-page { padding: 2rem 1.2rem 3rem; }
     .detail-body { grid-template-columns: 1fr; gap: 1.5rem; }
     .detail-cover { margin: 0 auto; }
+}
+
+/* ── ESSAYS LISTING (essays/index.html) ───────────────── */
+.essays-page {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 3.5rem 2rem 4rem;
+}
+
+/* Category chips — same pill shape as book status, tinted per category. */
+.essay-category {
+    display: inline-block;
+    font-size: 0.62rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    background-color: #f0f0f0;
+    color: #666;
+}
+
+.essay-category-software    { background-color: #eef1f4; color: #3b5566; }
+.essay-category-engineering { background-color: #f0f1ec; color: #5a5f3a; }
+.essay-category-finance     { background-color: #eef3ee; color: #3a5a40; }
+.essay-category-philosophy  { background-color: #f3eef2; color: #5b3a52; }
+
+.essay-date {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--warm-gray);
+}
+
+/* Featured essay (newest) — full-width hero, the whole block is a link. */
+.essay-featured {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-top: 4px double #111;
+    padding: 2.2rem 0 2.4rem;
+}
+
+.essay-kicker {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #111;
+    border-bottom: 2px solid #111;
+    display: inline-block;
+    padding-bottom: 2px;
+    margin-bottom: 0.9rem;
+}
+
+.essay-featured-headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    line-height: 1.12;
+    color: #0a0a0a;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+}
+
+.essay-featured:hover .essay-featured-headline {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+
+.essay-featured-deck {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.6;
+    max-width: 60ch;
+    margin-bottom: 0.9rem;
+}
+
+.essays-divider {
+    border: none;
+    border-top: 1px solid var(--light-taupe);
+    margin: 0;
+}
+
+/* Chronological two-column grid (gap 0; rules separate the tiles). */
+.essay-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+.essay-tile {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--light-taupe);
+    transition: background 0.2s;
+}
+
+.essay-tile:nth-child(odd) {
+    border-right: 1px solid var(--light-taupe);
+    padding-right: 2rem;
+}
+
+.essay-tile:nth-child(even) {
+    padding-left: 2rem;
+}
+
+.essay-tile:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.essay-tile-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    line-height: 1.25;
+    color: var(--soft-black);
+    font-weight: 700;
+    margin: 0.6rem 0 0.5rem;
+}
+
+.essay-tile:hover .essay-tile-title {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+}
+
+.essays-empty {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-style: italic;
+    color: var(--warm-gray);
+    padding: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .essays-page { padding: 2.5rem 1.2rem 3rem; }
+    .essay-grid { grid-template-columns: 1fr; }
+    .essay-tile:nth-child(odd) { border-right: none; padding-right: 0; }
+    .essay-tile:nth-child(even) { padding-left: 0; }
+}
+
+/* ── INDIVIDUAL ESSAY PAGE (essays/[slug].html) ───────── */
+.essay-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+}
+
+.essay-detail-labels {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.1rem;
+}
+
+.essay-detail-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.9rem, 4.2vw, 2.8rem);
+    line-height: 1.14;
+    color: var(--soft-black);
+    letter-spacing: -0.5px;
+    margin-bottom: 0.7rem;
+}
+
+.essay-detail-deck {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--warm-gray);
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--light-taupe);
+}
+
+.essay-detail-body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--dark-gray);
+    text-align: justify;
+}
+
+.essay-detail-body p {
+    margin-bottom: 1.2rem;
+}
+
+.essay-detail-body h2,
+.essay-detail-body h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--soft-black);
+    text-align: left;
+    line-height: 1.25;
+    margin: 2rem 0 0.8rem;
+}
+
+.essay-detail-body h2 { font-size: 1.5rem; }
+.essay-detail-body h3 { font-size: 1.2rem; }
+
+.essay-detail-body blockquote {
+    border-left: 3px solid var(--accent);
+    margin: 1.5rem 0;
+    padding: 0.2rem 0 0.2rem 1.4rem;
+    font-style: italic;
+    color: var(--accent);
+    text-align: left;
+}
+
+.essay-detail-body ul,
+.essay-detail-body ol {
+    margin: 0 0 1.2rem 1.4rem;
+    text-align: left;
+}
+
+.essay-detail-body li {
+    margin-bottom: 0.4rem;
+}
+
+.essay-detail-body a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--light-taupe);
+}
+
+.essay-detail-body a:hover {
+    color: var(--soft-black);
+}
+
+.essay-detail-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.8rem auto;
+    border: 1px solid var(--light-taupe);
+    filter: sepia(0.2);
+}
+
+@media (max-width: 768px) {
+    .essay-page { padding: 2rem 1.2rem 3rem; }
 }
