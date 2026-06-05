@@ -20,6 +20,11 @@ import unicodedata
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+try:
+    import markdown as _markdown
+except ImportError:
+    _markdown = None
+
 ROOT          = Path(__file__).parent
 DB            = ROOT / 'library.db'
 TEMPLATE      = ROOT / 'templates' / 'index_base.html'
@@ -216,6 +221,20 @@ def _detail_cover(book):
     )
 
 
+def _notes_to_html(text):
+    """Render my_notes (Markdown) to HTML for a per-book page.
+
+    Uses the `markdown` package with the `extra` extension when available;
+    otherwise falls back to splitting on blank lines and wrapping each chunk
+    in an (HTML-escaped) <p> tag.
+    """
+    text = text.strip()
+    if _markdown is not None:
+        return _markdown.markdown(text, extensions=['extra'])
+    chunks = re.split(r'\n\s*\n', text)
+    return '\n'.join(f'<p>{e(chunk.strip())}</p>' for chunk in chunks if chunk.strip())
+
+
 def render_book_page(book, slug):
     """Emit the <article> body for books/<slug>.html (filled into %%BOOK_CONTENT%%).
 
@@ -230,7 +249,7 @@ def render_book_page(book, slug):
         notes_html = (
             '<div class="detail-notes">\n'
             '                    <span class="detail-notes-label">My Notes</span>\n'
-            f'                    <div class="detail-notes-text">{e(book["my_notes"])}</div>\n'
+            f'                    <div class="detail-notes-text">{_notes_to_html(book["my_notes"])}</div>\n'
             '                </div>'
         )
     else:
@@ -271,6 +290,16 @@ def render_hero(conn):
     volume_word = f"{n} Volume{'s' if n != 1 else ''}"
     banner = f'        <div class="section-banner">{volume_word} Under Active Review</div>'
 
+    # Slugs must match the per-book page filenames: _generate_books / _generate_library
+    # build them with assign_slugs over the same read/reading query, in the same order.
+    pageable = conn.execute(
+        "SELECT * FROM books WHERE status IN ('read','reading') ORDER BY title COLLATE NOCASE"
+    ).fetchall()
+    slugs = assign_slugs(pageable)
+
+    def _link(book, inner):
+        return f'<a href="books/{slugs[book["id"]]}.html">{inner}</a>'
+
     lead    = [b for b in books if b['hero_slot'] == 'lead']
     sides   = [b for b in books if b['hero_slot'] == 'side']
     bottoms = [b for b in books if b['hero_slot'] == 'bottom']
@@ -279,15 +308,16 @@ def render_hero(conn):
     for b in lead:
         src = _hero_cover_src(b)
         img = f'<img src="{e(src)}" alt="{e(b["title"])}" onerror="this.style.display=\'none\'">' if src else ''
+        cover = _link(b, img) if img else ''
         body = f'\n                    <p class="story-body">{e(b["hero_body"])}</p>' if b['hero_body'] else ''
         top_parts.append(
             f'                <!-- LEAD STORY: {e(b["title"])} -->\n'
             f'                <div class="story-lead">\n'
             f'                    <div class="story-kicker">{e(b["hero_kicker"] or "")}</div>\n'
             f'                    <div class="story-img-lead">\n'
-            f'                        {img}\n'
+            f'                        {cover}\n'
             f'                    </div>\n'
-            f'                    <h2 class="story-headline-lead">{e(b["hero_headline"] or b["title"])}</h2>\n'
+            f'                    <h2 class="story-headline-lead">{_link(b, e(b["hero_headline"] or b["title"]))}</h2>\n'
             f'                    <div class="story-deck">{e(b["hero_deck"] or "")}</div>\n'
             f'                    <div class="story-byline">By {e(b["author"])} &bull; {e(b["hero_byline_extra"] or "")}</div>{body}\n'
             f'                    <span class="story-progress">&#9998;&nbsp; {e(b["hero_progress"] or "")}</span>\n'
@@ -297,13 +327,14 @@ def render_hero(conn):
     for b in sides:
         src = _hero_cover_src(b)
         img = f'<img src="{e(src)}" alt="{e(b["title"])}" onerror="this.style.display=\'none\'">' if src else ''
+        cover = _link(b, img) if img else ''
         top_parts.append(
             f'                <div class="story-side">\n'
             f'                    <div class="story-kicker">{e(b["hero_kicker"] or "")}</div>\n'
             f'                    <div class="story-img-sm">\n'
-            f'                        {img}\n'
+            f'                        {cover}\n'
             f'                    </div>\n'
-            f'                    <h3 class="story-headline">{e(b["hero_headline"] or b["title"])}</h3>\n'
+            f'                    <h3 class="story-headline">{_link(b, e(b["hero_headline"] or b["title"]))}</h3>\n'
             f'                    <div class="story-deck">{e(b["hero_deck"] or "")}</div>\n'
             f'                    <div class="story-byline">By {e(b["author"])} &bull; {e(b["hero_byline_extra"] or "")}</div>\n'
             f'                    <span class="story-progress">&#9998;&nbsp; {e(b["hero_progress"] or "")}</span>\n'
@@ -323,13 +354,14 @@ def render_hero(conn):
         for b in bottoms:
             src = _hero_cover_src(b)
             img = f'<img src="{e(src)}" alt="{e(b["title"])}" onerror="this.style.display=\'none\'">' if src else ''
+            cover = _link(b, img) if img else ''
             bottom_parts.append(
                 f'                <div class="story-bottom">\n'
                 f'                    <div class="story-kicker">{e(b["hero_kicker"] or "")}</div>\n'
                 f'                    <div class="story-img-sm">\n'
-                f'                        {img}\n'
+                f'                        {cover}\n'
                 f'                    </div>\n'
-                f'                    <h3 class="story-headline-sm">{e(b["hero_headline"] or b["title"])}</h3>\n'
+                f'                    <h3 class="story-headline-sm">{_link(b, e(b["hero_headline"] or b["title"]))}</h3>\n'
                 f'                    <div class="story-deck">{e(b["hero_deck"] or "")}</div>\n'
                 f'                    <div class="story-byline">By {e(b["author"])} &bull; {e(b["hero_byline_extra"] or "")}</div>\n'
                 f'                    <span class="story-progress">&#9998;&nbsp; {e(b["hero_progress"] or "")}</span>\n'
@@ -366,13 +398,6 @@ def cmd_generate():
     hk_now = datetime.now(timezone(timedelta(hours=8)))
     masthead_date = f"{hk_now.strftime('%A')}, {hk_now.day} {hk_now.strftime('%B')} {hk_now.year}, <i>Hong Kong</i>"
     template = template.replace('%%MASTHEAD_DATE%%', masthead_date)
-
-    for sec in SECTIONS:
-        books = conn.execute(
-            'SELECT * FROM books WHERE section=? ORDER BY sort_order, id', (sec,)
-        ).fetchall()
-        cards = '\n'.join(render_book_card(b) for b in books)
-        template = template.replace(f'%%BOOKS_{sec}%%', cards)
 
     today = date.today()
     template = template.replace('%%FOOTER_DATE%%', f"{today.strftime('%B')} {today.day}, {today.year}")

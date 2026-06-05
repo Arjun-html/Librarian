@@ -266,7 +266,19 @@
 ### 2. The Prize: The Epic Quest for Oil, Money & Power
 **Author:** Daniel Yergin  
 **Status:** Reading  
-**My Notes:** 700 pages in, reading in year 2, such an interesting history of oil, and how countries on both sides weren't really saints or devils
+**My Notes:** _The Prize_ offered a fascinating perspective on the global oil industry and how both sides of the equation—the resource-exporting countries and the resource-importing nations—rarely see eye-to-eye.
+
+As an economic historian, Yergin could show us how two conflicting narratives arise:
+
+- **The Importer Narrative:** If you live in a resource-dependent, importing country, the narrative is often that the exporters are greedy cartels simply trying to squeeze every last cent out of you.
+
+- **The Exporter Narrative:** If you are an exporting country, the narrative revolves around sovereign rights. It’s your resource, your land, and the importing nations just want to exploit and control your domestic wealth.
+
+There is a remarkably thin line of balance here. When reading about the events of the 1960s and mid-1970s—the era of the oil crises and the rise of OPEC—it initially feels like the importing West was the party being squeezed and oppressed. But looking further back into history, the reality is that many of these exporting nations had been deeply suppressed and exploited because of their resources long before they found leverage.
+
+Interestingly, having vast oil reserves rarely guarantees true prosperity. Although not mentioned in the book, Nigeria, for example, has suffered immense instability, corruption, and environmental degradation, leaving the nation structurally unhappy despite its massive petroleum wealth. Other resource-rich nations saw leaders like Muammar Gaddafi in Libya or Saddam Hussein in Iraq consolidate immense power and leverage, but it never translated into the authentic liberation or development their citizens truly wanted. Instead, it just made their entire societies and economies utterly dependent on a single, volatile commodity.
+
+This dynamic perfectly outlines why economists stress the absolute necessity of a **diversified economy** and the dreaded **Dutch Disease**. Relying on a single resource creates an fragile foundation. For policymakers and analysts, understanding this fragility isn't simply a historical lesson but a critical, fundamental variable that must be factored into every single economic and foreign policy equation.
 
 **AI Notes:** Comprehensive history of the oil industry from its origins to the late 1980s. Covers geopolitics, economic interests, and the complex relationships between nations, corporations, and individuals in the struggle for control of petroleum resources.
 
@@ -355,8 +367,20 @@
 
 ### 12. I, Robot
 **Author:** Isaac Asimov  
-**Status:** Reading List  
-**My Notes:** —
+**Status:** Read  
+**My Notes:** Isaac Asimov wrote _I, Robot_ decades before he ever saw a human travel into space, yet he was already dreaming of robots working alongside us in the cosmos long before SpaceX , Meta or even the first boots on the Moon. His vision revolved around the **Three Laws of Robotics**, outlining how robots should safely serve humanity and how those laws would actually be formed and implemented.
+
+## The Three Laws of Robotics
+
+- **The First Law:** A robot may not injure a human being or, through inaction, allow a human being to come to harm.
+- **The Second Law:** A robot must obey the orders given it by human beings except where such orders would conflict with the First Law.
+- **The Third Law:** A robot must protect its own existence as long as such protection does not conflict with the First or Second Laws.
+
+Slowly, these words written by a writer a hundred years ago became a blueprint that scientists and engineers strive for in the real world.
+
+Thinking about Asimov’s impact made me ponder how my own thoughts can influence my future actions, and perhaps even the future actions of others. This is precisely why writing is so vital, especially for people working in technology who want to make a difference. 
+
+When builders don't write down their philosophy, we end up building technology without a clear ethical framework.
 
 **AI Notes:** Influential science fiction short story collection exploring artificial intelligence and ethics. Presents Asimov's "Three Laws of Robotics" and examines their implications through various scenarios, raising questions about machine consciousness and morality.
 
@@ -368,6 +392,39 @@
 **My Notes:** —
 
 **AI Notes:** Media criticism examining how television transformed American culture and discourse. Argues that entertainment-based media undermines rational thought and serious engagement with important issues, creating a culture prioritizing amusement over depth.
+
+---
+
+### 14. Money, War, Sex, Karma
+**Author:** David Loy  
+**Status:** Reading  
+**My Notes:** David Loy’s _Money, War, Sex, Karma_ targets a fundamental human vulnerability: how our modern obsessions of accumulation, conflict, and desire are collective expressions of our deepest psychological anxieties. Reading through it, two core takeaways reshape how I view both intellectual frameworks and personal choices.
+
+### Takeaway 1: The Trap of Conceptual Rigidity
+
+Loy anchors his arguments in the Buddhist concept of _anatta_ (the lack of a permanent, fixed self) and Nagarjuna's concept of _shunyata_ (emptiness or boundlessness). His core point is that language often works _through_ us. The moment we experience reality, we immediately categorize it into terms, narrowing vast ideas down into rigid cognitive boxes.
+
+We are heavily trained to do this. Distilling complex realities into structured narratives is a vital skill—whether you are explaining a concept to peers, pitching to stakeholders, or presenting to investors. We _need_ frameworks to navigate anything beyond our immediate surroundings.
+
+This tension mirrors a pattern highlighted in Daniel Yergin’s _The Prize_. History's greatest strategists and tycoons were obsessive readers of history. They didn't tackle global crises entirely from first principles; they relied on prior models and structures. Nothing we do is done entirely in a vacuum.
+
+As Loy points out, **the frameworks themselves are not the issue; but the danger lies in our rigid attachment to them.** We mistake our mental maps for the actual terrain. The goal shouldn't be to abandon structure, but to maintain the fluid discipline to know when a framework has served its purpose and when it needs to be discarded.
+
+### Takeaway 2: The Illusion of Persistence and the Art of Letting Go
+
+The most challenging aspect of Loy's text is its examination of _dukkha_ (chronic dissatisfaction) and how it binds us to repetitive, cyclic behaviors. It forces a heavy realization: we often find ourselves trapped in exhausting, toxic loops—not because a situation has genuinely improved, but because we are fleeing from a temporary sense of internal loneliness or isolation.
+
+When left alone with our thoughts, it is incredibly easy to seek validation from the very habits or people we swore we would step away from. We frequently mask this inability to let go as "ambition" or "persistence." We refuse to walk away because we subconsciously view ending something as a personal defeat—a loss.
+
+This psychological trap perverts one of the most famous passages from the _Bhagavad Gita_, where Krishna states:
+
+> _"You are entitled to your actions, but never to the fruits of your actions."_
+
+It is dangerous to weaponize this philosophy to justify dead-end investments or unrequited attachments, convincing ourselves that pouring energy into a broken situation is a noble act. That is a misunderstanding. True detachment means performing an action because it aligns with your highest values, and then possessing the strength to walk away regardless of the outcome.
+
+Whether navigating a business venture, a habit, or a relationship, a builder must cultivate the ultimate discipline: **knowing exactly when to drop a failing goal.**
+
+**AI Notes:** —
 
 ---
 
@@ -391,5 +448,5 @@
 
 ---
 
-**Last Updated:** June 4, 2026  
-**Total Books:** 40 (16 Read, 6 Reading, 18 Reading List)
+**Last Updated:** June 5, 2026  
+**Total Books:** 41 (17 Read, 7 Reading, 17 Reading List)

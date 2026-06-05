@@ -2,7 +2,7 @@
 
 *A complete A‑to‑Z technical and design specification of the personal reading‑library website.*
 
-**Spec version:** 2.1 — reconciled with the shipped codebase as of June 2026. This revision corrects the v2.0 draft where the *vision* outran the *implementation* (animation variants, front-page note previews, About/strapline placeholders) and records the current build state so it can be handed to an LLM to plan next steps.
+**Spec version:** 2.2 — three work items, now all **shipped** (June 2026): Markdown rendering in `my_notes`, removal of the per-section book-card grid from `index.html`, and hero book links to per-book pages.
 
 ---
 
@@ -28,6 +28,16 @@ The v2.0 draft was written partly aspirationally. This is what is **actually in 
 - **Truncated `my_notes` preview + `Read full entry →` link** on the front page (`render_notes_preview`). Front-page cards still show the **full** `my_notes` *and* the `ai_notes` "About" block via expand/collapse — exactly as in v1.
 - **`essays/` section** — no `essays/` directory, listing, or pages exist. Nav links to `essays/index.html` are dead.
 - `%%ABOUT_BLURB%%` / `%%MASTHEAD_STRAPLINE%%` as **placeholders** — these are hard-coded in `templates/index_base.html`, and `cmd_generate` does not substitute them.
+
+### ✅ v2.2 work items — all shipped (June 2026)
+
+All three v2.2 tasks are now implemented, generated, and verified (including a live browser click-through):
+
+1. **Markdown rendering in `my_notes`** — **Done.** `librarian.py` imports `markdown` (guarded; `_markdown = None` on `ImportError`) and a new `_notes_to_html()` helper pipes `my_notes` through `markdown.markdown(text, extensions=['extra'])` inside `render_book_page()`, falling back to blank-line (`\n\n`) splitting into HTML-escaped `<p>` chunks when the package is absent. Bold/italic/headings/lists/paragraph breaks now render on book pages. Dependency `Markdown 3.10.2` installed (see §17). No GUI change needed.
+
+2. **Per-section book-card grid removed from `index.html`** — **Done.** The four `%%BOOKS_*%%` placeholder blocks (the whole `<main id="library">`) were deleted from `templates/index_base.html`; the `SECTIONS` loop and `render_book_card()` calls were removed from `cmd_generate()`; and `app.js` is now an empty stub. The hero and `about-publication` aside are untouched. The front page is masthead → hero → about aside only. (`render_book_card()`'s definition remains in `librarian.py` but is now unused.)
+
+3. **Hero book clicks → per-book page** — **Done.** `render_hero()` computes the slug map itself (same read/reading query + `assign_slugs` as `_generate_books`, so hrefs match filenames) and wraps each hero book's cover image and headline in `<a href="books/<slug>.html">` across all three slots. The page-turn animation fires automatically (`page-transition.js` intercepts any internal `a[href]` click) — no JS change. Verified live: clicking the lead headline flips to `books/the-prize-the-epic-quest-for-oil-money-power.html`.
 
 ### ⚠️ Drift / quirks to be aware of
 - The **live `library.db` has 41 books** (17 `read`, 7 `reading`, 17 `list`) and has diverged from the `BOOKS_DATA` seed (e.g. *I, Robot* is now `read`; *Money, War, Sex, Karma* added as `reading`). `BOOKS_DATA` is the one-time migration seed only — do not treat it as current content. A `library.db.bak-prequant` backup exists from the quant→finance rename.
@@ -195,7 +205,7 @@ The generator now produces **four sets of outputs** in a single run:
 
 1. **`index.html`** — from `templates/index_base.html`. `cmd_generate` substitutes exactly these placeholders: `%%NEWSPAPER_DYNAMIC%%`, `%%MASTHEAD_DATE%%`, `%%BOOKS_software%%` / `%%BOOKS_engineering%%` / `%%BOOKS_finance%%` / `%%BOOKS_philosophy%%`, and `%%FOOTER_DATE%%`.
    - The "About this Publication" box and masthead strapline are **static text in `index_base.html`** — there is **no** `%%ABOUT_BLURB%%` / `%%MASTHEAD_STRAPLINE%%` placeholder to fill.
-   - **Not built:** the truncated `my_notes` preview + `Read full entry →` link. Front-page cards (`render_book_card`) still render the **full** `my_notes` plus the `ai_notes` "About" block as an expand/collapse card (v1 behaviour). See §0.
+   - **Not built:** the truncated `my_notes` preview + `Read full entry →` link. **v2.2:** the entire per-section card grid is removed instead — see §0 work items.
 
 2. **`library.html`** — from `templates/library_base.html`:
    - Queries all books where `status IN ('read', 'reading')`, ordered alphabetically by title.
@@ -232,10 +242,11 @@ Slug collisions (two books with the same title after slugification) are resolved
 ### Rendering Functions (as implemented)
 
 - **`render_book_tile(book, slug)`** — emits `.book-tile` HTML (cover + title + author + status chip) for `library.html`, linking to `books/<slug>.html`. (Note: takes `slug` as a second argument.)
-- **`render_book_page(book, slug)`** — emits the `<article class="book-detail">` body for `books/[slug].html`, substituted into `%%BOOK_CONTENT%%`.
+- **`render_book_page(book, slug)`** — emits the `<article class="book-detail">` body for `books/[slug].html`, substituted into `%%BOOK_CONTENT%%`. `my_notes` is rendered via **`_notes_to_html()`** (Markdown → HTML; see §0 work item 1).
+- **`_notes_to_html(text)`** — converts `my_notes` Markdown to HTML using the `markdown` package (`extensions=['extra']`), with a blank-line `<p>`-splitting fallback if the package is unavailable.
 - **`_tile_cover` / `_detail_cover` / `_cover_div` / `_hero_cover_src`** — cover source resolution (local path → ISBN → "No cover available"). `_detail_cover` uses the `-L` Open Library size and `../`-relative paths.
 - **`slugify` / `assign_slugs`** — URL slug generation + collision handling.
-- **`render_book_card(book)`** — expandable card for `index.html`. Shows full `my_notes` + `ai_notes` "About" block. Utterances script tag **removed**.
+- **`render_book_card(book)`** — formerly the expandable card for `index.html`. **Now unused** (the per-section grid was removed in v2.2); the definition remains in `librarian.py` but is no longer called.
 - **`render_notes_preview(text, max_chars=150)`** — **NOT implemented** (roadmap; see §0).
 - **`render_hero(conn)`** — newspaper hero for `index.html` (lead/side/bottom slots, dynamic volume count).
 - **`e()`** — HTML escaping.
@@ -244,14 +255,13 @@ Slug collisions (two books with the same title after slugification) are resolved
 
 ## 7. Templates
 
-### `templates/index_base.html` (updated)
+### `templates/index_base.html` (v2.2 updated)
 
-Same structure as v1 with these additions (all **static template text**, no new placeholders):
 - `<title>` is **"Arjun's Dispatch"**; masthead name is **"The Arjun Dispatch"**; nav logo is **"Arjun's Archives"**.
-- Nav links: **Front Page | Library | Essays & Thoughts** (replacing old Reading / Archive links).
-- A masthead strapline directly under the date — *"A personal record of books read, annotated, and lived with"* — hard-coded in the template (there is **no** `%%MASTHEAD_STRAPLINE%%` placeholder).
-- An `<aside class="about-publication">` "About this Publication" block (with GitHub/LinkedIn links) hard-coded in the template (there is **no** `%%ABOUT_BLURB%%` placeholder).
-- `render_book_card` does **not** truncate notes — see §0/§6.
+- Nav links: **Front Page | Library | Essays & Thoughts**.
+- Masthead strapline hard-coded in the template (no `%%MASTHEAD_STRAPLINE%%` placeholder).
+- `<aside class="about-publication">` "About this Publication" block with GitHub/LinkedIn links — hard-coded.
+- **v2.2:** The four `%%BOOKS_software%%` / `%%BOOKS_engineering%%` / `%%BOOKS_finance%%` / `%%BOOKS_philosophy%%` placeholder blocks are **removed**. The hero (`%%NEWSPAPER_DYNAMIC%%`) and about aside are the only content below the masthead.
 
 ### `templates/library_base.html` (new)
 
@@ -295,8 +305,8 @@ All existing rules (tokens, texture, hero, cards, covers) are preserved. New rul
 **Masthead strapline:**
 - Centred, small‑caps, Libre Baskerville italic, muted taupe colour — sits directly below the date line, above the double rule.
 
-### `app.js` (updated)
-Click handling for `.book-card` expand/collapse on `index.html`. The special-case guard that previously ignored clicks inside the Utterances iframe (so commenting didn't toggle the card) is **removed** — no iframe is present anymore. Cards show full `my_notes` + `ai_notes`; there is no "Read full entry" preview link.
+### `app.js` (v2.2 updated)
+The book-card expand/collapse logic that served the per-section grid is **removed** (the grid itself is removed — see §7 / §0). `app.js` is now an **empty stub** (a comment only); it is still referenced by the `index.html` `<script>` tag but does nothing.
 
 ### `flip-init.js` (unchanged)
 Suppresses entrance fade on flip‑arriving pages.
@@ -319,17 +329,15 @@ If revisited, bump the `?v=` cache-buster across all three templates so browsers
 
 ---
 
-## 9. Front Page (`index.html`) — UX Clarity Improvements
+## 9. Front Page (`index.html`) — Current State (v2.2)
 
-The following changes address the "is this really the front page?" problem (all shipped, all static text in `templates/index_base.html`):
+The front page has:
+1. **Masthead** with strapline — *"A personal record of books read, annotated, and lived with"*.
+2. **Newspaper hero** (`%%NEWSPAPER_DYNAMIC%%`) — lead/side/bottom slots for currently-reading books. **v2.2:** each hero book's headline and cover now link to `books/[slug].html` via the page-turn animation.
+3. **"About this Publication" aside** — static editorial box with GitHub/LinkedIn links.
+4. ~~Per-section book-card grid~~ — **removed in v2.2**. `library.html` handles the full listing.
 
-1. **Masthead strapline** — one line below the masthead name: *"A personal record of books read, annotated, and lived with"*. Makes the site's purpose legible at a glance.
-
-2. **"About this Publication" aside** — a static editorial box (`<aside class="about-publication">`) after the hero. Contains who Arjun is, what the site is for, and GitHub/LinkedIn links. (Note: it is an `aside` below the hero, not a column inside the hero grid.)
-
-3. **Navigation** — the header nav links to three destinations: **Front Page | Library | Essays & Thoughts**. The old "Reading"/"Archive"/"Reading List" links are removed. (⚠️ *Essays & Thoughts* currently points at the not-yet-built `essays/index.html`.)
-
-4. **Section kickers** — hero entries use editorial kickers (e.g. "History & Economics", "Derivatives", "Interview Preparation") set per book via the hero fields.
+The front page is intentionally lean: masthead → hero → about. Nothing else.
 
 ---
 
@@ -429,7 +437,7 @@ Unchanged. Guards ISBN consistency between hero and library sections of `index.h
 | Google Fonts | external CSS | all pages | Playfair Display, IM Fell English, Libre Baskerville, Inter |
 | Open Library covers API | external | covers | book cover images |
 
-| Claude Code hooks | tooling | `.claude/settings.json` | sync check |
+| Markdown (PyPI) | runtime | `librarian.py` | Converts `my_notes` Markdown to HTML for book pages |
 
 ---
 
@@ -489,4 +497,4 @@ Unchanged. Guards ISBN consistency between hero and library sections of `index.h
 
 ---
 
-*End of specification — v2.0*
+*End of specification — v2.2*
