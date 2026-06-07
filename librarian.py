@@ -9,6 +9,7 @@ Commands:
   update <id>      Edit a book's fields
   remove <id>      Delete a book
   hero <id>        Set newspaper hero fields for a Reading book
+  cache-covers     Download Open Library covers locally (--force re-downloads all)
   generate         Regenerate index.html, library.html, books/*.html and library.md
 """
 
@@ -40,6 +41,7 @@ LIBRARY       = ROOT / 'library.html'
 BOOKS_DIR     = ROOT / 'books'
 MD_FILE       = ROOT / 'library.md'
 
+COVERS_DIR            = ROOT / 'book_covers_additional'
 ESSAYS_DIR            = ROOT / 'essays'
 ESSAYS_SRC            = ESSAYS_DIR / 'src'
 ESSAYS_IMG            = ESSAYS_DIR / 'images'
@@ -368,6 +370,22 @@ def _hero_cover_src(book):
     return None
 
 
+def _book_excerpt(book, length=100):
+    """First `length` characters (plus an ellipsis) of the book's per-book-page
+    text — i.e. its rendered my_notes with markup stripped and whitespace
+    collapsed. Used as the lead story's blurb on the front page. Returns '' when
+    the book has no notes."""
+    notes = book['my_notes']
+    if not notes or notes.strip() == '—':
+        return ''
+    text = re.sub(r'<[^>]+>', ' ', _notes_to_html(notes))   # drop HTML tags
+    text = html_lib.unescape(text)                           # decode entities
+    text = re.sub(r'\s+', ' ', text).strip()                 # collapse whitespace
+    if not text:
+        return ''
+    return text[:length].rstrip() + '...'
+
+
 def render_hero(conn):
     """Build section-banner + newspaper-content HTML from books with hero_slot set."""
     books = conn.execute(
@@ -398,7 +416,8 @@ def render_hero(conn):
         src = _hero_cover_src(b)
         img = f'<img src="{e(src)}" alt="{e(b["title"])}" onerror="this.style.display=\'none\'">' if src else ''
         cover = _link(b, img) if img else ''
-        body = f'\n                    <p class="story-body">{e(b["hero_body"])}</p>' if b['hero_body'] else ''
+        excerpt = _book_excerpt(b)
+        body = f'\n                    <p class="story-body">{e(excerpt)}</p>' if excerpt else ''
         top_parts.append(
             f'                <!-- LEAD STORY: {e(b["title"])} -->\n'
             f'                <div class="story-lead">\n'
@@ -1195,6 +1214,74 @@ BOOKS_DATA = [
     },
 ]
 
+def cmd_cache_covers(args):
+    """Download Open Library covers into book_covers_additional/ and repoint each
+    book's local_cover_path at the saved file, so the site no longer depends on
+    covers.openlibrary.org at view time (it goes down periodically).
+
+    Only books with an ISBN are touched. Books that already have a local cover
+    are left as-is unless --force is given. Re-run `generate` afterwards to bake
+    the local paths into the pages.
+    """
+    import urllib.request, urllib.error
+
+    ensure_schema()
+    force = '--force' in args
+    timeout = 20
+    COVERS_DIR.mkdir(parents=True, exist_ok=True)
+
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT id, title, isbn, local_cover_path FROM books "
+        "WHERE isbn IS NOT NULL AND TRIM(isbn) <> '' "
+        "ORDER BY title COLLATE NOCASE"
+    ).fetchall()
+
+    cached = skipped = missing = failed = 0
+    for b in rows:
+        if b['local_cover_path'] and not force:
+            skipped += 1
+            continue
+        isbn = b['isbn'].strip()
+        # ?default=false → Open Library returns 404 for a missing cover instead of
+        # a blank 1×1 placeholder served with HTTP 200.
+        url  = f"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg?default=false"
+        dest = COVERS_DIR / f"{isbn}.jpg"
+        rel  = f"book_covers_additional/{isbn}.jpg"
+        try:
+            req = urllib.request.Request(
+                url, headers={'User-Agent': 'ArjunArchives/1.0 (cover-cache)'})
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                data = resp.read()
+            if len(data) < 1000:          # guard against a stray blank placeholder
+                print(f'  No cover for "{b["title"]}" (ISBN {isbn})')
+                missing += 1
+                continue
+            dest.write_bytes(data)
+            conn.execute('UPDATE books SET local_cover_path=? WHERE id=?', (rel, b['id']))
+            conn.commit()
+            cached += 1
+            print(f'  Cached "{b["title"]}" → {rel} ({len(data):,} bytes)')
+        except urllib.error.HTTPError as exc:
+            if exc.code == 404:
+                print(f'  No cover for "{b["title"]}" (ISBN {isbn})')
+                missing += 1
+            else:
+                print(f'  Failed "{b["title"]}" (ISBN {isbn}): HTTP {exc.code}')
+                failed += 1
+        except Exception as exc:
+            print(f'  Failed "{b["title"]}" (ISBN {isbn}): {exc}')
+            failed += 1
+
+    print(f'\nCached {cached}, skipped (already local) {skipped}, '
+          f'no cover {missing}, failed {failed}.')
+    if failed:
+        print('Some downloads failed — if covers.openlibrary.org is unreachable, '
+              're-run this once it is back up (cached books are skipped).')
+    if cached:
+        print('Now run: python librarian.py generate')
+
+
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 USAGE = """\
@@ -1208,6 +1295,7 @@ Commands:
   update <id>      Edit a book's fields
   remove <id>      Delete a book
   hero <id>        Set newspaper hero fields for a Reading book
+  cache-covers     Download Open Library covers locally (--force re-downloads all)
   generate         Regenerate index.html, library.html, books/*.html and library.md
 """
 
@@ -1231,6 +1319,8 @@ def main():
         cmd_remove(args)
     elif cmd == 'hero':
         cmd_hero(args)
+    elif cmd in ('cache-covers', 'cache_covers'):
+        cmd_cache_covers(args)
     elif cmd == 'generate':
         cmd_generate()
     else:
