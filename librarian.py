@@ -11,6 +11,7 @@ Commands:
   hero <id>        Set newspaper hero fields for a Reading book
   cache-covers     Download Open Library covers locally (--force re-downloads all)
   generate         Regenerate index.html, library.html, books/*.html and library.md
+                   (auto-caches new covers first; --no-cache to skip)
 """
 
 import re
@@ -492,12 +493,26 @@ def render_hero(conn):
 
 # ── Commands ──────────────────────────────────────────────────────────────────
 
-def cmd_generate():
+def cmd_generate(args=None):
+    args = args or []
     ensure_schema()
     if not TEMPLATE.exists():
         sys.exit(f'Error: template not found at {TEMPLATE}')
 
     conn = get_db()
+
+    # Best-effort: cache any not-yet-cached Open Library covers locally first, so
+    # the pages link to local files and survive the cover host's periodic outages.
+    # Does nothing once every cover is cached (all books skipped → no network);
+    # bails out fast if the host is unreachable so generate never hangs. Opt out
+    # with `generate --no-cache`.
+    if '--no-cache' not in args:
+        c = _cache_covers(conn, fail_fast=True, quiet=True, timeout=12)
+        if c['cached']:
+            print(f'Cached {c["cached"]} new cover(s) locally.')
+        elif c['unreachable']:
+            print('Note: covers.openlibrary.org unreachable - skipped cover caching.')
+
     template = TEMPLATE.read_text(encoding='utf-8')
 
     template = template.replace('%%NEWSPAPER_DYNAMIC%%', render_hero(conn))
@@ -1214,71 +1229,96 @@ BOOKS_DATA = [
     },
 ]
 
-def cmd_cache_covers(args):
-    """Download Open Library covers into book_covers_additional/ and repoint each
-    book's local_cover_path at the saved file, so the site no longer depends on
-    covers.openlibrary.org at view time (it goes down periodically).
+def _download_cover(isbn, timeout=20):
+    """Fetch one Open Library cover by ISBN.
 
-    Only books with an ISBN are touched. Books that already have a local cover
-    are left as-is unless --force is given. Re-run `generate` afterwards to bake
-    the local paths into the pages.
+    Returns (data, None) on success, (None, 'missing') when the cover does not
+    exist (HTTP 404 or a blank placeholder), or (None, 'unreachable') when the
+    host can't be reached (down / timeout / DNS).
     """
     import urllib.request, urllib.error
+    # ?default=false → Open Library returns 404 for a missing cover instead of a
+    # blank 1×1 placeholder served with HTTP 200.
+    url = f"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg?default=false"
+    req = urllib.request.Request(
+        url, headers={'User-Agent': 'ArjunArchives/1.0 (cover-cache)'})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            data = resp.read()
+    except urllib.error.HTTPError as exc:
+        # A response (even a 404) means the host is up — just no cover for this ISBN.
+        return (None, 'missing' if exc.code == 404 else f'HTTP {exc.code}')
+    except Exception:
+        return (None, 'unreachable')
+    if len(data) < 1000:              # guard against a stray blank placeholder
+        return (None, 'missing')
+    return (data, None)
 
-    ensure_schema()
-    force = '--force' in args
-    timeout = 20
+
+def _cache_covers(conn, force=False, fail_fast=False, quiet=False, timeout=20):
+    """Download missing Open Library covers into book_covers_additional/ and
+    repoint each book's local_cover_path at the saved file. Shared by the
+    `cache-covers` command and `generate`.
+
+    Only books with an ISBN are touched; books that already have a local cover
+    are skipped unless `force`. With `fail_fast`, the first 'unreachable' result
+    stops the run (the host is down — no point timing out on every remaining
+    book); the returned dict then carries unreachable=True. `quiet` suppresses
+    per-book output. Returns a counts dict.
+    """
     COVERS_DIR.mkdir(parents=True, exist_ok=True)
-
-    conn = get_db()
     rows = conn.execute(
         "SELECT id, title, isbn, local_cover_path FROM books "
         "WHERE isbn IS NOT NULL AND TRIM(isbn) <> '' "
         "ORDER BY title COLLATE NOCASE"
     ).fetchall()
 
-    cached = skipped = missing = failed = 0
+    counts = {'cached': 0, 'skipped': 0, 'missing': 0, 'failed': 0, 'unreachable': False}
     for b in rows:
         if b['local_cover_path'] and not force:
-            skipped += 1
+            counts['skipped'] += 1
             continue
         isbn = b['isbn'].strip()
-        # ?default=false → Open Library returns 404 for a missing cover instead of
-        # a blank 1×1 placeholder served with HTTP 200.
-        url  = f"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg?default=false"
-        dest = COVERS_DIR / f"{isbn}.jpg"
-        rel  = f"book_covers_additional/{isbn}.jpg"
-        try:
-            req = urllib.request.Request(
-                url, headers={'User-Agent': 'ArjunArchives/1.0 (cover-cache)'})
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                data = resp.read()
-            if len(data) < 1000:          # guard against a stray blank placeholder
-                print(f'  No cover for "{b["title"]}" (ISBN {isbn})')
-                missing += 1
-                continue
-            dest.write_bytes(data)
+        data, err = _download_cover(isbn, timeout)
+        if err is None:
+            rel = f"book_covers_additional/{isbn}.jpg"
+            (COVERS_DIR / f"{isbn}.jpg").write_bytes(data)
             conn.execute('UPDATE books SET local_cover_path=? WHERE id=?', (rel, b['id']))
             conn.commit()
-            cached += 1
-            print(f'  Cached "{b["title"]}" → {rel} ({len(data):,} bytes)')
-        except urllib.error.HTTPError as exc:
-            if exc.code == 404:
+            counts['cached'] += 1
+            if not quiet:
+                print(f'  Cached "{b["title"]}" -> {rel} ({len(data):,} bytes)')
+        elif err == 'missing':
+            counts['missing'] += 1
+            if not quiet:
                 print(f'  No cover for "{b["title"]}" (ISBN {isbn})')
-                missing += 1
-            else:
-                print(f'  Failed "{b["title"]}" (ISBN {isbn}): HTTP {exc.code}')
-                failed += 1
-        except Exception as exc:
-            print(f'  Failed "{b["title"]}" (ISBN {isbn}): {exc}')
-            failed += 1
+        else:  # 'unreachable' or 'HTTP nnn'
+            counts['failed'] += 1
+            if err == 'unreachable' and fail_fast:
+                counts['unreachable'] = True
+                break
+            if not quiet:
+                print(f'  Failed "{b["title"]}" (ISBN {isbn}): {err}')
+    return counts
 
-    print(f'\nCached {cached}, skipped (already local) {skipped}, '
-          f'no cover {missing}, failed {failed}.')
-    if failed:
+
+def cmd_cache_covers(args):
+    """Download Open Library covers into book_covers_additional/ and repoint each
+    book's local_cover_path, so the site no longer depends on
+    covers.openlibrary.org at view time (it goes down periodically).
+
+    Books that already have a local cover are left as-is unless --force is given.
+    Re-run `generate` afterwards to bake the local paths into the pages.
+    """
+    ensure_schema()
+    conn = get_db()
+    c = _cache_covers(conn, force='--force' in args, fail_fast=False, quiet=False)
+    print(f'\nCached {c["cached"]}, skipped (already local) {c["skipped"]}, '
+          f'no cover {c["missing"]}, failed {c["failed"]}.')
+    if c['failed']:
         print('Some downloads failed — if covers.openlibrary.org is unreachable, '
               're-run this once it is back up (cached books are skipped).')
-    if cached:
+    if c['cached']:
         print('Now run: python librarian.py generate')
 
 
@@ -1297,6 +1337,7 @@ Commands:
   hero <id>        Set newspaper hero fields for a Reading book
   cache-covers     Download Open Library covers locally (--force re-downloads all)
   generate         Regenerate index.html, library.html, books/*.html and library.md
+                   (auto-caches new covers first; --no-cache to skip)
 """
 
 def main():
@@ -1322,7 +1363,7 @@ def main():
     elif cmd in ('cache-covers', 'cache_covers'):
         cmd_cache_covers(args)
     elif cmd == 'generate':
-        cmd_generate()
+        cmd_generate(args)
     else:
         print(f'Unknown command: {cmd}\n')
         print(USAGE)

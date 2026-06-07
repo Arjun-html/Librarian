@@ -55,8 +55,13 @@ python librarian.py list             # [--section …] [--status …]
 python librarian.py update <id>      # edit a book
 python librarian.py remove <id>      # delete a book
 python librarian.py hero <id>        # set newspaper hero fields for a Reading book
-python librarian.py generate         # rebuild generated files from library.db
+python librarian.py cache-covers     # download Open Library covers locally (--force re-downloads all)
+python librarian.py generate         # rebuild generated files from library.db (auto-caches new covers; --no-cache to skip)
 ```
+
+### Cover caching (offline-proof covers)
+
+Covers normally load from `covers.openlibrary.org` by ISBN at view time, so when that host has an outage every ISBN-based cover blanks out to the "No cover available" fallback. `cache-covers` downloads each book's cover into `book_covers_additional/<isbn>.jpg` and repoints its `local_cover_path` in the DB, so the pages link to local files and no longer depend on Open Library. Books that already have a curated local cover are skipped unless `--force`. `generate` runs the same cache pass automatically (best-effort, quiet) before building: it does nothing once all covers are cached, and bails out fast with a note if the host is unreachable, so it never hangs. Pass `generate --no-cache` to skip it. The shared core is `_cache_covers` / `_download_cover` in `librarian.py`.
 
 `cmd_generate` reads the template(s) under `templates/` and writes the output files:
 
