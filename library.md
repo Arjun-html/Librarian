@@ -358,7 +358,7 @@ This dynamic perfectly outlines why economists stress the absolute necessity of 
 
 ### 11. Competitive Strategy
 **Author:** Michael E. Porter  
-**Status:** Reading List  
+**Status:** Reading  
 **My Notes:** —
 
 **AI Notes:** Seminal work on business strategy examining how companies compete and maintain advantage. Introduces frameworks like Porter's Five Forces and generic strategies. Essential for understanding strategic positioning in industries.
@@ -448,5 +448,5 @@ Whether navigating a business venture, a habit, or a relationship, a builder mus
 
 ---
 
-**Last Updated:** June 5, 2026  
-**Total Books:** 41 (17 Read, 7 Reading, 17 Reading List)
+**Last Updated:** June 7, 2026  
+**Total Books:** 41 (17 Read, 8 Reading, 16 Reading List)
