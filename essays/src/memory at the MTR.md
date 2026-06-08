@@ -4,9 +4,6 @@ date: 2025-02-20
 category: philosophy
 deck: "an exercise in trying to figure out how the memory maps practically"
 ---
-
-
-
  1. Often in life we see a scene, say at the MTR, with thousands of input- 
  somebody scratching their nose, kids playing on their phone, aunties discussing about their latest purchase, someone itching for a smoke, kids sucking their thumb, people trying to struggle and jostle for space without touching each other and very once in a while something especially memorable- a middle aged lady trying to sneak a picture of you on her phone.
  
