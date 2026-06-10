@@ -160,6 +160,15 @@
 
 ---
 
+### 13. Div, Grad, Curl, and All that: An Informal Text on Vector Calculus
+**Author:** H. M. Schey  
+**Status:** Reading  
+**My Notes:** This text gives that intuition for vector through the lens of an electrical/electronics engineer or physicist's view. Reading through the sections on Gauss made me revise my own understanding, and the problems are fun to work through too.
+
+**AI Notes:** —
+
+---
+
 ## Finance
 
 ### 1. A Practical Guide to Quantitative Finance Interviews
@@ -449,4 +458,4 @@ Whether navigating a business venture, a habit, or a relationship, a builder mus
 ---
 
 **Last Updated:** June 10, 2026  
-**Total Books:** 41 (17 Read, 8 Reading, 16 Reading List)
+**Total Books:** 42 (17 Read, 9 Reading, 16 Reading List)
