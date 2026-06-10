@@ -1,0 +1,32 @@
+---
+title: "Thoughts in Thailand"
+date: 2026-06-10
+category: philosophy
+deck: "A few thoughts from my travels"
+---
+
+_some excerpts from my journal during a trip to Thailand, a 'work trip' as a student ambasssador for my university_
+
+1. Visiting the school reminded me of the feeling I used to have back in highschool - the strong urge to do something - the urge to 'hustle'. This school, the 'British International School', seemed to be filled with kids just like me, moved around cities (countries in their case) their whole life, kids who don't look like their peers, and filled with that urge to do something. All the kids I talked to seemed to have great grades, good at sports but still wanted to grow up faster.  
+This kid and his friend are building websites on Lovable and pitching them to local restaurants. His classmates have already been doing this, having already sold websites for ฿30,000 - all in grade nine!
+
+2. Early in our meeting, the kids seemed as if they didn't wanna talk, that they're nonchalant and cool. But the moment they feel that I'm 'chill' - that I have hobbies like them, that I have the qualities they wanna have in the future, that I 'larp' like them - all of a sudden they open up completely - pouring out everything about themselves and asking questions such as how to hustle, how much programming is actually needed, how to use claude code and how much do I party in Hong Kong.
+
+3. This young girl from Japan, who was on a sports scholarship for football, was conflicted on how to manage and find a side business while maintaining grades and keeping her scholarship and she complained that she couldn't understand how the other kids managed to build and sell websites simultaneously.
+
+4. Interacting with elephants at the reserve made me aware once again that life is quite intelligent but powerful - the elephants knew their commands like hawks and were extremely gentle. But every touch reminded me of the fact that if they wanted to, they could crush me instantly. I feel the same about AI, often.
+
+5. 8 am sat alone at the beach, I encountered a British man solo travelling. Young chap in his mid-twenties, was quite talkative and wanted to know what was fun to do here. Called the guy down for some Muay Thai, and he took my number and left, while bashing his mates for having girlfriends and not joining him here.
+
+6. Meeting the lone kid from the school 'Headstart', I could see myself in him- and my high-school counselor in his moody counselor. But I was flabbergasted when I heard him say he wanted to get into investment banking, and once again I was reminded of the fact that I didn't know of any career paths at all, coming out of highschool. Again and again life reminds me, when one is blind, even walking on a clear path seems impossible.
+
+7. Watching the sunset on Patong beach after a series of fortunate events reminded me once again how the greatest beauty is nature itself. When I run along the harbour, I always look at the women passing by, except during the sunset, when I just can't keep my eyes off the horizon. The sky looked so vast today, and the ever changing gradient behind the vivid clouds just served to remind me how fleeting beauty is.
+
+8. At night, to go to the Patong Muay Thai Stadium, I was so nervous in planning everything out. Every thing went well, and everyone showed up on time. I always get nervous before trips, long travels, getting to places on time, and for what? The extra anxiety is never <del>ever</del> helpful. When things have gone wrong, I was no less nervous.
+
+9. Whenever I spend money, it feels like bleeding from a thousand cuts. I must improve my relationship with my personal finances, it is ironic that I care so much for macro events but in my own life I still can't treat money properly.
+
+10. At the Muay Thai fights, I was completely absorbed. I did not want to check my phone once. Their stories, told only by their bodies and movements, simply bewitched me. These young boys, women and men were willing to lay it out in the ring, preparing and building up their bodies only to destroy them.
+
+11. But the last fight of the heavy weights completely shook me. The fighter from Bahrain in the white shorts had seemed to be a battle-hardened and experience man, but his formidable opponent struck him down, and with every brutal knockdown and kick you could see the crowd's intensity increasing. When the old-fighter, who seemed almost drunk, finally got knocked out, the crowd seemed raucous and bursting with energy, hooting and clapping. I really felt as if I was in the Coliseum, and the crowd would wanted Caesar's thumbs down and the man fell to the wolves gladly.  
+Everything in life seems to be bread and circus, doesn't it.
