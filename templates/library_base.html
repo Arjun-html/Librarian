@@ -41,8 +41,25 @@
 
     <!-- Library grid -->
     <main class="library-page">
-        <div class="book-tiles-grid">
+        <!-- Search + filter bar -->
+        <div class="lib-filter-bar">
+            <input type="search" id="lib-search" class="lib-search-input"
+                   placeholder="Search by title or author&#8230;"
+                   autocomplete="off" spellcheck="false" aria-label="Search books">
+            <div class="lib-filter-tabs" role="group" aria-label="Filter by section">
+                <button class="lib-filter-btn active" data-filter="all">All</button>
+                <button class="lib-filter-btn" data-filter="software">Software</button>
+                <button class="lib-filter-btn" data-filter="engineering">Engineering</button>
+                <button class="lib-filter-btn" data-filter="finance">Finance</button>
+                <button class="lib-filter-btn" data-filter="philosophy">Philosophy</button>
+                <button class="lib-filter-btn" data-filter="reading">Reading</button>
+            </div>
+        </div>
+        <div id="library-grid" class="book-tiles-grid">
 %%BOOK_TILES%%
+        </div>
+        <div id="lib-empty" class="lib-empty-state" hidden>
+            No volumes found &mdash; try a different search or section.
         </div>
     </main>
 
@@ -52,6 +69,7 @@
     </footer>
 
     <script src="nav.js"></script>
+    <script src="library-filter.js"></script>
     <script src="html2canvas.min.js"></script>
     <script src="page-transition.js?v=7"></script>
 </body>

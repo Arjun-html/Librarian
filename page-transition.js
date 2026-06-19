@@ -23,6 +23,7 @@
   let snap = null;            // <canvas> bitmap of the current viewport
   let snapScrollY = 0;
   let snapping = false;
+  let snapPromise = null;     // the live Promise when a capture is in flight
   let fallbackSnap = null;    // plain aged-paper sheet if html2canvas is absent
 
   function bodyBg() {
@@ -32,25 +33,22 @@
 
   function takeSnapshot() {
     if (!window.html2canvas) return Promise.resolve(null);
-    if (snapping) return Promise.resolve(snap);
+    // Return the in-flight promise so concurrent callers (mousedown pre-warm +
+    // flipOut await) share the same result rather than launching duplicate captures.
+    if (snapping) return snapPromise || Promise.resolve(snap);
     snapping = true;
     const W = window.innerWidth, H = window.innerHeight;
     const sy = window.scrollY;
-    return window.html2canvas(document.body, {
+    snapPromise = window.html2canvas(document.body, {
       x: window.scrollX, y: sy,
       width: W, height: H,
       scale: DPR,
       useCORS: true, allowTaint: true,
       backgroundColor: bodyBg(),
       logging: false, removeContainer: true,
-    }).then(c => { snap = c; snapScrollY = sy; snapping = false; return c; })
-      .catch(() => { snapping = false; return null; });
-  }
-
-  let snapTimer;
-  function scheduleSnapshot() {
-    clearTimeout(snapTimer);
-    snapTimer = setTimeout(takeSnapshot, 220);
+    }).then(c => { snap = c; snapScrollY = sy; snapping = false; snapPromise = null; return c; })
+      .catch(() => { snapping = false; snapPromise = null; return null; });
+    return snapPromise;
   }
 
   /* Aged-paper fallback sheet (only used if html2canvas failed to load). */
@@ -215,23 +213,43 @@
 
   /* ── Init ─────────────────────────────────────────────────────────────── */
 
+  /* Returns true for hrefs that the flip animation should intercept. */
+  function isLocalNav(href) {
+    return href && !href.startsWith('#') && !href.startsWith('http') &&
+           !href.startsWith('//') && !href.startsWith('mailto') && !href.startsWith('tel');
+  }
+
   function init() {
-    // Pre-capture so the first click peels instantly; refresh after scroll.
+    // Pre-capture once at idle so the very first click peels instantly.
     if (window.requestIdleCallback) requestIdleCallback(takeSnapshot, { timeout: 1200 });
     else setTimeout(takeSnapshot, 400);
-    window.addEventListener('scroll', scheduleSnapshot, { passive: true });
-    window.addEventListener('resize', () => { snap = null; fallbackSnap = null; scheduleSnapshot(); });
+
+    // Resize: old snapshot dimensions are wrong — clear it, then quietly
+    // re-capture at idle (no scroll listener needed).
+    window.addEventListener('resize', () => {
+      snap = null; fallbackSnap = null; snapPromise = null; snapping = false;
+      if (window.requestIdleCallback) requestIdleCallback(takeSnapshot, { timeout: 800 });
+      else setTimeout(takeSnapshot, 300);
+    });
+
+    // Pre-warm snapshot on pointer/touch intent so it is ready (or nearly
+    // ready) by the time the click fires ~100-200 ms later.  This replaces
+    // the old scroll-based debounce which ran html2canvas continuously in the
+    // background and caused main-thread jank while scrolling.
+    function prewarm(e) {
+      const link = (e.target || e.touches[0].target).closest('a[href]');
+      if (!link) return;
+      if (!isLocalNav(link.getAttribute('href'))) return;
+      if (!snap || Math.abs(window.scrollY - snapScrollY) > 4) takeSnapshot();
+    }
+    document.addEventListener('mousedown', prewarm);
+    document.addEventListener('touchstart', prewarm, { passive: true });
 
     document.addEventListener('click', function (e) {
       const link = e.target.closest('a[href]');
       if (!link) return;
       const href = link.getAttribute('href');
-      if (!href
-        || href.startsWith('#')
-        || href.startsWith('http')
-        || href.startsWith('//')
-        || href.startsWith('mailto')
-        || href.startsWith('tel')) return;
+      if (!isLocalNav(href)) return;
 
       e.preventDefault();
       flipOut(href, getDuration());

@@ -118,6 +118,42 @@ class LibrarianGUI(tk.Tk):
         canvas.pack(side='left', fill='both', expand=True)
         fscroll.pack(side='right', fill='y')
 
+        # Bind scroll wheel to scroll the canvas when hovering over it or its contents
+        def _on_mousewheel(event):
+            widget = event.widget
+            parent = widget
+            is_child_of_canvas = False
+            while parent:
+                if parent == canvas:
+                    is_child_of_canvas = True
+                    break
+                parent_name = parent.winfo_parent()
+                if not parent_name:
+                    break
+                try:
+                    parent = self.nametowidget(parent_name)
+                except Exception:
+                    break
+            
+            if is_child_of_canvas:
+                if event.num == 4:
+                    canvas.yview_scroll(-2, "units")
+                elif event.num == 5:
+                    canvas.yview_scroll(2, "units")
+                else:
+                    # Windows / macOS MouseWheel
+                    # event.delta is positive for scrolling up, negative for down.
+                    # yview_scroll needs negative to scroll up, positive to scroll down.
+                    direction = -1 * (event.delta // 120)
+                    if direction == 0:
+                        direction = -1 if event.delta > 0 else 1
+                    canvas.yview_scroll(2 * direction, "units")
+
+        self.bind_all("<MouseWheel>", _on_mousewheel)
+        self.bind_all("<Button-4>", _on_mousewheel)
+        self.bind_all("<Button-5>", _on_mousewheel)
+
+
         r = 0
         ttk.Label(form, text='Add / Edit Book', font=('', 11, 'bold')).grid(
             row=r, column=0, columnspan=2, sticky='w', pady=(0, 6)); r += 1

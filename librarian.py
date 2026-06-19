@@ -172,7 +172,7 @@ def render_book_tile(book, slug):
     status_class = STATUS_CLASS[book['status']]
     cover = _tile_cover(book)
     return (
-        f'            <a class="book-tile" href="books/{slug}.html">\n'
+        f'            <a class="book-tile" href="books/{slug}.html" data-section="{book["section"]}" data-status="{book["status"]}">\n'
         f'                {cover}\n'
         f'                <div class="tile-meta">\n'
         f'                    <div class="tile-title">{e(book["title"])}</div>\n'

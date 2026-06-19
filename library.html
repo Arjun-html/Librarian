@@ -29,7 +29,7 @@
         <div class="masthead">
             <div class="masthead-vol">
                 <span>Vol. I &nbsp;&middot;&nbsp; The Complete Shelf</span>
-                <span>Wednesday, 10 June 2026, <i>Hong Kong</i></span>
+                <span>Friday, 19 June 2026, <i>Hong Kong</i></span>
             </div>
             <div class="masthead-name">The Arjun Dispatch</div>
             <div class="masthead-strapline">The Library &mdash; Every Volume Read and Under Review</div>
@@ -41,8 +41,22 @@
 
     <!-- Library grid -->
     <main class="library-page">
-        <div class="book-tiles-grid">
-            <a class="book-tile" href="books/a-practical-guide-to-quantitative-finance-interviews.html">
+        <!-- Search + filter bar -->
+        <div class="lib-filter-bar">
+            <input type="search" id="lib-search" class="lib-search-input"
+                   placeholder="Search by title or author&#8230;"
+                   autocomplete="off" spellcheck="false" aria-label="Search books">
+            <div class="lib-filter-tabs" role="group" aria-label="Filter by section">
+                <button class="lib-filter-btn active" data-filter="all">All</button>
+                <button class="lib-filter-btn" data-filter="software">Software</button>
+                <button class="lib-filter-btn" data-filter="engineering">Engineering</button>
+                <button class="lib-filter-btn" data-filter="finance">Finance</button>
+                <button class="lib-filter-btn" data-filter="philosophy">Philosophy</button>
+                <button class="lib-filter-btn" data-filter="reading">Reading</button>
+            </div>
+        </div>
+        <div id="library-grid" class="book-tiles-grid">
+            <a class="book-tile" href="books/a-practical-guide-to-quantitative-finance-interviews.html" data-section="finance" data-status="reading">
                 <div class="tile-cover"><img src="book_covers_additional/A Practical Guide to Quantitative Finance Interviews.jpg" alt="A Practical Guide to Quantitative Finance Interviews" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">A Practical Guide to Quantitative Finance Interviews</div>
@@ -50,7 +64,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/a-random-walk-down-wall-street.html">
+            <a class="book-tile" href="books/a-random-walk-down-wall-street.html" data-section="finance" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780393330335.jpg" alt="A Random Walk Down Wall Street" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">A Random Walk Down Wall Street</div>
@@ -58,7 +72,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/competitive-strategy.html">
+            <a class="book-tile" href="books/competitive-strategy.html" data-section="philosophy" data-status="reading">
                 <div class="tile-cover"><img src="book_covers_additional/9780684841489.jpg" alt="Competitive Strategy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Competitive Strategy</div>
@@ -66,7 +80,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/cows-pigs-wars-and-witches.html">
+            <a class="book-tile" href="books/cows-pigs-wars-and-witches.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780679724681.jpg" alt="Cows, Pigs, Wars, and Witches" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Cows, Pigs, Wars, and Witches</div>
@@ -74,7 +88,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/div-grad-curl-and-all-that-an-informal-text-on-vector-calculus.html">
+            <a class="book-tile" href="books/div-grad-curl-and-all-that-an-informal-text-on-vector-calculus.html" data-section="engineering" data-status="reading">
                 <div class="tile-cover"><img src="https://covers.openlibrary.org/b/isbn/9780393093674-M.jpg" alt="Div, Grad, Curl, and All that: An Informal Text on Vector Calculus" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Div, Grad, Curl, and All that: An Informal Text on Vector Calculus</div>
@@ -82,7 +96,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/flash-boys.html">
+            <a class="book-tile" href="books/flash-boys.html" data-section="finance" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780393351590.jpg" alt="Flash Boys" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Flash Boys</div>
@@ -90,7 +104,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/fundamentals-of-electric-circuits.html">
+            <a class="book-tile" href="books/fundamentals-of-electric-circuits.html" data-section="engineering" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780078028229.jpg" alt="Fundamentals of Electric Circuits" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Fundamentals of Electric Circuits</div>
@@ -98,7 +112,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/how-to-become-a-straight-a-student.html">
+            <a class="book-tile" href="books/how-to-become-a-straight-a-student.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780767922715.jpg" alt="How to Become a Straight-A Student" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">How to Become a Straight-A Student</div>
@@ -106,7 +120,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/i-robot.html">
+            <a class="book-tile" href="books/i-robot.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780553382563.jpg" alt="I, Robot" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">I, Robot</div>
@@ -114,7 +128,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/java-software-solutions.html">
+            <a class="book-tile" href="books/java-software-solutions.html" data-section="software" data-status="reading">
                 <div class="tile-cover"><img src="book_covers_additional/9780134462011.jpg" alt="Java Software Solutions" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Java Software Solutions</div>
@@ -122,7 +136,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/maus-a-survivors-tale.html">
+            <a class="book-tile" href="books/maus-a-survivors-tale.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780394747231.jpg" alt="Maus: A Survivor's Tale" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Maus: A Survivor's Tale</div>
@@ -130,7 +144,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/money-war-sex-karma.html">
+            <a class="book-tile" href="books/money-war-sex-karma.html" data-section="philosophy" data-status="reading">
                 <div class="tile-cover"><img src="book_covers_additional/Money_War_Sex_Karma.jpg" alt="Money, War, Sex, Karma" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Money, War, Sex, Karma</div>
@@ -138,7 +152,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/options-volatility-and-pricing.html">
+            <a class="book-tile" href="books/options-volatility-and-pricing.html" data-section="finance" data-status="reading">
                 <div class="tile-cover"><img src="book_covers_additional/9780071818773.jpg" alt="Options, Volatility and Pricing" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Options, Volatility and Pricing</div>
@@ -146,7 +160,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/pleasures-of-probability.html">
+            <a class="book-tile" href="books/pleasures-of-probability.html" data-section="engineering" data-status="reading">
                 <div class="tile-cover"><img src="book_covers_additional/9780387978840.jpg" alt="Pleasures of Probability" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Pleasures of Probability</div>
@@ -154,7 +168,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/python-for-finance.html">
+            <a class="book-tile" href="books/python-for-finance.html" data-section="software" data-status="reading">
                 <div class="tile-cover"><img src="book_covers_additional/9781492024330.jpg" alt="Python for Finance" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Python for Finance</div>
@@ -162,7 +176,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/reducing-traffic-injury.html">
+            <a class="book-tile" href="books/reducing-traffic-injury.html" data-section="engineering" data-status="read">
                 <div class="tile-cover no-image"><span>No cover available</span></div>
                 <div class="tile-meta">
                     <div class="tile-title">Reducing Traffic Injury</div>
@@ -170,7 +184,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/sapiens-a-brief-history-of-humankind.html">
+            <a class="book-tile" href="books/sapiens-a-brief-history-of-humankind.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780062316097.jpg" alt="Sapiens: A Brief History of Humankind" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Sapiens: A Brief History of Humankind</div>
@@ -178,7 +192,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/signals-and-linear-systems.html">
+            <a class="book-tile" href="books/signals-and-linear-systems.html" data-section="engineering" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/signals_and_systems.jpg" alt="Signals and Linear Systems" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Signals and Linear Systems</div>
@@ -186,7 +200,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/sun-and-steel.html">
+            <a class="book-tile" href="books/sun-and-steel.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/sun_and_steel.jpg" alt="Sun and Steel" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">Sun and Steel</div>
@@ -194,7 +208,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/the-alchemist.html">
+            <a class="book-tile" href="books/the-alchemist.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780062315007.jpg" alt="The Alchemist" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">The Alchemist</div>
@@ -202,7 +216,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/the-black-swan.html">
+            <a class="book-tile" href="books/the-black-swan.html" data-section="finance" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780679604181.jpg" alt="The Black Swan" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">The Black Swan</div>
@@ -210,7 +224,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/the-coddling-of-the-american-mind.html">
+            <a class="book-tile" href="books/the-coddling-of-the-american-mind.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780735224919.jpg" alt="The Coddling of the American Mind" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">The Coddling of the American Mind</div>
@@ -218,7 +232,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/the-man-who-solved-the-markets.html">
+            <a class="book-tile" href="books/the-man-who-solved-the-markets.html" data-section="finance" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780735217980.jpg" alt="The Man Who Solved the Markets" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">The Man Who Solved the Markets</div>
@@ -226,7 +240,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/the-molecule-of-more.html">
+            <a class="book-tile" href="books/the-molecule-of-more.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9781948836586.jpg" alt="The Molecule of More" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">The Molecule of More</div>
@@ -234,7 +248,7 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/the-prize-the-epic-quest-for-oil-money-power.html">
+            <a class="book-tile" href="books/the-prize-the-epic-quest-for-oil-money-power.html" data-section="philosophy" data-status="reading">
                 <div class="tile-cover"><img src="book_covers_additional/The_Prize_-_The_Epic_Quest_for_Oil,_Money,_and_Power.jpg" alt="The Prize: The Epic Quest for Oil, Money &amp; Power" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">The Prize: The Epic Quest for Oil, Money &amp; Power</div>
@@ -242,7 +256,7 @@
                     <span class="book-status status-reading">Reading</span>
                 </div>
             </a>
-            <a class="book-tile" href="books/the-stranger.html">
+            <a class="book-tile" href="books/the-stranger.html" data-section="philosophy" data-status="read">
                 <div class="tile-cover"><img src="book_covers_additional/9780679720201.jpg" alt="The Stranger" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
                 <div class="tile-meta">
                     <div class="tile-title">The Stranger</div>
@@ -250,6 +264,9 @@
                     <span class="book-status status-read">Read</span>
                 </div>
             </a>
+        </div>
+        <div id="lib-empty" class="lib-empty-state" hidden>
+            No volumes found &mdash; try a different search or section.
         </div>
     </main>
 
@@ -259,6 +276,7 @@
     </footer>
 
     <script src="nav.js"></script>
+    <script src="library-filter.js"></script>
     <script src="html2canvas.min.js"></script>
     <script src="page-transition.js?v=7"></script>
 </body>
