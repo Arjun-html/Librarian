@@ -200,8 +200,12 @@
 
 ### 4. Options, Volatility and Pricing
 **Author:** Sheldon Natenberg  
-**Status:** Reading  
-**My Notes:** Only the last two chapters left. Found the book really interesting and loved the concepts of how volatility, the greeks affect an option's price, but couldn't really find a way how I can use these techniques of options trading without working at one of the prop firms or financial institutions
+**Status:** Read  
+**My Notes:** Found the book really interesting and loved the concepts of how volatility, the greeks affect an option's price, but couldn't really find a way how I can use these techniques of options trading without working at one of the prop firms or financial institutions.    
+
+I actually started reading this book because I jumped into a course on Time Series Analysis with Financial Applications- offered by my university for final year students- in my sophomore year itself. The professor mentioned clearly to me as I begged for an xemption from the prerequisites- "You need to be reading and solving a textbook a week if you want to really be able to understand everything" and I readily agreed. 
+
+The course-work ended up being a _bit_ lighter than that, and I had so much fun learning about what actually goes on in exchanges, clearinghouses and your room when you place a trade- and how and when you should place it.
 
 **AI Notes:** Comprehensive guide to options trading and pricing. Covers option mechanics, the greeks (delta, gamma, vega, theta), volatility concepts, and practical trading strategies. Written from a trader's perspective.
 
@@ -437,6 +441,21 @@ Whether navigating a business venture, a habit, or a relationship, a builder mus
 
 ---
 
+### 15. Dune
+**Author:** Frank Herbert  
+**Status:** Read  
+**My Notes:** 1. Dune is a really forceful book. It forces you to read through pages and pages of exposition, before diving into any action- it is the exact opposite of a Jack Reacher or Bourne book. It makes you know so much background information about the characters before you even decide if you enjoy their company or not.
+
+2. This is sort of the way I'd perceived life around me. Before I started my own story- before I gained any semblance of agency in childhood- it seemed like there had always been so much happening in the world around me. Wars in the Middle East, the city flooding, the UK falling out of power, border troubles, world leaders changing and shifting, and it just seems like it sort of affects you- but how can you do anything about it? Dune pulls you in the same way into its universe, making you feel like a _resident_. For a while I had started to wonder if I had started to read a page in Daniel Yergin's history of oil, _The Prize_, instead.
+
+3. But as you join Paul on his journey, your mood changes. You start to feel as if now your actions have power, your moves can influence what others do, you are the chosen one.
+
+4. Now it turns into the struggle of thoughts and the consequences of your actions as the book enters its latter half. The moves that you know make such a devastating impact on people. As Paul unlocks his ability to become a _Mentat_ (human with exceptional powers of mental computation) and begins to **SEE** the world around him- I suddenly feel so vindicated. These thoughts that I had for so long—you should improve your memory. You need to work so hard. Staying in control of your thoughts- the key message- I see somebody fifty years ago, Frank Herbert, the author, felt the exact same way about it.
+
+**AI Notes:** —
+
+---
+
 ## Recommended Reading
 *Books suggested by my reading—I'll expand this as patterns emerge.*
 
@@ -458,4 +477,4 @@ Whether navigating a business venture, a habit, or a relationship, a builder mus
 ---
 
 **Last Updated:** June 19, 2026  
-**Total Books:** 42 (17 Read, 9 Reading, 16 Reading List)
+**Total Books:** 43 (19 Read, 8 Reading, 16 Reading List)

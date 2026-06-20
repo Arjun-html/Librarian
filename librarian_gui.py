@@ -63,6 +63,7 @@ class LibrarianGUI(tk.Tk):
         self.current_id = None          # None => adding a new book
         self.cover_path = None          # relative path stored in local_cover_path
         self._thumb = None              # keep a reference so Tk doesn't GC the image
+        self._all_rows: list = []       # full unfiltered book list for search
 
         self._build_layout()
         self.refresh_list()
@@ -86,6 +87,15 @@ class LibrarianGUI(tk.Tk):
         parent.add(left, weight=1)
 
         ttk.Label(left, text='Books', font=('', 11, 'bold')).pack(anchor='w', pady=(0, 4))
+
+        # Search bar
+        sf = ttk.Frame(left)
+        sf.pack(fill='x', pady=(0, 4))
+        ttk.Label(sf, text='Search:').pack(side='left')
+        self.var_search = tk.StringVar()
+        self.var_search.trace_add('write', lambda *_: self._apply_filter())
+        ttk.Entry(sf, textvariable=self.var_search).pack(side='left', fill='x', expand=True, padx=(4, 0))
+        ttk.Button(sf, text='×', width=2, command=lambda: self.var_search.set('')).pack(side='left', padx=(2, 0))
 
         cols = ('id', 'title', 'author', 'section', 'status')
         self.tree = ttk.Treeview(left, columns=cols, show='headings', selectmode='browse')
@@ -256,6 +266,8 @@ class LibrarianGUI(tk.Tk):
         ttk.Button(btns, text='Save + Regenerate',
                    command=lambda: self.save(regenerate=True)).pack(side='left', padx=4)
         ttk.Button(btns, text='Delete', command=self.delete).pack(side='left', padx=4)
+        ttk.Button(btns, text='Delete + Regenerate',
+                   command=lambda: self.delete(regenerate=True)).pack(side='left', padx=4)
         ttk.Button(btns, text='Regenerate site', command=self.regenerate).pack(side='left', padx=4)
 
         form.columnconfigure(1, weight=1)
@@ -273,20 +285,28 @@ class LibrarianGUI(tk.Tk):
         self.update_idletasks()
 
     def refresh_list(self):
-        for item in self.tree.get_children():
-            self.tree.delete(item)
         conn = librarian.get_db()
         rows = conn.execute(
             'SELECT id, title, author, section, status FROM books '
             'ORDER BY section, sort_order, id'
         ).fetchall()
         conn.close()
-        for b in rows:
-            self.tree.insert('', 'end', iid=str(b['id']), values=(
-                b['id'], b['title'], b['author'],
-                librarian.SECTION_NAMES.get(b['section'], b['section']),
-                STATUS_LABELS.get(b['status'], b['status']),
-            ))
+        self._all_rows = [
+            (b['id'], b['title'], b['author'],
+             librarian.SECTION_NAMES.get(b['section'], b['section']),
+             STATUS_LABELS.get(b['status'], b['status']))
+            for b in rows
+        ]
+        self._apply_filter()
+
+    def _apply_filter(self):
+        term = self.var_search.get().lower().strip()
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        for row in self._all_rows:
+            book_id, title, author, section, status = row
+            if not term or any(term in field.lower() for field in (title, author, section, status)):
+                self.tree.insert('', 'end', iid=str(book_id), values=row)
 
     def _update_hero_state(self):
         """Enable the hero panel only for Reading books."""
@@ -501,7 +521,7 @@ class LibrarianGUI(tk.Tk):
         if regenerate:
             self.regenerate(prefix=msg + ' ')
 
-    def delete(self):
+    def delete(self, regenerate=False):
         if self.current_id is None:
             messagebox.showinfo('Nothing selected', 'Select a book to delete.')
             return
@@ -514,7 +534,10 @@ class LibrarianGUI(tk.Tk):
         conn.close()
         self.refresh_list()
         self.clear_form()
-        self.status(f'Deleted "{title}". Click "Regenerate site" to update the website.')
+        msg = f'Deleted "{title}".'
+        self.status(msg)
+        if regenerate:
+            self.regenerate(prefix=msg + ' ')
 
     def regenerate(self, prefix=''):
         try:

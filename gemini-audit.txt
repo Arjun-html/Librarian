@@ -1,0 +1,110 @@
+================================================================================
+                    UX AUDIT REPORT: ARJUN'S ARCHIVES
+================================================================================
+Date: 2026-06-17
+Audited Components: Website Frontend, Tkinter Desktop GUI, CLI Generator Engine
+
+This document provides a UX assessment of the application, focusing on:
+1. Ease of Use
+2. Performance & Responsiveness
+3. Messaging & Interactive Feedback
+4. Quality Assurance & Error Handling
+
+--------------------------------------------------------------------------------
+1. WEBSITE FRONTEND (library.html, index.html, books/[slug].html)
+--------------------------------------------------------------------------------
+
+[A] Lack of Search & Category Filters on the Library Catalog
+- Observation: The A-Z library list (library.html) contains all 'read' and
+  'reading' books in a flat list. There is no search bar, nor is there a way to
+  filter books by Section (e.g., Software, Engineering, Finance, Philosophy) or
+  Status (e.g., currently Reading vs. Read).
+- UX Impact: High. As the library grows, visitors will struggle to find specific
+  books or explore sections of interest.
+- Recommended Fix: Implement a client-side search box and category filter tabs
+  (e.g., "All", "Software", "Engineering", "Finance", "Philosophy", "Reading")
+  with smooth CSS fade transitions.
+
+[B] Scrolling Junk/Stutter (Performance in page-transition.js)
+- Observation: The transition script takes screen snapshots using html2canvas on
+  window scroll and resize events (debounced at 220ms).
+- UX Impact: Medium-High. html2canvas is computationally heavy. On mobile browsers
+  or larger viewports, this continuous background rendering causes main-thread
+  jank and scrolling stutters.
+- Recommended Fix: Do not take snapshots continuously during scrolling. Instead,
+  trigger the html2canvas snapshot on-demand (e.g., on mousedown/touchstart of
+  navigational links) or use a static high-quality background curl graphic
+  instead of full-page replication if html2canvas takes too long to execute.
+
+[C] Missing Loading/Progress Visual Feedback
+- Observation: Clicking a book tile initiates the page-turn animation and loads the
+  target page in a hidden iframe. If the target page takes time to load, the user
+  experiences a frozen screen or blank canvas sheet.
+- UX Impact: Medium. The lack of interactive feedback makes the site feel stuck if
+  a user's network is slow.
+- Recommended Fix: If the page load inside the iframe takes longer than 200ms,
+  display a styled, classic typography progress spinner/loader (e.g., "Turning
+  to page...").
+
+[D] Sudden Transitions on Mobile Hamburger Menu
+- Observation: The mobile header dropdown toggles instantly without animation.
+- UX Impact: Low-Medium. Instant snapping breaks the premium paper-rolling aesthetic
+  of the rest of the site.
+- Recommended Fix: Add basic CSS slide/fade transitions on nav-links when open.
+
+--------------------------------------------------------------------------------
+2. DESKTOP EDITOR GUI (librarian_gui.py)
+--------------------------------------------------------------------------------
+
+[A] Scroll Wheel Does Not Work in the Form Canvas
+- Observation: The right-hand form uses a canvas viewport to support scrolling.
+  However, there are no mouse wheel event bindings for the canvas.
+- UX Impact: High. Users cannot scroll the entry form using the mouse scroll wheel;
+  they must click and drag the narrow scrollbar manually.
+- Recommended Fix: Bind the mouse wheel events (<MouseWheel> for Windows/macOS,
+  <Button-4>/<Button-5> for Linux) to scroll the canvas view.
+
+[B] No Book Search / Filter inside Treeview List
+- Observation: The treeview lists all database books. As the library scale grows,
+  finding a particular book to edit is slow and tedious.
+- UX Impact: Medium-High.
+- Recommended Fix: Place a search Entry widget above the treeview to filter the list
+  by title, author, or status in real time.
+
+[C] Inconsistent Auto-Regeneration workflow
+- Observation: Saving has a "Save + Regenerate" option, but deleting a book simply
+  updates the DB and shows: 'Deleted "{title}". Click "Regenerate site" to update.'
+- UX Impact: Medium. Deletion requires a manual second step to reflect changes,
+  introducing unnecessary user click overhead.
+- Recommended Fix: Standardize deletion by using a "Delete + Regenerate" option or
+  automatically triggering regeneration upon deletion.
+
+[D] Silent Fallback if Pillow (PIL) is Missing
+- Observation: If Pillow is not installed, the cover thumbnail field silently
+  hides preview images and displays "(none)" or a file name, without warning.
+- UX Impact: Medium. The user has no indication that cover previews are disabled due
+  to a missing dependency.
+- Recommended Fix: If _HAS_PIL is False, display a helpful tip: "(Thumbnail
+  disabled. Install Pillow library to enable previews.)".
+
+[E] Lack of ISBN Input Validation
+- Observation: The ISBN text input has no validation check. Typing typo-ridden or
+  invalid codes passes database constraints.
+- UX Impact: Medium. Invalid codes lead to failed Open Library downloads or hanging
+  connections during caching.
+- Recommended Fix: Strip out dashes/spaces and validate that the input is a valid
+  ISBN-10 or ISBN-13 format.
+
+--------------------------------------------------------------------------------
+3. COMMAND LINE INTERFACE (librarian.py)
+--------------------------------------------------------------------------------
+
+[A] Silent Cover Fetch Failures
+- Observation: When running "generate", cover caching displays a generic message
+  if the Open Library server is down or if the download fails. The user is not
+  told which books failed to download.
+- UX Impact: Medium. The user is left wondering why certain books are missing covers
+  on the final web output.
+- Recommended Fix: Maintain a list of books that failed to cache covers and print
+  a summary report at the end of the generator execution.
+================================================================================
