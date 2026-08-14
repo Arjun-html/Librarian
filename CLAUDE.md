@@ -16,8 +16,9 @@ The authoritative design document is **`ClaudeAi_SPEC_v2.md`** (the v2 vision). 
 
 ### Build status (what exists today vs. the v2 roadmap)
 
-- **Built:** front page (`index.html`), the generated **`library.html`** listing, the generated per-book **`books/[slug].html`** pages, `library.md` export, the SQLite source of truth, CLI + Tkinter GUI, dynamic newspaper hero, page-turn animation, sync-check hook, masthead strapline + "About" blurb, nav updated to **Front Page | Library | Essays & Thoughts**, `slugify()` + collision handling (`assign_slugs`), `render_book_tile` / `render_book_page`. **Utterances comments have been removed.** The hand-authored `archive.html` and `reading-list.html` have been **retired** (deleted) — `library.html` replaces them. Library tiles now link to real per-book pages.
-- **Roadmap (not yet built — see v2 spec §6, §12):** front-page `my_notes` previews truncated with a `Read full entry →` link (`render_notes_preview`), three page-turn animation variants, the `essays/` section.
+- **Built:** front page (`index.html`), the generated **`library.html`** listing, the generated per-book **`books/[slug].html`** pages, `library.md` export, the SQLite source of truth, CLI + Tkinter GUI, dynamic newspaper hero, the front-page **shelf exhibit** (a stacked-bar report chart of the library by section/status — see below), page-turn animation with direction (see below), sync-check hook, masthead strapline + "About" blurb, nav updated to **Front Page | Library | Essays & Thoughts**, `slugify()` + collision handling (`assign_slugs`), `render_book_tile` / `render_book_page`. **Utterances comments have been removed.** The hand-authored `archive.html` and `reading-list.html` have been **retired** (deleted) — `library.html` replaces them. Library tiles now link to real per-book pages.
+- **Roadmap (not yet built — see v2 spec §6, §12):** front-page `my_notes` previews truncated with a `Read full entry →` link (`render_notes_preview`), the `essays/` section beyond its current index/tile/page render functions.
+- The front page no longer has per-section book-card grids — the old `%%BOOKS_software%%` / `%%BOOKS_engineering%%` / `%%BOOKS_finance%%` / `%%BOOKS_philosophy%%` placeholders and `render_book_card` were removed when the hero + exhibit design landed. Do not assume they exist; the front page's only dynamic placeholders today are `%%NEWSPAPER_DYNAMIC%%` (hero), `%%SHELF_EXHIBIT%%` (report chart), `%%MASTHEAD_DATE%%`, and `%%FOOTER_DATE%%`.
 
 Do **not** assume roadmap items exist; verify in the code before referencing them.
 
@@ -36,13 +37,17 @@ Generated output (`index.html`, `library.md`, and — once built — `library.ht
 |---|---|---|
 | A book's title/author/status/notes/ISBN | `library.db` (via `librarian.py` or the GUI) | `python librarian.py generate` |
 | The newspaper hero stories/headlines | `library.db` hero fields (GUI hero form) | `python librarian.py generate` |
-| Colours, layout, fonts, textures | `styles.css` | nothing — it's loaded directly |
-| Page-flip animation / behaviour | `page-transition.js`, `app.js`, `flip-init.js` | nothing — loaded directly |
+| Colours, layout, fonts, textures | `styles.css` | bump its `?v=N` in every template (see below), nothing else |
+| Page-flip animation / behaviour | `page-transition.js`, `app.js`, `flip-init.js` | bump `page-transition.js`'s `?v=N` in every template (see below), nothing else |
 | Front-page masthead / nav / strapline / about blurb / skeleton | `templates/index_base.html` | `python librarian.py generate` |
 | Library-page banner / nav / skeleton | `templates/library_base.html` | `python librarian.py generate` |
 | Per-book page masthead / nav / skeleton | `templates/book_base.html` | `python librarian.py generate` |
 
 `generate` only ever writes the generated artifacts. It never touches the presentation files, so editing them is always safe.
+
+### Cache-busting `styles.css` and `page-transition.js`
+
+Both are linked from every template with a manual `?v=N` query string (e.g. `styles.css?v=4`, `page-transition.js?v=8`) purely to bust the browser cache — browsers cache static assets by URL, so editing the file's *content* without changing its *URL* means a returning visitor keeps being served their old cached copy. **Whenever you edit `styles.css` or `page-transition.js`, bump the corresponding `?v=N` in all five `templates/*.html` files** (`index_base.html`, `library_base.html`, `book_base.html`, `essay_base.html`, `essays_index_base.html`) before regenerating. This has silently bitten past sessions more than once — the file was correct on disk but the version tag wasn't bumped, so the change never reached a browser that had already visited.
 
 **Golden rule:** never hand-edit `index.html`, `library.html`, `library.md`, or any file under `books/`.
 
@@ -85,6 +90,22 @@ Sections: `software` (Software Related Books), `engineering` (Engineering & Math
 | Read | Read | `status-read` | yes |
 | Reading | Reading | `status-reading` | yes (+ front-page hero) |
 | Reading List | Reading List | `status-list` | no — DB/CLI/GUI only |
+
+## Design system
+
+The look is FT broadsheet meets a 1970s/80s corporate annual report — see `styles.css` `:root` for the tokens. Paper stock is FT salmon (`--cream: #fff1e5`, hero band `#fbe4d2`), with warm rules (`--light-taupe`) and a single oxblood accent (`--accent`) for links/hovers — no other colour is added for emphasis. Base type is serif throughout (`Libre Baskerville`); display headings use `var(--display)` (`Newsreader`) rather than a fashion-serif like Playfair, and the masthead alone keeps `IM Fell English`. `.newspaper-content a` is deliberately unstyled (`color: inherit; text-decoration: none`) — no newspaper prints a blue underlined headline; hover affordance comes from the story block, not the link.
+
+Book cover images are **muted plates, not greyscale** — `--plate` (`saturate(0.58) sepia(0.16) contrast(0.95) brightness(1.03)`) pulls colour back toward the paper stock without losing hue or detail, lifting toward `--plate-hover` on hover. This was an explicit correction mid-project: full desaturation was tried and rejected as straining and losing detail, in favour of the muted-but-legible palette real investor-report plates use.
+
+## The shelf exhibit
+
+`render_shelf_exhibit()` in `librarian.py` renders a pure-CSS stacked-bar chart on the front page (`%%SHELF_EXHIBIT%%`, between the hero and the About column): one column per section, segmented by status (read / reading / reading-list), bar heights as inline `style="height:…"` on `.seg` divs — no chart library, no `<canvas>`. It plots **by section and status, not by month** — `date_added` is dominated by the one-off migration date (40 of ~48 rows share one date), so a per-month "volumes read over time" chart would be fabricating a trend that isn't there. If real per-month reading data ever exists, that would be the natural next axis; don't add it speculatively.
+
+## Page-flip direction
+
+`page-transition.js` gives the peel a direction via `depth(url)`, which ranks a URL's place in the site's reading order (front page → Library → book pages → Essays). Navigating deeper peels normally (right edge, sweeping right→left). Navigating back toward the front **mirrors the whole frame**: the snapshot bitmap is flipped once (`mirrored()`) and drawn under a mirrored canvas transform, so the fold sweeps left→right and the curl lifts off the left edge, while the print still reads correctly (the two mirrors cancel). This was a deliberate design request — going "back" should feel like turning backward through the issue, not like the same forward turn playing in reverse.
+
+The animation is skipped entirely under `prefers-reduced-motion: reduce`, and the transient canvas is capped at 1.5x DPR (not the full device ratio) since it only exists on screen for a few hundred milliseconds.
 
 ## Book covers
 
