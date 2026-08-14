@@ -398,6 +398,71 @@ def _book_excerpt(book, length=460):
     return cut[:cut.rfind(' ')].rstrip(' ,;:') + '…'
 
 
+EXHIBIT_TITLE = 'The Shelf, by Division'
+
+
+def render_shelf_exhibit(conn):
+    """A report exhibit: one stacked column per section, split by status.
+
+    Deliberately *not* a timeline — `date_added` is dominated by the one-off
+    migration date, so a per-month chart would be fiction. Division and status
+    are real, so that is what gets plotted.
+    """
+    rows = conn.execute(
+        'SELECT section, status, COUNT(*) FROM books GROUP BY section, status'
+    ).fetchall()
+    # ESSAY_CATEGORIES holds the short display names for these same keys —
+    # the full SECTION_NAMES are far too long for an axis label.
+    counts = {s: {'read': 0, 'reading': 0, 'list': 0} for s in SECTIONS}
+    for section, status, n in rows:
+        counts[section][status] = n
+
+    totals = {s: sum(v.values()) for s, v in counts.items()}
+    tallest = max(totals.values()) or 1
+    PLOT = 168   # px
+
+    cols = []
+    for key in SECTIONS:
+        c, total = counts[key], totals[key]
+        segs = ''.join(
+            f'<div class="seg seg-{st}" style="height:{n / tallest * PLOT:.1f}px" '
+            f'title="{n} {STATUS_LABEL[st]}">'
+            f'{f"<span>{n}</span>" if n / tallest * PLOT >= 22 else ""}</div>'
+            for st in ('list', 'reading', 'read') if (n := c[st])
+        )
+        cols.append(
+            f'            <div class="exhibit-col">\n'
+            f'                <div class="exhibit-total">{total}</div>\n'
+            f'                <div class="exhibit-stack">{segs}</div>\n'
+            f'                <div class="exhibit-name">{e(ESSAY_CATEGORIES[key])}</div>\n'
+            f'            </div>'
+        )
+
+    key_html = ''.join(
+        f'<span class="exhibit-key-item"><i class="seg-{st}"></i>{STATUS_LABEL[st]}</span>'
+        for st in ('read', 'reading', 'list')
+    )
+    shelved = sum(totals.values()) - sum(c['list'] for c in counts.values())
+
+    return (
+        '    <section class="exhibit">\n'
+        f'        <div class="exhibit-head">{EXHIBIT_TITLE}'
+        f'<span class="exhibit-rule"></span>'
+        f'<span class="exhibit-count">{sum(totals.values())} volumes</span></div>\n'
+        '        <div class="exhibit-body">\n'
+        '        <div class="exhibit-plot">\n'
+        + '\n'.join(cols) + '\n'
+        '        </div>\n'
+        '        <div class="exhibit-side">\n'
+        f'            <div class="exhibit-key">{key_html}</div>\n'
+        f'            <p class="exhibit-note">Counted at press time. {shelved} volumes are '
+        f'published to the Library; Reading List titles are held in the ledger only.</p>\n'
+        '        </div>\n'
+        '        </div>\n'
+        '    </section>'
+    )
+
+
 def render_hero(conn):
     """Build section-banner + newspaper-content HTML from books with hero_slot set."""
     books = conn.execute(
@@ -527,6 +592,7 @@ def cmd_generate(args=None):
     template = TEMPLATE.read_text(encoding='utf-8')
 
     template = template.replace('%%NEWSPAPER_DYNAMIC%%', render_hero(conn))
+    template = template.replace('%%SHELF_EXHIBIT%%', render_shelf_exhibit(conn))
 
     # Masthead date: current date in Hong Kong (UTC+8), e.g. "Sunday, 26 June 2026, <i>Hong Kong</i>"
     hk_now = datetime.now(timezone(timedelta(hours=8)))

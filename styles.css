@@ -233,6 +233,160 @@ nav a:hover {
     outline-offset: 2px;
 }
 
+/* ── REPORT EXHIBIT ──────────────────────────────────────
+   A printed chart in the annual-report idiom: solid ink for finished work,
+   oxblood for work in hand, hatched outline for what is only on the ledger.
+   No script, no chart library — the bars are divs with heights. */
+.exhibit {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 2rem 1.6rem;
+    border-bottom: 1px solid var(--light-taupe);
+}
+
+.exhibit-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 1.6rem;
+}
+
+.exhibit-rule {
+    flex: 1;
+    height: 0;
+    border-top: 1px solid var(--light-taupe);
+}
+
+.exhibit-count {
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: var(--warm-gray);
+}
+
+/* Plot left, key and footnote set beside it — the report-exhibit arrangement,
+   and it uses the width the bars alone would leave empty. */
+.exhibit-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    gap: 3rem;
+    align-items: end;
+}
+
+.exhibit-plot {
+    display: flex;
+    align-items: flex-end;
+    gap: 2.5rem;
+    /* Baseline the columns stand on. */
+    border-bottom: 2px solid #111;
+    padding: 0 0.5rem;
+}
+
+.exhibit-col {
+    flex: 1;
+    max-width: 132px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.exhibit-total {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #111;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+}
+
+.exhibit-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.62rem;
+    line-height: 1;
+}
+
+.seg-read    { background: #241c15; color: #fff1e5; }
+.seg-reading { background: var(--accent); color: #fff1e5; }
+.seg-list {
+    color: #241c15;
+    border: 1px solid #241c15;
+    background: repeating-linear-gradient(
+        45deg, transparent 0 3px, rgba(36,28,21,0.28) 3px 4px);
+}
+
+/* Knock the hatching out behind the figure so it stays readable. */
+.seg-list span {
+    background: var(--cream);
+    padding: 0 0.25rem;
+}
+
+.exhibit-name {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #111;
+    padding-top: 0.5rem;
+}
+
+.exhibit-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.4rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--light-taupe);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dark-gray);
+}
+
+.exhibit-key-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.exhibit-key i {
+    width: 15px;
+    height: 9px;
+    display: inline-block;
+}
+
+.exhibit-note {
+    margin-top: 0.7rem;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.65rem;
+    font-style: italic;
+    color: var(--warm-gray);
+    max-width: 62ch;
+}
+
+@media (max-width: 860px) {
+    .exhibit-body { grid-template-columns: 1fr; gap: 1.2rem; }
+}
+
+@media (max-width: 640px) {
+    .exhibit { padding: 1.5rem 1.2rem 1.2rem; }
+    .exhibit-plot { gap: 1rem; }
+    .exhibit-total { font-size: 1.1rem; }
+    .exhibit-name { font-size: 0.52rem; letter-spacing: 0.08em; }
+}
+
 /* About this publication */
 .about-publication {
     background-color: var(--cream);
