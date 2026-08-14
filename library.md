@@ -456,6 +456,21 @@ Whether navigating a business venture, a habit, or a relationship, a builder mus
 
 ---
 
+### 16. The Art of War
+**Author:** Sun Tzu  
+**Status:** Read  
+**My Notes:** Sun-Tzu's Classic has been on my reading list for the past five years. But the time for it never arrives, and I choose another book, causing it to remain perpetually pushed down on my list.
+
+And I mean, this book is considered a classic for a reason. As you go about the pages, and you look at the different sections, some of it may seem quite obvious- "Higher ground is preferred over lower ground."
+
+Much more appreciated are the different types of battlefields and the strategies for them. He outlines that you should pursue some kind of scenario but also to bide your time, or even not to attack at all in most situations, which would have been important learnings for rulers and military strategists 2500 years ago. Something that stuck around with me was how much emphasis was placed on logistics and mentioning to the emperor to let the general do his job and to the general to let the soldiers to theirs'. Chinese philosophy has always relied on very strict hierarchy and the *Mandate of Heaven* has been followed for every ruling class.
+
+This means the ruler has a responsibility to his people and the population has a responsibility to him, connected by a tree structure - which is uncommon in modern society, which prefers to map out the social contract in a graph structure instead.
+
+**AI Notes:** —
+
+---
+
 ## Recommended Reading
 *Books suggested by my reading—I'll expand this as patterns emerge.*
 
@@ -476,5 +491,5 @@ Whether navigating a business venture, a habit, or a relationship, a builder mus
 
 ---
 
-**Last Updated:** June 19, 2026  
-**Total Books:** 43 (19 Read, 8 Reading, 16 Reading List)
+**Last Updated:** August 15, 2026  
+**Total Books:** 44 (20 Read, 8 Reading, 16 Reading List)
