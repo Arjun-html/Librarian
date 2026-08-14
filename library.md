@@ -471,6 +471,21 @@ This means the ruler has a responsibility to his people and the population has a
 
 ---
 
+### 17. Psycho-Cybernetics
+**Author:** Maxwell Maltz  
+**Status:** Read  
+**My Notes:** I haven't read a self-help book in a long while, but something about the neo-futuristic cover of this book just made me pick it up, out of curiosity. Maxwell Maltz' classic from the 1950s gets into the concept of using your *imagination* to your advantage, relating the human mind to the cybernetic machines (self-steering).
+
+The book tries to make understand that you should be striving for goals even when you don't know the way to them. This concept of *self-actualization* is something that's been studied over and over. Maltz goes into vivid detail that the body is a servo-mechanism which would mean that if there's a goal, there is a way that the mind will find itself- you just have to believe
+
+The funniest thing is that Maltz was not a psychologist by profession, but a plastic surgeon instead. I always find it fascinating when people go cross-domain to get deeper into their interests specifically. I think the same about myself- I've been studying electronics engineering in university, I've done my internships in data science, I have a strong interest in finance and the global economy while all my hobbies are outdoor sports activities.
+
+Maybe the activities that seem to show low correlation have intrinsic value on a deeper scale
+
+**AI Notes:** —
+
+---
+
 ## Recommended Reading
 *Books suggested by my reading—I'll expand this as patterns emerge.*
 
@@ -492,4 +507,4 @@ This means the ruler has a responsibility to his people and the population has a
 ---
 
 **Last Updated:** August 15, 2026  
-**Total Books:** 44 (20 Read, 8 Reading, 16 Reading List)
+**Total Books:** 45 (21 Read, 8 Reading, 16 Reading List)
