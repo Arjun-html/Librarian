@@ -486,6 +486,15 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
+### 18. Meditations
+**Author:** Marcus Aurelius  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Recommended Reading
 *Books suggested by my reading—I'll expand this as patterns emerge.*
 
@@ -507,4 +516,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** August 15, 2026  
-**Total Books:** 45 (21 Read, 8 Reading, 16 Reading List)
+**Total Books:** 46 (21 Read, 9 Reading, 16 Reading List)
