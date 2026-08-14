@@ -50,6 +50,15 @@
 
 ---
 
+### 6. Designing Data-Intensive Applications
+**Author:** Martin Kleppmann & Chris Riccomini  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Engineering & Mathematics
 
 ### 1. Fundamentals of Electric Circuits
@@ -488,7 +497,7 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ### 18. Meditations
 **Author:** Marcus Aurelius  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** —
 
 **AI Notes:** —
@@ -516,4 +525,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** August 15, 2026  
-**Total Books:** 46 (21 Read, 9 Reading, 16 Reading List)
+**Total Books:** 47 (22 Read, 9 Reading, 16 Reading List)
