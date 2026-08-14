@@ -16,7 +16,10 @@
   const SEEN_KEY  = 'arjun_flip_seen';
   const T_FIRST   = 1150;
   const T_REPEAT  = 640;
-  const DPR       = Math.min(window.devicePixelRatio || 1, 2);
+  // 1.5 is plenty for a sheet in motion for half a second, and costs ~45%
+  // fewer pixels per frame than a full 2× buffer on retina displays.
+  const DPR       = Math.min(window.devicePixelRatio || 1, 1.5);
+  const REDUCED   = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ── Cached viewport snapshot ─────────────────────────────────────────── */
 
@@ -74,9 +77,8 @@
    * The contact line sweeps right→left; the lifted right portion curls up
    * and over toward the left as a single cylinder.
    */
-  function draw(ctx, W, H, p) {
+  function draw(ctx, W, H, p, sheet) {
     ctx.clearRect(0, 0, W, H);
-    const sheet = snap || fallbackSnap || (fallbackSnap = buildFallbackSnap());
     const sc = sheet.width / W;
 
     if (p <= 0.0006) { ctx.drawImage(sheet, 0, 0, sheet.width, sheet.height, 0, 0, W, H); return; }
@@ -99,7 +101,10 @@
      *      the far edge inward so the near, readable face lands on top. */
     const phiFree = (W - cx) / R;                 // angle at the free (right) edge
     const xEnd    = cx + R * Math.min(phiFree, Math.PI);
-    const STEP    = 2;
+    // Strip width is a straight cost/quality trade: every strip is one
+    // drawImage plus one fillRect. The strips are squeezed by the curl and
+    // overlapped by the +0.6 fudge below, so wider strips stay seamless.
+    const STEP    = W > 900 ? 4 : 3;
     let curlRight = cx;                            // rightmost screen extent of the curl
     for (let x = xEnd; x > cx; x -= STEP) {
       const x0 = x - STEP;
@@ -158,6 +163,37 @@
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const easeOut   = t => 1 - Math.pow(1 - t, 3);
 
+  /* ── Direction ────────────────────────────────────────────────────────── *
+   * The site reads front to back like an issue: front page, then the Library
+   * and the book pages it opens onto, then Essays. Moving deeper turns the
+   * page forward (peel right→left); moving back toward the front turns it
+   * backward (peel left→right).
+   */
+  function depth(url) {
+    const p = new URL(url, location.href).pathname;
+    if (/\/books\//.test(p)) return 2;
+    if (/\/essays\/(index\.html)?$/.test(p)) return 3;
+    if (/\/essays\//.test(p)) return 4;
+    if (/library\.html$/.test(p)) return 1;
+    return 0;                                    // the front page
+  }
+
+  /* Horizontally mirrored copy of the snapshot. Drawing a mirrored sheet
+   * under a mirrored transform puts the geometry on the left and the print
+   * back the right way round — one flip instead of a second draw routine. */
+  let mirrorOf = null, mirrorSrc = null;
+  function mirrored(sheet) {
+    if (mirrorSrc === sheet && mirrorOf) return mirrorOf;
+    const m = document.createElement('canvas');
+    m.width = sheet.width; m.height = sheet.height;
+    const mx = m.getContext('2d');
+    mx.translate(sheet.width, 0);
+    mx.scale(-1, 1);
+    mx.drawImage(sheet, 0, 0);
+    mirrorSrc = sheet; mirrorOf = m;
+    return m;
+  }
+
   function makeCanvas() {
     const cv = document.createElement('canvas');
     cv.style.cssText =
@@ -166,6 +202,9 @@
     cv.width = Math.round(W * DPR);
     cv.height = Math.round(H * DPR);
     const ctx = cv.getContext('2d');
+    // Hundreds of squeezed strips per frame; high-quality resampling on each
+    // is not worth paying for on a sheet that is moving.
+    ctx.imageSmoothingQuality = 'low';
     ctx.scale(DPR, DPR);
     document.body.appendChild(cv);
     return { cv, ctx, W, H };
@@ -181,7 +220,7 @@
 
   let flipping = false;
 
-  async function flipOut(href, dur) {
+  async function flipOut(href, dur, back) {
     if (flipping) return;
     flipping = true;
 
@@ -203,9 +242,22 @@
     const ease = dur === T_FIRST ? easeInOut : easeOut;
     const t0 = performance.now();
 
+    let sheet = snap || fallbackSnap || (fallbackSnap = buildFallbackSnap());
+    if (back) sheet = mirrored(sheet);
+
     (function tick(now) {
       const raw = Math.min((now - t0) / dur, 1);
-      draw(o.ctx, o.W, o.H, ease(raw));
+      if (back) {
+        // Mirror the whole frame: the fold sweeps left→right and the curl
+        // lifts off the left edge, so the sheet turns back toward the front.
+        o.ctx.save();
+        o.ctx.setTransform(DPR, 0, 0, DPR, o.W * DPR, 0);
+        o.ctx.scale(-1, 1);
+        draw(o.ctx, o.W, o.H, ease(raw), sheet);
+        o.ctx.restore();
+      } else {
+        draw(o.ctx, o.W, o.H, ease(raw), sheet);
+      }
       if (raw < 1) requestAnimationFrame(tick);
       else window.location.href = href;
     }(performance.now()));
@@ -220,16 +272,26 @@
   }
 
   function init() {
+    // No animation at all when the reader has asked for reduced motion —
+    // links then behave like ordinary links.
+    if (REDUCED) return;
+
     // Pre-capture once at idle so the very first click peels instantly.
     if (window.requestIdleCallback) requestIdleCallback(takeSnapshot, { timeout: 1200 });
     else setTimeout(takeSnapshot, 400);
 
     // Resize: old snapshot dimensions are wrong — clear it, then quietly
-    // re-capture at idle (no scroll listener needed).
+    // re-capture at idle. Debounced, or a single drag of the window edge
+    // queues dozens of captures.
+    let resizeTimer = null;
     window.addEventListener('resize', () => {
       snap = null; fallbackSnap = null; snapPromise = null; snapping = false;
-      if (window.requestIdleCallback) requestIdleCallback(takeSnapshot, { timeout: 800 });
-      else setTimeout(takeSnapshot, 300);
+      mirrorOf = null; mirrorSrc = null;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (window.requestIdleCallback) requestIdleCallback(takeSnapshot, { timeout: 800 });
+        else takeSnapshot();
+      }, 250);
     });
 
     // Pre-warm snapshot on pointer/touch intent so it is ready (or nearly
@@ -252,7 +314,7 @@
       if (!isLocalNav(href)) return;
 
       e.preventDefault();
-      flipOut(href, getDuration());
+      flipOut(href, getDuration(), depth(href) < depth(location.href));
     }, true);
   }
 
