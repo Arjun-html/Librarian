@@ -1,10 +1,19 @@
 :root {
-    --cream: #f9f7f4;
-    --light-taupe: #e8e4df;
-    --warm-gray: #a89f95;
-    --dark-gray: #4a4440;
-    --accent: #8b7a6f;
-    --soft-black: #2a2420;
+    /* Paper stock: FT salmon. --cream keeps its name so every existing rule
+       picks up the new stock without a rename. */
+    --cream: #fff1e5;
+    --light-taupe: #ecd9c6;
+    --warm-gray: #9c8877;
+    --dark-gray: #4a4038;
+    --accent: #8a2b1c;          /* oxblood — links and hovers only */
+    --soft-black: #1d1712;
+
+    --display: 'Newsreader', Georgia, serif;
+
+    /* Book covers as offset-printed plates: colour pulled back and warmed,
+       but detail and hue kept legible. Not greyscale. */
+    --plate: saturate(0.58) sepia(0.16) contrast(0.95) brightness(1.03);
+    --plate-hover: saturate(0.85) sepia(0.05) contrast(1) brightness(1);
 }
 
 * {
@@ -18,7 +27,7 @@ html {
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Libre Baskerville', Georgia, serif;
     background-color: var(--cream);
     background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23b)' opacity='0.035'/%3E%3C/svg%3E");
@@ -45,7 +54,7 @@ nav {
 }
 
 .logo {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--display);
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--soft-black);
@@ -124,7 +133,7 @@ nav a:hover {
     position: relative;
     border-bottom: 4px solid #111;
     /* Aged newsprint: warm uneven tint + foxing + fine grain. */
-    background-color: #f1ece1;
+    background-color: #fbe4d2;
     background-image:
         radial-gradient(120% 90% at 18% 8%, rgba(214,196,158,0.30) 0%, transparent 45%),
         radial-gradient(110% 80% at 92% 96%, rgba(204,182,140,0.34) 0%, transparent 50%),
@@ -160,7 +169,7 @@ nav a:hover {
 }
 
 .masthead-name {
-    font-family: 'IM Fell English', 'Playfair Display', Georgia, serif;
+    font-family: 'IM Fell English', var(--display);
     font-size: clamp(2.6rem, 6.5vw, 5.2rem);
     color: #0a0a0a;
     line-height: 0.9;
@@ -212,6 +221,18 @@ nav a:hover {
     padding: 0 2rem;
 }
 
+/* Headlines are links, but no newspaper ever printed a blue underlined
+   headline. The whole story block is clickable; hover supplies the affordance. */
+.newspaper-content a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.newspaper-content a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
 /* About this publication */
 .about-publication {
     background-color: var(--cream);
@@ -219,14 +240,22 @@ nav a:hover {
 }
 
 .about-inner {
-    max-width: 760px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 2.5rem 2rem 3rem;
-    text-align: center;
+    /* Sits on the same measure as the newspaper grid above it, set as a
+       two-column standfirst rather than a centred block. */
+    padding: 2rem 2rem 2.5rem;
+    text-align: left;
+    columns: 2;
+    column-gap: 2.5rem;
+    column-rule: 1px solid var(--light-taupe);
 }
 
 .about-heading {
-    font-family: 'Playfair Display', serif;
+    column-span: all;
+    border-bottom: 2px solid #111;
+    padding-bottom: 0.4rem;
+    font-family: var(--display);
     font-size: 1.4rem;
     color: var(--soft-black);
     letter-spacing: -0.3px;
@@ -239,6 +268,7 @@ nav a:hover {
     color: var(--dark-gray);
     line-height: 1.75;
     margin-bottom: 0.9rem;
+    break-inside: avoid;   /* keep a paragraph in one column */
 }
 
 .about-inner a {
@@ -253,7 +283,10 @@ nav a:hover {
 }
 
 .about-links {
+    column-span: all;
     margin-top: 1.2rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--light-taupe);
     font-size: 0.85rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -276,7 +309,7 @@ nav a:hover {
     grid-column: 1 / 3;
     grid-row: 1 / 3;
     padding: 1.5rem 2rem 1.5rem 0;
-    border-right: 1px solid #aaa;
+    border-right: 1px solid var(--light-taupe);
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -289,7 +322,7 @@ nav a:hover {
 }
 
 .story-side + .story-side {
-    border-top: 1px solid #aaa;
+    border-top: 1px solid var(--light-taupe);
 }
 
 /* Bottom 3 equal stories */
@@ -305,7 +338,7 @@ nav a:hover {
 }
 
 .story-bottom + .story-bottom {
-    border-left: 1px solid #aaa;
+    border-left: 1px solid var(--light-taupe);
 }
 
 /* Hover states */
@@ -338,7 +371,7 @@ nav a:hover {
 }
 
 .story-headline-lead {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--display);
     font-size: clamp(1.55rem, 2.6vw, 2.3rem);
     line-height: 1.12;
     color: #0a0a0a;
@@ -347,7 +380,7 @@ nav a:hover {
 }
 
 .story-headline {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--display);
     font-size: 1.1rem;
     line-height: 1.22;
     color: #0a0a0a;
@@ -356,7 +389,7 @@ nav a:hover {
 }
 
 .story-headline-sm {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--display);
     font-size: 0.98rem;
     line-height: 1.25;
     color: #0a0a0a;
@@ -380,7 +413,7 @@ nav a:hover {
     text-transform: uppercase;
     color: #777;
     padding-bottom: 0.55rem;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--light-taupe);
     margin-bottom: 0.85rem;
 }
 
@@ -393,7 +426,7 @@ nav a:hover {
 }
 
 .story-body::first-letter {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--display);
     font-size: 3.6rem;
     font-weight: 700;
     line-height: 0.78;
@@ -403,22 +436,22 @@ nav a:hover {
     color: #0a0a0a;
 }
 
+/* A print standfirst, not a UI pill — the boxed chip was the one element
+   on the page a 1978 report could not have printed. */
 .story-progress {
-    display: inline-block;
+    display: block;
     font-family: 'Libre Baskerville', Georgia, serif;
     font-size: 0.64rem;
-    color: #666;
+    color: var(--warm-gray);
     font-style: italic;
-    margin-top: 0.8rem;
-    padding: 0.18rem 0.5rem;
-    border: 1px solid #aaa;
+    margin-top: 0.7rem;
 }
 
-/* B&W book cover images */
+/* Book covers, printed as muted plates (see --plate) */
 .story-img-lead {
     float: right;
-    width: 155px;
-    height: 215px;
+    width: 172px;
+    height: 240px;
     margin: 0 0 1rem 1.5rem;
     overflow: hidden;
     border: 1px solid #bbb;
@@ -429,20 +462,20 @@ nav a:hover {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: sepia(0.35) saturate(1.1);
+    filter: var(--plate);
     display: block;
     transition: filter 0.3s;
 }
 
 .story-lead:hover .story-img-lead img {
-    filter: sepia(0.35) saturate(1.1);
+    filter: var(--plate-hover);
 }
 
 .story-img-sm {
     float: right;
-    width: 62px;
-    height: 88px;
-    margin: 0 0 0.5rem 0.8rem;
+    width: 84px;
+    height: 120px;
+    margin: 0 0 0.6rem 1rem;
     overflow: hidden;
     border: 1px solid #bbb;
 }
@@ -451,14 +484,14 @@ nav a:hover {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: sepia(0.35) saturate(1.1);
+    filter: var(--plate);
     display: block;
     transition: filter 0.3s;
 }
 
 .story-side:hover .story-img-sm img,
 .story-bottom:hover .story-img-sm img {
-    filter: sepia(0.35) saturate(1.1);
+    filter: var(--plate-hover);
 }
 
 /* Page-load animation */
@@ -476,10 +509,14 @@ nav a:hover {
     .masthead-name { font-size: 2.4rem; letter-spacing: -1px; }
     .masthead-vol { flex-direction: column; gap: 0.15rem; text-align: center; }
     .newspaper-top { grid-template-columns: 1fr; }
-    .story-lead { grid-column: 1; grid-row: 1; border-right: none; border-bottom: 1px solid #aaa; padding-right: 0; }
-    .story-side { grid-column: 1; padding-left: 0; border-top: 1px solid #aaa; }
+    .story-lead { grid-column: 1; grid-row: 1; border-right: none; border-bottom: 1px solid var(--light-taupe); padding-right: 0; }
+    .story-img-lead { float: none; width: 138px; height: 196px; margin: 0 0 1rem; }
+    .about-inner { columns: 1; }
+    /* justified text opens rivers at this measure */
+    .story-body { text-align: left; }
+    .story-side { grid-column: 1; padding-left: 0; border-top: 1px solid var(--light-taupe); }
     .newspaper-bottom-row { grid-template-columns: 1fr; }
-    .story-bottom + .story-bottom { border-left: none; border-top: 1px solid #aaa; }
+    .story-bottom + .story-bottom { border-left: none; border-top: 1px solid var(--light-taupe); }
 }
 
 /* Main Content */
@@ -494,7 +531,7 @@ main {
 }
 
 .library-section h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--display);
     font-size: 2rem;
     margin-bottom: 2rem;
     color: var(--soft-black);
@@ -537,7 +574,7 @@ main {
 }
 
 .book-title {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--display);
     font-size: 1.25rem;
     color: var(--soft-black);
     margin-bottom: 0.25rem;
@@ -643,7 +680,7 @@ main {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: sepia(0.35) saturate(1.1);
+    filter: var(--plate);
 }
 
 .book-cover.no-image {
@@ -701,10 +738,10 @@ main {
 
 /* Footer — newspaper colophon */
 footer {
-    background-color: #fafaf8;
-    border-top: 0.5px solid var(--light-taupe);
-    padding: 3rem 2rem;
-    margin-top: 5rem;
+    background-color: transparent;
+    border-top: 1px solid var(--light-taupe);
+    padding: 1.6rem 2rem;
+    margin-top: 0;
 }
 
 footer p {
@@ -794,7 +831,7 @@ footer p {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: sepia(0.35) saturate(1.1);
+    filter: var(--plate);
 }
 
 .tile-cover.no-image {
@@ -812,7 +849,7 @@ footer p {
 }
 
 .tile-title {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--display);
     font-size: 1rem;
     line-height: 1.3;
     color: var(--soft-black);
@@ -1002,7 +1039,7 @@ footer p {
 }
 
 .detail-title {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--display);
     font-size: clamp(2rem, 4.5vw, 3rem);
     line-height: 1.12;
     color: var(--soft-black);
@@ -1039,7 +1076,7 @@ footer p {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: sepia(0.35) saturate(1.1);
+    filter: var(--plate);
 }
 
 .detail-cover.no-image {
@@ -1068,6 +1105,22 @@ footer p {
     line-height: 1.85;
     color: var(--dark-gray);
     text-align: justify;
+}
+
+/* The global reset zeroes <p> margins, so rendered notes ran together as a
+   single block. Indent successive paragraphs instead of spacing them — this
+   is a printed page, not a web article. */
+.detail-notes-text p + p {
+    text-indent: 1.6em;
+}
+
+.detail-notes-text ul,
+.detail-notes-text ol {
+    margin: 0.9rem 0 0.9rem 1.6em;
+}
+
+.detail-notes-text li {
+    margin-bottom: 0.35rem;
 }
 
 .detail-notes-empty {
@@ -1139,7 +1192,7 @@ footer p {
 }
 
 .essay-featured-headline {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--display);
     font-size: clamp(1.7rem, 3.2vw, 2.4rem);
     line-height: 1.12;
     color: #0a0a0a;
@@ -1199,7 +1252,7 @@ footer p {
 }
 
 .essay-tile-title {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--display);
     font-size: 1.05rem;
     line-height: 1.25;
     color: var(--soft-black);
@@ -1242,7 +1295,7 @@ footer p {
 }
 
 .essay-detail-title {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--display);
     font-size: clamp(1.9rem, 4.2vw, 2.8rem);
     line-height: 1.14;
     color: var(--soft-black);
@@ -1275,7 +1328,7 @@ footer p {
 
 .essay-detail-body h2,
 .essay-detail-body h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--display);
     color: var(--soft-black);
     text-align: left;
     line-height: 1.25;

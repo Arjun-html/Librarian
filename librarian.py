@@ -371,7 +371,15 @@ def _hero_cover_src(book):
     return None
 
 
-def _book_excerpt(book, length=100):
+def _byline(book):
+    """`By Author` plus the optional extra, without a dangling bullet."""
+    parts = [f'By {e(book["author"])}']
+    if book['hero_byline_extra']:
+        parts.append(e(book['hero_byline_extra']))
+    return ' &bull; '.join(parts)
+
+
+def _book_excerpt(book, length=460):
     """First `length` characters (plus an ellipsis) of the book's per-book-page
     text — i.e. its rendered my_notes with markup stripped and whitespace
     collapsed. Used as the lead story's blurb on the front page. Returns '' when
@@ -384,7 +392,10 @@ def _book_excerpt(book, length=100):
     text = re.sub(r'\s+', ' ', text).strip()                 # collapse whitespace
     if not text:
         return ''
-    return text[:length].rstrip() + '...'
+    if len(text) <= length:
+        return text
+    cut = text[:length]
+    return cut[:cut.rfind(' ')].rstrip(' ,;:') + '…'
 
 
 def render_hero(conn):
@@ -428,8 +439,8 @@ def render_hero(conn):
             f'                    </div>\n'
             f'                    <h2 class="story-headline-lead">{_link(b, e(b["hero_headline"] or b["title"]))}</h2>\n'
             f'                    <div class="story-deck">{e(b["hero_deck"] or "")}</div>\n'
-            f'                    <div class="story-byline">By {e(b["author"])} &bull; {e(b["hero_byline_extra"] or "")}</div>{body}\n'
-            f'                    <span class="story-progress">&#9998;&nbsp; {e(b["hero_progress"] or "")}</span>\n'
+            f'                    <div class="story-byline">{_byline(b)}</div>{body}\n'
+            f'                    <span class="story-progress">{e(b["hero_progress"] or "")}</span>\n'
             f'                </div>'
         )
 
@@ -445,8 +456,8 @@ def render_hero(conn):
             f'                    </div>\n'
             f'                    <h3 class="story-headline">{_link(b, e(b["hero_headline"] or b["title"]))}</h3>\n'
             f'                    <div class="story-deck">{e(b["hero_deck"] or "")}</div>\n'
-            f'                    <div class="story-byline">By {e(b["author"])} &bull; {e(b["hero_byline_extra"] or "")}</div>\n'
-            f'                    <span class="story-progress">&#9998;&nbsp; {e(b["hero_progress"] or "")}</span>\n'
+            f'                    <div class="story-byline">{_byline(b)}</div>\n'
+            f'                    <span class="story-progress">{e(b["hero_progress"] or "")}</span>\n'
             f'                </div>'
         )
 
@@ -472,8 +483,8 @@ def render_hero(conn):
                 f'                    </div>\n'
                 f'                    <h3 class="story-headline-sm">{_link(b, e(b["hero_headline"] or b["title"]))}</h3>\n'
                 f'                    <div class="story-deck">{e(b["hero_deck"] or "")}</div>\n'
-                f'                    <div class="story-byline">By {e(b["author"])} &bull; {e(b["hero_byline_extra"] or "")}</div>\n'
-                f'                    <span class="story-progress">&#9998;&nbsp; {e(b["hero_progress"] or "")}</span>\n'
+                f'                    <div class="story-byline">{_byline(b)}</div>\n'
+                f'                    <span class="story-progress">{e(b["hero_progress"] or "")}</span>\n'
                 f'                </div>'
             )
         bottom_html = (
