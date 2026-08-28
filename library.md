@@ -301,6 +301,15 @@ The course-work ended up being a _bit_ lighter than that, and I had so much fun 
 
 ---
 
+### 14. The Only Crypto Story You'll Ever Need
+**Author:** Matt Levine  
+**Status:** Read  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Greater Awareness & Philosophy
 
 ### 1. The Coddling of the American Mind
@@ -552,4 +561,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** August 28, 2026  
-**Total Books:** 50 (23 Read, 11 Reading, 16 Reading List)
+**Total Books:** 51 (24 Read, 11 Reading, 16 Reading List)
