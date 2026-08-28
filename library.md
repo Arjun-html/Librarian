@@ -285,7 +285,16 @@ The course-work ended up being a _bit_ lighter than that, and I had so much fun 
 
 ### 12. The Shipping Man
 **Author:** Matthew McCleery  
-**Status:** Reading List  
+**Status:** Read  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
+### 13. Principles
+**Author:** Ray Dalio  
+**Status:** Reading  
 **My Notes:** —
 
 **AI Notes:** —
@@ -542,5 +551,5 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
-**Last Updated:** August 22, 2026  
-**Total Books:** 49 (22 Read, 10 Reading, 17 Reading List)
+**Last Updated:** August 28, 2026  
+**Total Books:** 50 (23 Read, 11 Reading, 16 Reading List)
