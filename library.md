@@ -540,6 +540,15 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
+### 19. Foundation
+**Author:** Isaac Asimov  
+**Status:** Reading List  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Recommended Reading
 *Books suggested by my reading—I'll expand this as patterns emerge.*
 
@@ -560,5 +569,5 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
-**Last Updated:** August 28, 2026  
-**Total Books:** 51 (24 Read, 11 Reading, 16 Reading List)
+**Last Updated:** August 29, 2026  
+**Total Books:** 52 (24 Read, 11 Reading, 17 Reading List)
