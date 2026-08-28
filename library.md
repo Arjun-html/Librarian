@@ -23,16 +23,7 @@
 
 ---
 
-### 3. Designing Data-Intensive Applications
-**Author:** Martin Kleppmann  
-**Status:** Reading List  
-**My Notes:** —
-
-**AI Notes:** A deep dive into the principles and architecture of modern distributed systems. Covers databases, data processing, messaging systems, and distributed architectures. Essential reading for understanding how to build scalable systems that handle massive amounts of data.
-
----
-
-### 4. Computer Architecture
+### 3. Computer Architecture
 **Author:** John L. Hennessy & David A. Patterson  
 **Status:** Reading List  
 **My Notes:** —
@@ -41,7 +32,7 @@
 
 ---
 
-### 5. Python for Data Analysis
+### 4. Python for Data Analysis
 **Author:** Wes McKinney  
 **Status:** Reading List  
 **My Notes:** —
@@ -50,7 +41,7 @@
 
 ---
 
-### 6. Designing Data-Intensive Applications
+### 5. Designing Data-Intensive Applications
 **Author:** Martin Kleppmann & Chris Riccomini  
 **Status:** Reading  
 **My Notes:** —
@@ -570,4 +561,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** August 29, 2026  
-**Total Books:** 52 (24 Read, 11 Reading, 17 Reading List)
+**Total Books:** 51 (24 Read, 11 Reading, 16 Reading List)
