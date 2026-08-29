@@ -169,6 +169,15 @@
 
 ---
 
+### 14. Wireless Connectivity: An Intuitive and Fundamental Guide
+**Author:** Petar Popovski  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Finance
 
 ### 1. A Practical Guide to Quantitative Finance Interviews
@@ -561,4 +570,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** August 29, 2026  
-**Total Books:** 51 (24 Read, 11 Reading, 16 Reading List)
+**Total Books:** 52 (24 Read, 12 Reading, 16 Reading List)
