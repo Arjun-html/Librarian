@@ -7,4 +7,5 @@ __pycache__/
 # Screenshots and PDFs
 *.png
 *.pdf
+!marginalia/images/*.png
 .playwright-mcp/
