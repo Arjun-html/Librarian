@@ -25,12 +25,15 @@ The v2.0 draft was written partly aspirationally. This is what is **actually in 
 
 ### ❌ Described in the v2.0 draft but NOT built (still roadmap)
 - **Three randomised page-turn variants** (`slowDramatic` / `mediumCrisp` / `snapWithPeel`). These were added (cache-buster `v6`) then **reverted** to the single transition (`v7`). The codebase has **one** transition today.
-- **Truncated `my_notes` preview + `Read full entry →` link** on the front page (`render_notes_preview`). Front-page cards still show the **full** `my_notes` *and* the `ai_notes` "About" block via expand/collapse — exactly as in v1.
-- **`essays/` section** — no `essays/` directory, listing, or pages exist. Nav links to `essays/index.html` are dead.
 - `%%ABOUT_BLURB%%` / `%%MASTHEAD_STRAPLINE%%` as **placeholders** — these are hard-coded in `templates/index_base.html`, and `cmd_generate` does not substitute them.
 
+### ✅ Corrections to earlier drafts of this section
+- **`essays/` section exists and is live** — `essays/` has an `index.html`, per-essay pages, and an `images/` folder; the nav link to `essays/index.html` works. Earlier revisions of this spec wrongly called it dead/unbuilt.
+- **Front-page notes truncation is implemented** — `_book_excerpt()` in `librarian.py` truncates the lead story's `my_notes` (first ~460 chars, word-boundary cut + ellipsis) for the front-page hero body. Books with no `my_notes` simply render no excerpt (fallback), which is expected, not a bug. The old `render_notes_preview()` name in this doc never matched the shipped function.
+- **`BOOKS_DATA` / `migrate` removed** — the built-in seed list and `cmd_migrate` in `librarian.py` were deleted (2026-08-30): the live DB had long since diverged from the seed (see the old drift note below), and `--force` on `migrate` was a live footgun against real data. `library.db` is the only source of truth now; there is no re-seed path.
+
 ### ⚠️ Drift / quirks to be aware of
-- The **live `library.db` has 41 books** (17 `read`, 7 `reading`, 17 `list`) and has diverged from the `BOOKS_DATA` seed (e.g. *I, Robot* is now `read`; *Money, War, Sex, Karma* added as `reading`). `BOOKS_DATA` is the one-time migration seed only — do not treat it as current content. A `library.db.bak-prequant` backup exists from the quant→finance rename.
+- The **live `library.db` has 41 books** (17 `read`, 7 `reading`, 17 `list`) and had diverged from the old `BOOKS_DATA` seed (e.g. *I, Robot* is now `read`; *Money, War, Sex, Karma* added as `reading`) before that seed was removed — see the correction above. A `library.db.bak-prequant` backup exists from the quant→finance rename.
 - `ai_notes` is still authored and **still displayed on front-page cards** ("About" block); it is **omitted** on per-book pages. It is not "phased out" yet.
 
 ---
@@ -39,9 +42,9 @@ The v2.0 draft was written partly aspirationally. This is what is **actually in 
 
 **Arjun's Archives** is a personal website for a Year‑2 university student studying Electrical/Mechanical Engineering and Computer Science. It has three distinct sections:
 
-1. **Front page (`index.html`)** — A Financial Times‑style newspaper front page: masthead, editorial hero featuring currently‑reading books, a brief "About" column, social links, and per-section book cards (expand/collapse, full notes). This is the only page that must look and feel exactly like a broadsheet front page. *(The v2 vision of truncating each card to a short preview + "Read full entry →" link is not yet built — see §0.)*
+1. **Front page (`index.html`)** — A Financial Times‑style newspaper front page: masthead, editorial hero featuring currently‑reading books, a brief "About" column, social links. The hero's lead story truncates `my_notes` to an excerpt (`_book_excerpt()`) rather than showing per-section book cards — see §0.
 2. **Library (`library.html`)** — All books read or currently reading, sorted alphabetically, displayed as cover + title + author + status chip. Each book links to its own dedicated page. Books with `status = list` are excluded from the website entirely but remain in the database for CLI/GUI use.
-3. **Essays & Thoughts (`essays/index.html`)** — A listing of personal essays and reflections. *(Design to be discussed separately; placeholder in this spec.)*
+3. **Essays & Thoughts (`essays/index.html`)** — a listing of personal essays and reflections, live and linked from nav.
 
 The site is **static** (no server, no build step to view — just open the HTML), but `index.html`, `library.html`, and all files under `books/` are **generated artifacts** produced by `librarian.py` from `library.db`. The essays section uses flat Markdown/HTML files with a separate manifest.
 
@@ -180,7 +183,6 @@ Single SQLite table `books`, created by `ensure_schema()`:
 ### Commands
 
 ```
-python librarian.py migrate          # seed library.db from BOOKS_DATA (once; --force to reset)
 python librarian.py add              # interactively add a book
 python librarian.py list             # list books [--section <s>] [--status <s>]
 python librarian.py update <id>      # edit a book's fields
@@ -236,7 +238,7 @@ Slug collisions (two books with the same title after slugification) are resolved
 - **`_tile_cover` / `_detail_cover` / `_cover_div` / `_hero_cover_src`** — cover source resolution (local path → ISBN → "No cover available"). `_detail_cover` uses the `-L` Open Library size and `../`-relative paths.
 - **`slugify` / `assign_slugs`** — URL slug generation + collision handling.
 - **`render_book_card(book)`** — expandable card for `index.html`. Shows full `my_notes` + `ai_notes` "About" block. Utterances script tag **removed**.
-- **`render_notes_preview(text, max_chars=150)`** — **NOT implemented** (roadmap; see §0).
+- **`_book_excerpt(book, length=460)`** — truncates a book's rendered `my_notes` (tags stripped, whitespace collapsed, word-boundary cut + ellipsis) for use as the front-page lead story's blurb. Returns `''` for books with no notes.
 - **`render_hero(conn)`** — newspaper hero for `index.html` (lead/side/bottom slots, dynamic volume count).
 - **`e()`** — HTML escaping.
 
@@ -369,9 +371,9 @@ The following changes address the "is this really the front page?" problem (all 
 
 ---
 
-## 12. Essays & Thoughts (`essays/`) — Placeholder
+## 12. Essays & Thoughts (`essays/`)
 
-*Full design to be discussed separately. The following is the agreed skeleton only.*
+*Note: this section was written as a placeholder before `essays/` was built — see §0. `essays/` now exists (`index.html`, per-essay pages, `images/`) and the nav link is live. The skeleton below may not reflect the shipped implementation exactly; treat §0 as authoritative on build status.*
 
 - **`essays/index.html`** — a listing page: titles as a styled bullet/list, each linking to its essay page. Can be hand‑authored or generated from a manifest file.
 - **`essays/[slug].html`** — individual essay pages, hand‑authored HTML or converted from Markdown.
@@ -475,17 +477,17 @@ Unchanged. Guards ISBN consistency between hero and library sections of `index.h
 ## 20. Open Roadmap / Next Steps
 
 **Carried over from the v2.0 draft but not yet built** (see §0 for the authoritative status):
-- Front-page `render_notes_preview` — truncate each card's `my_notes` and add a `Read full entry →` link to the per-book page.
 - Reintroduce randomised page-turn variants (or deliberately keep the single transition — decide and record).
-- `essays/` section: listing + individual pages (fix the currently-dead nav link), with a front-page teaser column. *Design still TBD.*
 - Extend `test_librarian.py` to cover slug generation, `library.html`, and `books/` output.
 - Decide the fate of `ai_notes` (keep on front page, or finally phase out of display).
+- A front-page teaser column for `essays/` (the section itself is built and linked — see §0/§12).
 
 **New / longer-term ideas:**
 - Search / filter on `library.html`.
 - Dark mode.
 - RSS feed.
-- Reseed or document the divergence between `BOOKS_DATA` and the live `library.db` (41 books).
+
+**Fixed (2026-08-30):** the `BOOKS_DATA` seed and `migrate` command were removed from `librarian.py` — the DB had diverged from the seed to the point of uselessness, and `--force` was a footgun against real data. `library.db` is the sole source of truth with no re-seed path.
 
 ---
 

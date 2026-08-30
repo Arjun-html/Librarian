@@ -54,7 +54,6 @@ Both are linked from every template with a manual `?v=N` query string (e.g. `sty
 ## The generator (`librarian.py`)
 
 ```
-python librarian.py migrate          # seed library.db from built-in BOOKS_DATA (once; --force to reset)
 python librarian.py add              # interactively add a book
 python librarian.py list             # [--section …] [--status …]
 python librarian.py update <id>      # edit a book
@@ -77,7 +76,7 @@ Covers normally load from `covers.openlibrary.org` by ISBN at view time, so when
 
 `librarian_gui.py` is a Tkinter GUI over the same DB; its "Save + Regenerate" button calls `cmd_generate`.
 
-**`library.md` is generated output too** (an export of the DB) — don't hand-edit it. `BOOKS_DATA` in `librarian.py` is only the one-time migration seed; the live source is `library.db`.
+**`library.md` is generated output too** (an export of the DB) — don't hand-edit it. `library.db` is the sole source of truth; the one-time `BOOKS_DATA`/`migrate` seed has been removed from `librarian.py` now that the DB has diverged from it.
 
 ## Sections & book status classes
 
