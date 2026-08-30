@@ -1262,8 +1262,13 @@ def _extract_arjuns_notes(text):
         return ''
     body = m.group(1)
     body = re.sub(r'<br\s*/?>', '', body)
-    body = body.strip()
-    return body
+    # Strip Obsidian link syntax — [[Foo]] → Foo, [[Foo|Bar]] → Bar — and drop
+    # parenthetical "(see [[…]])" cross-references entirely, which read as noise
+    # once the note is out of the vault.
+    body = re.sub(r'\s*\((?:see|cf\.?)\s*\[\[[^\]]+\]\]\)', '', body, flags=re.IGNORECASE)
+    body = re.sub(r'\[\[([^\]|]+)\|([^\]]+)\]\]', r'\2', body)
+    body = re.sub(r'\[\[([^\]]+)\]\]', r'\1', body)
+    return body.strip()
 
 
 def _copy_attachment(name, attach_dir, dest_dir):
