@@ -50,6 +50,15 @@
 
 ---
 
+### 6. Hands-On GPU Programming with Python and CUDA
+**Author:** Dr. Brian Tuomanen  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Engineering & Mathematics
 
 ### 1. Fundamentals of Electric Circuits
@@ -570,4 +579,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** August 30, 2026  
-**Total Books:** 52 (24 Read, 12 Reading, 16 Reading List)
+**Total Books:** 53 (24 Read, 13 Reading, 16 Reading List)
