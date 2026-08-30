@@ -187,6 +187,60 @@
 
 ---
 
+### 15. Thomas' Calculus
+**Author:** George B. Thomas, Ross L. Finney, Maurice D. Weir & Frank R. Giordano  
+**Status:** Reading List  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
+### 16. Calculus: Early Transcendental Functions (Multivariable)
+**Author:** Robert T. Smith & Roland B. Minton  
+**Status:** Reading List  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
+### 17. Structures, or Why Things Don't Fall Down
+**Author:** J.E. Gordon  
+**Status:** Reading List  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
+### 18. An Introduction to Thermal Physics
+**Author:** Daniel V. Schroeder  
+**Status:** Reading List  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
+### 19. A Brief Introduction to Fluid Mechanics
+**Author:** Donald F. Young, Bruce R. Munson & Theodore H. Okiishi  
+**Status:** Reading List  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
+### 20. RFID Design Fundamentals and Applications
+**Author:** Albert Lozano-Nieto  
+**Status:** Reading List  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Finance
 
 ### 1. A Practical Guide to Quantitative Finance Interviews
@@ -579,4 +633,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** August 31, 2026  
-**Total Books:** 53 (24 Read, 13 Reading, 16 Reading List)
+**Total Books:** 59 (24 Read, 13 Reading, 22 Reading List)
