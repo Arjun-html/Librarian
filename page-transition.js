@@ -174,8 +174,9 @@
     if (/\/books\//.test(p)) return 2;
     if (/\/galleries\/(index\.html)?$/.test(p)) return 3;
     if (/\/galleries\//.test(p)) return 4;
-    if (/\/essays\/(index\.html)?$/.test(p)) return 5;
-    if (/\/essays\//.test(p)) return 6;
+    if (/\/marginalia\//.test(p)) return 5;
+    if (/\/essays\/(index\.html)?$/.test(p)) return 6;
+    if (/\/essays\//.test(p)) return 7;
     if (/library\.html$/.test(p)) return 1;
     return 0;                                    // the front page
   }

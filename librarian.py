@@ -55,6 +55,11 @@ GALLERIES_INDEX           = GALLERIES_DIR / 'index.html'
 GALLERIES_INDEX_TEMPLATE  = ROOT / 'templates' / 'galleries_index_base.html'
 GALLERY_VISIT_TEMPLATE    = ROOT / 'templates' / 'gallery_visit_base.html'
 
+MARGINALIA_DIR       = ROOT / 'marginalia'
+MARGINALIA_SRC       = MARGINALIA_DIR / 'src'
+MARGINALIA_INDEX     = MARGINALIA_DIR / 'index.html'
+MARGINALIA_TEMPLATE  = ROOT / 'templates' / 'marginalia_base.html'
+
 SECTIONS = ['software', 'engineering', 'finance', 'philosophy']
 SECTION_NAMES = {
     'software':    'Software Related Books',
@@ -633,6 +638,7 @@ def cmd_generate(args=None):
     _generate_books(conn)
     _generate_essays(conn)
     _generate_galleries(conn)
+    _generate_marginalia()
     _generate_md(conn)
     conn.close()
 
@@ -762,6 +768,66 @@ def _generate_essays(conn=None):
             stale.unlink()
 
     print(f'Generated essays/index.html + {n} essay page(s)')
+
+
+def parse_marginalia_entry(path):
+    """Parse a marginalia/src/*.md file. Only frontmatter fields used are
+    `title` and (optional) `kicker`. Order is determined by filename."""
+    meta, body = _split_frontmatter(path.read_text(encoding='utf-8'))
+    title = str(meta.get('title') or path.stem).strip()
+    return {
+        'source':    path.name,
+        'title':     title,
+        'kicker':    str(meta.get('kicker') or '').strip(),
+        'slug':      slugify(title),
+        'body_html': _notes_to_html(body),
+    }
+
+
+def render_marginalia_entry(entry):
+    kicker = f'<div class="marg-kicker">{e(entry["kicker"])}</div>' if entry['kicker'] else ''
+    return (
+        f'        <article class="marg-entry" id="{entry["slug"]}">\n'
+        f'            {kicker}\n'
+        f'            <h2 class="marg-title">{e(entry["title"])}</h2>\n'
+        f'            <div class="marg-body">{entry["body_html"]}</div>\n'
+        f'        </article>'
+    )
+
+
+def _generate_marginalia():
+    """Build marginalia/index.html as one running page of stacked entries.
+
+    Source: marginalia/src/*.md (YAML frontmatter with title + optional kicker).
+    Order = filename order (use numeric prefixes to control it).
+    """
+    if not MARGINALIA_TEMPLATE.exists():
+        sys.exit(f'Error: marginalia template not found at {MARGINALIA_TEMPLATE}')
+    MARGINALIA_SRC.mkdir(parents=True, exist_ok=True)
+
+    entries = []
+    for path in sorted(MARGINALIA_SRC.glob('*.md')):
+        try:
+            entries.append(parse_marginalia_entry(path))
+        except Exception as exc:
+            print(f'  Skipping {path.name}: {exc}')
+
+    body = '\n'.join(render_marginalia_entry(en) for en in entries) or \
+           '        <p class="marginalia-empty">No marginalia yet.</p>'
+
+    hk_now = datetime.now(timezone(timedelta(hours=8)))
+    masthead_date = f"{hk_now.strftime('%A')}, {hk_now.day} {hk_now.strftime('%B')} {hk_now.year}, <i>Hong Kong</i>"
+    n = len(entries)
+    count = f"{n} Entr{'ies' if n != 1 else 'y'}" if n else 'No entries yet'
+
+    tpl = MARGINALIA_TEMPLATE.read_text(encoding='utf-8')
+    tpl = tpl.replace('%%MARGINALIA_ENTRIES%%', body)
+    tpl = tpl.replace('%%MASTHEAD_DATE%%', masthead_date)
+    tpl = tpl.replace('%%MARGINALIA_COUNT%%', count)
+    MARGINALIA_INDEX.parent.mkdir(parents=True, exist_ok=True)
+    MARGINALIA_INDEX.write_text(tpl, encoding='utf-8')
+
+    print(f'Generated marginalia/index.html ({n} entr{"ies" if n != 1 else "y"})')
 
 
 def _format_visit_date(d):

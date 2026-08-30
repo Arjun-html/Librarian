@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <script src="../flip-init.js"></script>
-    <title>Competitive Strategy — The Arjun Dispatch</title>
+    <title>Marginalia · Arjun's Dispatch</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles.css?v=6">
 </head>
 <body>
-    <!-- Header -->
     <header>
         <nav>
             <div class="logo">The Arjun Dispatch</div>
@@ -21,39 +20,31 @@
                 <a href="../index.html">Front Page</a>
                 <a href="../library.html">Library</a>
                 <a href="../galleries/index.html">In the Galleries</a>
-                <a href="../marginalia/index.html">Marginalia</a>
+                <a href="index.html">Marginalia</a>
                 <a href="../essays/index.html">Essays &amp; Thoughts</a>
             </div>
         </nav>
     </header>
 
-    <!-- Minimal masthead (name only) -->
-    <section class="newspaper-hero book-page-hero">
+    <section class="newspaper-hero">
         <div class="masthead">
+            <div class="masthead-vol">
+                <span>Vol. I &nbsp;&middot;&nbsp; The Commonplace Book</span>
+                <span>%%MASTHEAD_DATE%%</span>
+            </div>
             <div class="masthead-name">The Arjun Dispatch</div>
+            <div class="masthead-strapline">Marginalia &mdash; Short-form Notes, Quotes &amp; Reactions</div>
+            <hr class="masthead-rule">
         </div>
+        <div class="section-banner">%%MARGINALIA_COUNT%%</div>
     </section>
 
-    <!-- Book entry -->
-    <main class="book-page">
-        <a class="back-to-library" href="../library.html">&larr; Back to Library</a>
-        <article class="book-detail">
-            <div class="detail-labels">
-                <span class="detail-section">Greater Awareness &amp; Philosophy</span>
-                <span class="book-status status-reading">Reading</span>
-            </div>
-            <h1 class="detail-title">Competitive Strategy</h1>
-            <div class="detail-author">By Michael E. Porter</div>
-            <div class="detail-body">
-                <div class="detail-cover"><img src="../book_covers_additional/9780684841489.jpg" alt="Competitive Strategy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';"><div class="no-image" style="display:none;">No cover available</div></div>
-                <div class="detail-notes"><p class="detail-notes-empty">No notes recorded yet.</p></div>
-            </div>
-        </article>
+    <main class="marginalia-page">
+%%MARGINALIA_ENTRIES%%
     </main>
 
-    <!-- Footer -->
     <footer>
-        <p>The Arjun Dispatch &mdash; <a href="../library.html" style="color: var(--accent); text-decoration: none;">Back to the Library</a>.</p>
+        <p>The Arjun Dispatch &mdash; Marginalia &mdash; <a href="../index.html" style="color: var(--accent); text-decoration: none;">Return to Front Page</a>.</p>
     </footer>
 
     <script src="../nav.js"></script>

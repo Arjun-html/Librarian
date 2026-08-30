@@ -1732,3 +1732,84 @@ footer p {
     .visit-detail-title { font-size: 1.9rem; }
     .artwork-imgs { grid-template-columns: 1fr; }
 }
+
+/* ── Marginalia ───────────────────────────────────────────────────────────── */
+
+.marginalia-page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+}
+
+.marg-entry {
+    padding: 2.4rem 0;
+    border-bottom: 1px solid var(--light-taupe);
+}
+
+.marg-entry:first-child { padding-top: 1rem; }
+.marg-entry:last-child  { border-bottom: none; }
+
+.marg-kicker {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 0.4rem;
+}
+
+.marg-title {
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+    color: var(--soft-black);
+    margin: 0 0 1rem;
+}
+
+.marg-body {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--dark-gray);
+}
+
+.marg-body p        { margin-bottom: 1rem; }
+.marg-body p:last-child { margin-bottom: 0; }
+
+.marg-body blockquote {
+    margin: 0 0 1rem 0;
+    padding: 0.1rem 0 0.1rem 1.1rem;
+    border-left: 2px solid var(--light-taupe);
+    color: var(--soft-black);
+    font-style: italic;
+}
+
+.marg-body ol, .marg-body ul {
+    padding-left: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.marg-body li { margin-bottom: 0.35rem; }
+
+.marg-body em { font-style: italic; }
+
+.marg-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.4rem auto;
+    border: 1px solid var(--light-taupe);
+}
+
+.marginalia-empty {
+    text-align: center;
+    color: var(--warm-gray);
+    font-style: italic;
+    padding: 3rem 0;
+}
+
+@media (max-width: 640px) {
+    .marginalia-page { padding: 2rem 1.2rem 3rem; }
+    .marg-title      { font-size: 1.45rem; }
+}
