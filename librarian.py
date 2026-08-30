@@ -814,6 +814,10 @@ def _generate_marginalia():
 
     body = '\n'.join(render_marginalia_entry(en) for en in entries) or \
            '        <p class="marginalia-empty">No marginalia yet.</p>'
+    toc = '\n'.join(
+        f'                <li><a href="#{en["slug"]}">{e(en["title"])}</a></li>'
+        for en in entries
+    )
 
     hk_now = datetime.now(timezone(timedelta(hours=8)))
     masthead_date = f"{hk_now.strftime('%A')}, {hk_now.day} {hk_now.strftime('%B')} {hk_now.year}, <i>Hong Kong</i>"
@@ -822,6 +826,7 @@ def _generate_marginalia():
 
     tpl = MARGINALIA_TEMPLATE.read_text(encoding='utf-8')
     tpl = tpl.replace('%%MARGINALIA_ENTRIES%%', body)
+    tpl = tpl.replace('%%MARGINALIA_TOC%%', toc)
     tpl = tpl.replace('%%MASTHEAD_DATE%%', masthead_date)
     tpl = tpl.replace('%%MARGINALIA_COUNT%%', count)
     MARGINALIA_INDEX.parent.mkdir(parents=True, exist_ok=True)
