@@ -49,6 +49,12 @@ ESSAYS_INDEX          = ESSAYS_DIR / 'index.html'
 ESSAYS_INDEX_TEMPLATE = ROOT / 'templates' / 'essays_index_base.html'
 ESSAY_TEMPLATE        = ROOT / 'templates' / 'essay_base.html'
 
+GALLERIES_DIR             = ROOT / 'galleries'
+GALLERY_IMAGES_DIR        = ROOT / 'gallery_images'
+GALLERIES_INDEX           = GALLERIES_DIR / 'index.html'
+GALLERIES_INDEX_TEMPLATE  = ROOT / 'templates' / 'galleries_index_base.html'
+GALLERY_VISIT_TEMPLATE    = ROOT / 'templates' / 'gallery_visit_base.html'
+
 SECTIONS = ['software', 'engineering', 'finance', 'philosophy']
 SECTION_NAMES = {
     'software':    'Software Related Books',
@@ -97,6 +103,25 @@ def ensure_schema():
         hero_progress     TEXT,
         local_cover_path  TEXT,
         date_added        DATE    DEFAULT CURRENT_DATE
+    )''')
+    conn.execute('''CREATE TABLE IF NOT EXISTS gallery_visits (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        title       TEXT NOT NULL,
+        venue       TEXT,
+        visit_date  DATE NOT NULL,
+        notes       TEXT,
+        sort_order  INTEGER NOT NULL DEFAULT 0
+    )''')
+    conn.execute('''CREATE TABLE IF NOT EXISTS gallery_artworks (
+        id             INTEGER PRIMARY KEY AUTOINCREMENT,
+        visit_id       INTEGER NOT NULL REFERENCES gallery_visits(id) ON DELETE CASCADE,
+        name           TEXT NOT NULL,
+        artist         TEXT,
+        period         TEXT,
+        reference_img  TEXT,
+        own_photo_img  TEXT,
+        my_notes       TEXT,
+        sort_order     INTEGER NOT NULL DEFAULT 0
     )''')
     conn.commit()
     conn.close()
@@ -607,6 +632,7 @@ def cmd_generate(args=None):
     _generate_library(conn)
     _generate_books(conn)
     _generate_essays(conn)
+    _generate_galleries(conn)
     _generate_md(conn)
     conn.close()
 
@@ -736,6 +762,148 @@ def _generate_essays(conn=None):
             stale.unlink()
 
     print(f'Generated essays/index.html + {n} essay page(s)')
+
+
+def _format_visit_date(d):
+    if isinstance(d, str):
+        try:
+            d = datetime.strptime(d, '%Y-%m-%d').date()
+        except ValueError:
+            return d
+    return f'{d.day} {d.strftime("%B")} {d.year}'
+
+
+def _visit_slugs(visits):
+    seen, slugs = {}, {}
+    for v in visits:
+        base = slugify(v['title']) or f'visit-{v["id"]}'
+        n = seen.get(base, 0) + 1
+        seen[base] = n
+        slugs[v['id']] = base if n == 1 else f'{base}--{n}'
+    return slugs
+
+
+def render_gallery_visit_tile(visit, artwork_count, slug):
+    date_display = _format_visit_date(visit['visit_date'])
+    venue = f'<div class="visit-venue">{e(visit["venue"])}</div>' if visit['venue'] else ''
+    return (
+        f'            <a class="visit-tile" href="{slug}.html">\n'
+        f'                <div class="visit-date">{e(date_display)}</div>\n'
+        f'                <h3 class="visit-title">{e(visit["title"])}</h3>\n'
+        f'                {venue}\n'
+        f'                <div class="visit-count">{artwork_count} work{"s" if artwork_count != 1 else ""}</div>\n'
+        f'            </a>'
+    )
+
+
+def render_gallery_artwork(art):
+    """One artwork card: reference plate (if any) + own photo (if any) + label + notes."""
+    imgs = []
+    if art['reference_img']:
+        imgs.append(
+            f'<figure class="artwork-fig artwork-ref">'
+            f'<img src="../{e(art["reference_img"])}" alt="Reference reproduction of {e(art["name"])}">'
+            f'<figcaption>Reference plate</figcaption></figure>'
+        )
+    if art['own_photo_img']:
+        imgs.append(
+            f'<figure class="artwork-fig artwork-mine">'
+            f'<img src="../{e(art["own_photo_img"])}" alt="{e(art["name"])}, as seen">'
+            f'<figcaption>As I saw it</figcaption></figure>'
+        )
+    if not imgs:
+        imgs.append('<div class="artwork-noimg">No image available</div>')
+
+    name = e(art['name'])
+    meta_parts = []
+    if art['artist']:
+        meta_parts.append(e(art['artist']))
+    else:
+        meta_parts.append('<em>Unidentified</em>')
+    if art['period']:
+        meta_parts.append(e(art['period']))
+    meta = ' &middot; '.join(meta_parts)
+
+    notes = ''
+    if art['my_notes'] and art['my_notes'].strip():
+        notes = f'<div class="artwork-notes">{_notes_to_html(art["my_notes"])}</div>'
+
+    return (
+        '            <article class="artwork">\n'
+        f'                <div class="artwork-imgs">{"".join(imgs)}</div>\n'
+        f'                <h3 class="artwork-name">{name}</h3>\n'
+        f'                <div class="artwork-meta">{meta}</div>\n'
+        f'                {notes}\n'
+        '            </article>'
+    )
+
+
+def render_gallery_visit_page(visit, artworks):
+    date_display = _format_visit_date(visit['visit_date'])
+    venue = f'<div class="visit-detail-venue">{e(visit["venue"])}</div>' if visit['venue'] else ''
+    intro = ''
+    if visit['notes'] and visit['notes'].strip():
+        intro = f'\n            <div class="visit-detail-intro">{_notes_to_html(visit["notes"])}</div>'
+    body = '\n'.join(render_gallery_artwork(a) for a in artworks) or \
+           '            <p class="visit-empty">No artworks recorded for this visit.</p>'
+    return (
+        '        <article class="visit-detail">\n'
+        f'            <div class="visit-detail-date">{e(date_display)}</div>\n'
+        f'            <h1 class="visit-detail-title">{e(visit["title"])}</h1>\n'
+        f'            {venue}{intro}\n'
+        '            <div class="artwork-list">\n'
+        f'{body}\n'
+        '            </div>\n'
+        '        </article>'
+    )
+
+
+def _generate_galleries(conn):
+    """Build galleries/index.html + one galleries/<slug>.html per visit."""
+    if not GALLERIES_INDEX_TEMPLATE.exists() or not GALLERY_VISIT_TEMPLATE.exists():
+        sys.exit(f'Error: gallery templates not found in {GALLERIES_INDEX_TEMPLATE.parent}')
+
+    GALLERIES_DIR.mkdir(parents=True, exist_ok=True)
+
+    visits = conn.execute(
+        'SELECT * FROM gallery_visits ORDER BY visit_date DESC, sort_order, id'
+    ).fetchall()
+    slugs = _visit_slugs(visits)
+
+    page_tpl = GALLERY_VISIT_TEMPLATE.read_text(encoding='utf-8')
+    wanted = set()
+    tile_parts = []
+    for v in visits:
+        artworks = conn.execute(
+            'SELECT * FROM gallery_artworks WHERE visit_id=? ORDER BY sort_order, id',
+            (v['id'],)
+        ).fetchall()
+        slug = slugs[v['id']]
+        filename = f'{slug}.html'
+        wanted.add(filename)
+        page = page_tpl.replace('%%VISIT_TITLE%%', e(v['title']))
+        page = page.replace('%%VISIT_CONTENT%%', render_gallery_visit_page(v, artworks))
+        (GALLERIES_DIR / filename).write_text(page, encoding='utf-8')
+        tile_parts.append(render_gallery_visit_tile(v, len(artworks), slug))
+
+    hk_now = datetime.now(timezone(timedelta(hours=8)))
+    masthead_date = f"{hk_now.strftime('%A')}, {hk_now.day} {hk_now.strftime('%B')} {hk_now.year}, <i>Hong Kong</i>"
+    n = len(visits)
+    count = f"{n} Visit{'s' if n != 1 else ''}" if n else 'No visits recorded'
+
+    tiles_html = '\n'.join(tile_parts) or '            <p class="galleries-empty">No visits yet.</p>'
+
+    index = GALLERIES_INDEX_TEMPLATE.read_text(encoding='utf-8')
+    index = index.replace('%%VISIT_TILES%%', tiles_html)
+    index = index.replace('%%MASTHEAD_DATE%%', masthead_date)
+    index = index.replace('%%VISIT_COUNT%%', count)
+    GALLERIES_INDEX.write_text(index, encoding='utf-8')
+
+    for stale in GALLERIES_DIR.glob('*.html'):
+        if stale.name != 'index.html' and stale.name not in wanted:
+            stale.unlink()
+
+    print(f'Generated galleries/index.html + {n} visit page(s)')
 
 
 def _generate_md(conn):
@@ -1058,6 +1226,207 @@ def _cache_covers(conn, force=False, fail_fast=False, quiet=False, timeout=20):
     return counts
 
 
+GALLERY_VAULT_DEFAULT = Path.home() / 'Documents' / 'Obsidian Vault' / 'ART'
+GALLERY_ATTACH_DEFAULT = Path.home() / 'Documents' / 'Obsidian Vault' / 'Attachments'
+
+
+def _obs_table(text):
+    """Parse Obsidian's two-column pipe-table into {key: value}. Very small parser."""
+    out = {}
+    for line in text.splitlines():
+        line = line.strip()
+        if not line.startswith('|') or line.count('|') < 3:
+            continue
+        parts = [c.strip() for c in line.strip('|').split('|')]
+        if len(parts) < 2 or set(parts[0]) <= set('-: '):
+            continue
+        key = parts[0].strip('* ').strip()
+        val = parts[1].strip()
+        if key and val:
+            out[key.lower()] = val
+    return out
+
+
+def _obs_embeds(text):
+    return re.findall(r'!\[\[([^\]|]+?)(?:\|[^\]]*)?\]\]', text)
+
+
+def _obs_links(text):
+    return re.findall(r'(?<!!)\[\[([^\]|]+?)(?:\|[^\]]*)?\]\]', text)
+
+
+def _extract_arjuns_notes(text):
+    m = re.search(r'###\s*Arjun[’\']s Notes\s*\n(.*?)(?=\n###|\n---|\n\[\[Root MOC\]\]|\Z)',
+                  text, re.DOTALL)
+    if not m:
+        return ''
+    body = m.group(1)
+    body = re.sub(r'<br\s*/?>', '', body)
+    body = body.strip()
+    return body
+
+
+def _copy_attachment(name, attach_dir, dest_dir):
+    """Find `name` inside attach_dir (case-insensitive) and copy to dest_dir.
+    Returns the relative site path (gallery_images/<file>) or None."""
+    import shutil
+    if not name:
+        return None
+    target = attach_dir / name
+    if not target.exists():
+        matches = list(attach_dir.glob(name))
+        if not matches:
+            lowered = name.lower()
+            for p in attach_dir.iterdir():
+                if p.name.lower() == lowered:
+                    target = p
+                    break
+            else:
+                return None
+        else:
+            target = matches[0]
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / target.name
+    if not dest.exists() or dest.stat().st_size != target.stat().st_size:
+        shutil.copy2(target, dest)
+    return f'gallery_images/{target.name}'
+
+
+def _parse_artwork_note(path, attach_dir):
+    """Return a dict with name/artist/period/reference_img/own_photo_img/my_notes."""
+    text = path.read_text(encoding='utf-8')
+    m = re.match(r'#\s*(.+)', text)
+    name = (m.group(1).strip() if m else path.stem)
+    tbl = _obs_table(text)
+    embeds = _obs_embeds(text)
+
+    # Reference plate = first non-"my photo" embed; own photo = first "my photo" embed.
+    ref, mine = None, None
+    for emb in embeds:
+        low = emb.lower()
+        if 'my photo' in low or '(mine)' in low:
+            mine = mine or emb
+        else:
+            ref = ref or emb
+
+    artist = tbl.get('artist')
+    period = tbl.get('date') or tbl.get('period')
+    unidentified = 'unidentified' in name.lower() or bool(re.search(r'not identified', text, re.IGNORECASE))
+    if unidentified:
+        artist = None
+
+    return {
+        'name':          name,
+        'artist':        artist,
+        'period':        period,
+        'reference_img': _copy_attachment(ref, attach_dir, GALLERY_IMAGES_DIR) if ref else None,
+        'own_photo_img': _copy_attachment(mine, attach_dir, GALLERY_IMAGES_DIR) if mine else None,
+        'my_notes':      _extract_arjuns_notes(text) or None,
+        'source_stem':   path.stem,
+    }
+
+
+def _parse_visit_note(path, attach_dir):
+    text = path.read_text(encoding='utf-8')
+    m = re.match(r'#\s*(.+)', text)
+    title = (m.group(1).strip() if m else path.stem)
+    tbl = _obs_table(text)
+
+    venue = tbl.get('venue')
+    visited = tbl.get('visited') or tbl.get('date') or ''
+    d = None
+    md = re.search(r'(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})', visited or path.stem)
+    if md:
+        try:
+            d = datetime.strptime(f'{md.group(1)} {md.group(2)} {md.group(3)}', '%d %B %Y').date()
+        except ValueError:
+            pass
+    if not d:
+        md2 = re.search(r'(\d{4})', path.stem)
+        d = date(int(md2.group(1)), 1, 1) if md2 else date.today()
+
+    linked = _obs_links(text)
+    # Filter out venue/other visit backlinks
+    artwork_stems = [l for l in linked
+                     if 'MOC' not in l and 'Root' not in l and l != path.stem
+                     and '2026' not in l]  # crude: dated visit notes contain year
+
+    return {
+        'title':       title,
+        'venue':       venue,
+        'visit_date':  d,
+        'notes':       _extract_arjuns_notes(text) or None,
+        'artwork_stems': artwork_stems,
+        'source_stem': path.stem,
+    }
+
+
+def cmd_galleries_migrate(args):
+    """Populate gallery_visits + gallery_artworks from an Obsidian ART/ folder.
+
+    Idempotent: existing visits/artworks are replaced by source_stem match on title.
+    Images are copied into gallery_images/. Run `generate` afterwards.
+    """
+    vault = Path(args[0]) if args else GALLERY_VAULT_DEFAULT
+    attach = Path(args[1]) if len(args) > 1 else GALLERY_ATTACH_DEFAULT
+    if not vault.exists():
+        sys.exit(f'ART folder not found: {vault}')
+    if not attach.exists():
+        sys.exit(f'Attachments folder not found: {attach}')
+
+    ensure_schema()
+    conn = get_db()
+
+    # Every .md file — classify as visit (matches a dated pattern in filename or
+    # links to multiple artworks) vs artwork.
+    md_files = sorted(p for p in vault.glob('*.md') if p.name != 'Template.md')
+
+    # First pass: parse artworks by stem.
+    artworks_by_stem = {}
+    visits = []
+    for path in md_files:
+        text = path.read_text(encoding='utf-8')
+        # Heuristic: a "visit" note has no "Seen at" table row and has an
+        # "Objects seen here" / "Works I photographed" / "Works seen here" header.
+        if re.search(r'###\s*(Works I photographed|Objects seen here|Works seen here)',
+                     text, re.IGNORECASE):
+            visits.append(_parse_visit_note(path, attach))
+        elif 'MOC' in path.stem or 'Applications and Jobs' in path.stem:
+            continue
+        else:
+            aw = _parse_artwork_note(path, attach)
+            artworks_by_stem[path.stem] = aw
+
+    # Wipe and re-insert (idempotent).
+    conn.execute('DELETE FROM gallery_artworks')
+    conn.execute('DELETE FROM gallery_visits')
+    conn.commit()
+
+    for vi, v in enumerate(visits):
+        cur = conn.execute(
+            'INSERT INTO gallery_visits (title, venue, visit_date, notes, sort_order) '
+            'VALUES (?, ?, ?, ?, ?)',
+            (v['title'], v['venue'], v['visit_date'].isoformat(), v['notes'], vi)
+        )
+        visit_id = cur.lastrowid
+        for ai, stem in enumerate(v['artwork_stems']):
+            aw = artworks_by_stem.get(stem)
+            if not aw:
+                print(f'  Warning: {v["source_stem"]} references [[{stem}]] but no note found')
+                continue
+            conn.execute(
+                'INSERT INTO gallery_artworks '
+                '(visit_id, name, artist, period, reference_img, own_photo_img, my_notes, sort_order) '
+                'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                (visit_id, aw['name'], aw['artist'], aw['period'],
+                 aw['reference_img'], aw['own_photo_img'], aw['my_notes'], ai)
+            )
+        print(f'  {v["title"]}: {len(v["artwork_stems"])} artwork(s)')
+    conn.commit()
+    conn.close()
+    print(f'\nMigrated {len(visits)} visit(s). Run: python librarian.py generate')
+
+
 def cmd_cache_covers(args):
     """Download Open Library covers into book_covers_additional/ and repoint each
     book's local_cover_path, so the site no longer depends on
@@ -1091,7 +1460,9 @@ Commands:
   remove <id>      Delete a book
   hero <id>        Set newspaper hero fields for a Reading book
   cache-covers     Download Open Library covers locally (--force re-downloads all)
-  generate         Regenerate index.html, library.html, books/*.html and library.md
+  galleries-migrate  Ingest Obsidian ART/ folder into gallery_visits/artworks
+                     [<ART path> [<Attachments path>]]
+  generate         Regenerate index.html, library.html, books/*.html, essays/*, galleries/* and library.md
                    (auto-caches new covers first; --no-cache to skip)
 """
 
@@ -1115,6 +1486,8 @@ def main():
         cmd_hero(args)
     elif cmd in ('cache-covers', 'cache_covers'):
         cmd_cache_covers(args)
+    elif cmd in ('galleries-migrate', 'galleries_migrate'):
+        cmd_galleries_migrate(args)
     elif cmd == 'generate':
         cmd_generate(args)
     else:

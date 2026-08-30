@@ -1533,3 +1533,202 @@ footer p {
 @media (max-width: 768px) {
     .essay-page { padding: 2rem 1.2rem 3rem; }
 }
+
+/* ── In the Galleries ─────────────────────────────────────────────────────── */
+
+.galleries-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+}
+
+.gallery-visit-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.visit-tile {
+    display: block;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--light-taupe);
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.visit-tile:hover { background-color: rgba(138, 43, 28, 0.04); }
+
+.visit-date {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 0.35rem;
+}
+
+.visit-title {
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--soft-black);
+    margin: 0 0 0.4rem;
+}
+
+.visit-tile:hover .visit-title { color: var(--accent); }
+
+.visit-venue {
+    font-style: italic;
+    color: var(--dark-gray);
+    font-size: 0.98rem;
+    margin-bottom: 0.35rem;
+}
+
+.visit-count {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+}
+
+.gallery-visit-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+}
+
+.visit-detail {
+    padding-top: 1.5rem;
+}
+
+.visit-detail-date {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 0.6rem;
+}
+
+.visit-detail-title {
+    font-family: var(--display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--soft-black);
+    margin: 0 0 0.6rem;
+}
+
+.visit-detail-venue {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--dark-gray);
+    margin-bottom: 1rem;
+}
+
+.visit-detail-intro {
+    font-size: 1rem;
+    color: var(--dark-gray);
+    margin: 1rem 0 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--light-taupe);
+}
+
+.artwork-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.artwork {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--light-taupe);
+}
+
+.artwork:last-child { border-bottom: none; }
+
+.artwork-imgs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.artwork-imgs:has(.artwork-fig:only-child),
+.artwork-imgs:has(.artwork-noimg) {
+    grid-template-columns: 1fr;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.artwork-fig {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.artwork-fig img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--light-taupe);
+    background: var(--cream);
+    display: block;
+}
+
+.artwork-ref img { filter: var(--plate); }
+
+.artwork-fig figcaption {
+    margin-top: 0.5rem;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--warm-gray);
+    text-align: center;
+}
+
+.artwork-noimg {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--warm-gray);
+    font-style: italic;
+    border: 1px dashed var(--light-taupe);
+}
+
+.artwork-name {
+    font-family: var(--display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--soft-black);
+    margin: 0 0 0.25rem;
+}
+
+.artwork-meta {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    margin-bottom: 0.6rem;
+}
+
+.artwork-notes {
+    font-size: 0.95rem;
+    color: var(--dark-gray);
+    line-height: 1.7;
+}
+
+.artwork-notes p { margin-bottom: 0.7rem; }
+
+.galleries-empty, .visit-empty {
+    text-align: center;
+    color: var(--warm-gray);
+    font-style: italic;
+    padding: 3rem 0;
+}
+
+@media (max-width: 640px) {
+    .galleries-page, .gallery-visit-page { padding: 2rem 1.2rem 3rem; }
+    .visit-detail-title { font-size: 1.9rem; }
+    .artwork-imgs { grid-template-columns: 1fr; }
+}

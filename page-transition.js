@@ -172,8 +172,10 @@
   function depth(url) {
     const p = new URL(url, location.href).pathname;
     if (/\/books\//.test(p)) return 2;
-    if (/\/essays\/(index\.html)?$/.test(p)) return 3;
-    if (/\/essays\//.test(p)) return 4;
+    if (/\/galleries\/(index\.html)?$/.test(p)) return 3;
+    if (/\/galleries\//.test(p)) return 4;
+    if (/\/essays\/(index\.html)?$/.test(p)) return 5;
+    if (/\/essays\//.test(p)) return 6;
     if (/library\.html$/.test(p)) return 1;
     return 0;                                    // the front page
   }
