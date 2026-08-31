@@ -1,0 +1,18 @@
+---
+title: "The Kids from HKU Academy for Talented"
+date: 2026-08-31
+category: philosophy
+deck: "Three teenagers on their last night in Hong Kong, talking about what they actually want"
+---
+
+I met a few kids staying in my hall for their last night in Hong Kong, got to talk with them for a long time, understand their views. The kids were mostly from big Mainland cities like Shanghai, Guangzhou and a notable foreigner from Portugal.
+
+These kids considered themselves attracted closer to each other as they believed they thought 'critically' about things; they actually went ahead and questioned the decisions somebody laid out for them, and had the courage to ask _why_, not just _what_ to do. The conversations with them slowly moved onto what is their goal for life - their ambitions.
+
+- The Portuguese boy 'Gorge' has a dream of being a _billionaire_, but the question I posed to him rested on what aspect of being a billionaire was that he wanted? He immediately replied that he wanted to be _remembered_, a legacy that his name is passed down from era to era - he doesn't want fame for 10-15 years, he wants to endure for 300-400 years after his death. He's not afraid of death, it's quite important for him to have an end to his work. He was overjoyed that for the first time in his life that he was in a room full of people that weren't _afraid_ to show their ambition. No one was uncomfortable with the idea that they might be better off than other people at the moment, that they should actually strive for something higher. He seemed deathly afraid that he might never meet such people again in his life.
+- The youngest one in the room, from Mainland China, illustrated that his primary driver was not to lose to somebody with lesser potential than him. When he had conversations with people and realized they are barely even thinking, but are still going to end up in a better situation than him - he works much harder to reach where he thinks he _deserves_, and thinks that he may rest when he reaches the point where he is _comfortably_ well off - wherever that might be. I raised the point to him that he is considering the lower boundary of his potential, not the greatest height that he can - what would his mind and heart ask him to reach for if he could visualize it?
+- Another boy from Guangzhou believed completely in living completely in the present. He had been a provincial cycling champion and on reaching the national competition stage suddenly experienced complete and utter burnout. Through his struggle to recover his motivation for a 'life worth living', he spent weeks only playing Counter-Strike 2, just to force his brain to completely stop thinking about anything other than the present moment and the present day. He got back into his academics and sports post summer and now believes in completely immersing yourself in the present, trying to do your best everyday and achieving fulfilment every single day.
+
+Talking to these kids gave me strong flashbacks of what thoughts coursed through my head during high school. The points they mentioned such as a strong feeling that most people in life are not driven by anything, the feeling that others may be _NPCs_, simply coasting by, reminding me strongly of "An unexamined life is not worth living", one of Socrates' principles.
+
+Simply talking to future leaders of tomorrow made me realize why industry leaders, executives and CEOs agree so readily to waste their time on a coffee chat with broke, delusional, hungry college students - it gives them a naive and unfiltered view on many things going on, and reminds them of people not yet jaded by the constant onslaught of conflicting information from modern society.
