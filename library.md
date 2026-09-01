@@ -612,6 +612,15 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
+### 20. Watchmen: The Deluxe Edition
+**Author:** Alan Moore & Dave Gibbons  
+**Status:** Read  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Recommended Reading
 *Books suggested by my reading—I'll expand this as patterns emerge.*
 
@@ -632,5 +641,5 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
-**Last Updated:** August 31, 2026  
-**Total Books:** 59 (24 Read, 19 Reading, 16 Reading List)
+**Last Updated:** September 1, 2026  
+**Total Books:** 60 (25 Read, 19 Reading, 16 Reading List)
