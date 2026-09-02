@@ -8,4 +8,5 @@ __pycache__/
 *.png
 *.pdf
 !marginalia/images/*.png
+!book_covers_additional/*.png
 .playwright-mcp/
