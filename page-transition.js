@@ -24,7 +24,6 @@
   /* ── Cached viewport snapshot ─────────────────────────────────────────── */
 
   let snap = null;            // <canvas> bitmap of the current viewport
-  let snapScrollY = 0;
   let snapping = false;
   let snapPromise = null;     // the live Promise when a capture is in flight
   let fallbackSnap = null;    // plain aged-paper sheet if html2canvas is absent
@@ -41,15 +40,14 @@
     if (snapping) return snapPromise || Promise.resolve(snap);
     snapping = true;
     const W = window.innerWidth, H = window.innerHeight;
-    const sy = window.scrollY;
     snapPromise = window.html2canvas(document.body, {
-      x: window.scrollX, y: sy,
+      x: window.scrollX, y: window.scrollY,
       width: W, height: H,
       scale: DPR,
       useCORS: true, allowTaint: true,
       backgroundColor: bodyBg(),
       logging: false, removeContainer: true,
-    }).then(c => { snap = c; snapScrollY = sy; snapping = false; snapPromise = null; return c; })
+    }).then(c => { snap = c; snapping = false; snapPromise = null; return c; })
       .catch(() => { snapping = false; snapPromise = null; return null; });
     return snapPromise;
   }
@@ -222,6 +220,16 @@
   /* ── Exit: current page peels away, destination revealed beneath ──────── */
 
   let flipping = false;
+  let overlay = null;         // [iframe, canvas] currently covering the page
+
+  /* Back/forward can restore this page from the bfcache mid-flip, with the
+   * iframe still painted over it — showing the wrong page. Tear it down. */
+  function clearOverlay() {
+    if (overlay) overlay.forEach(el => el.remove());
+    overlay = null;
+    flipping = false;
+  }
+  window.addEventListener('pageshow', clearOverlay);
 
   async function flipOut(href, dur, back) {
     if (flipping) return;
@@ -232,16 +240,19 @@
     // after the seamless reveal, which reads as a flash.
     try { sessionStorage.setItem('arjun_flip_at', String(Date.now())); } catch (e) {}
 
-    // Make sure the snapshot matches what is on screen right now.
-    if (!snap || Math.abs(window.scrollY - snapScrollY) > 4) await takeSnapshot();
+    // Prefer the capture the prewarm kicked off; only start one if there is none.
+    if (snapPromise) await snapPromise;
+    else if (!snap) await takeSnapshot();
 
     const ifr = document.createElement('iframe');
     ifr.style.cssText =
       'position:fixed;inset:0;border:none;width:100%;height:100%;z-index:9990;pointer-events:none;';
+    ifr.style.background = bodyBg();
     ifr.src = href;
     document.body.appendChild(ifr);
 
     const o = makeCanvas();
+    overlay = [ifr, o.cv];
     const ease = dur === T_FIRST ? easeInOut : easeOut;
     const t0 = performance.now();
 
@@ -279,22 +290,18 @@
     // links then behave like ordinary links.
     if (REDUCED) return;
 
-    // Pre-capture once at idle so the very first click peels instantly.
-    if (window.requestIdleCallback) requestIdleCallback(takeSnapshot, { timeout: 1200 });
-    else setTimeout(takeSnapshot, 400);
+    // No eager capture on load: running html2canvas a few hundred ms after
+    // every page load costs a long main-thread task right when the browser is
+    // still decoding images and swapping in webfonts, which showed up as a
+    // blink shortly after each flip landed. The mousedown prewarm below is
+    // early enough on its own.
 
     // Resize: old snapshot dimensions are wrong — clear it, then quietly
     // re-capture at idle. Debounced, or a single drag of the window edge
     // queues dozens of captures.
-    let resizeTimer = null;
     window.addEventListener('resize', () => {
       snap = null; fallbackSnap = null; snapPromise = null; snapping = false;
       mirrorOf = null; mirrorSrc = null;
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        if (window.requestIdleCallback) requestIdleCallback(takeSnapshot, { timeout: 800 });
-        else takeSnapshot();
-      }, 250);
     });
 
     // Pre-warm snapshot on pointer/touch intent so it is ready (or nearly
@@ -305,16 +312,27 @@
       const link = (e.target || e.touches[0].target).closest('a[href]');
       if (!link) return;
       if (!isLocalNav(link.getAttribute('href'))) return;
-      if (!snap || Math.abs(window.scrollY - snapScrollY) > 4) takeSnapshot();
+      // Always re-capture: the page may have changed since the last snapshot
+      // without the scroll moving (the library filter hides tiles in place),
+      // and peeling away a stale image is worse than one extra capture.
+      takeSnapshot();
     }
     document.addEventListener('mousedown', prewarm);
     document.addEventListener('touchstart', prewarm, { passive: true });
 
     document.addEventListener('click', function (e) {
+      // Leave the browser's own behaviours alone: middle-click, ctrl/cmd/
+      // shift-click (new tab/window), downloads and target=_blank.
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const link = e.target.closest('a[href]');
       if (!link) return;
+      if (link.target && link.target !== '_self') return;
+      if (link.hasAttribute('download')) return;
       const href = link.getAttribute('href');
       if (!isLocalNav(href)) return;
+      // Same document (or a fragment on it): nothing to turn the page to.
+      const dest = new URL(href, location.href);
+      if (dest.pathname === location.pathname) return;
 
       e.preventDefault();
       flipOut(href, getDuration(), depth(href) < depth(location.href));
