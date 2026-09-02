@@ -197,9 +197,12 @@
 
   function makeCanvas() {
     const cv = document.createElement('canvas');
-    cv.style.cssText =
-      'position:fixed;inset:0;width:100%;height:100%;z-index:9995;pointer-events:none;';
     const W = window.innerWidth, H = window.innerHeight;
+    // Same reason as the iframe, plus: html2canvas captures innerWidth px, so
+    // displaying that at 100% squeezed the sheet against the page beneath it.
+    cv.style.cssText =
+      'position:fixed;top:0;left:0;z-index:9995;pointer-events:none;' +
+      'width:' + W + 'px;height:' + H + 'px;';
     cv.width = Math.round(W * DPR);
     cv.height = Math.round(H * DPR);
     const ctx = cv.getContext('2d');
@@ -264,9 +267,15 @@
     clearTimeout(navTimer);
     navTimer = setTimeout(go, dur + 80);    // capture done: hold to the real deadline
 
+    // Sized in px to window.innerWidth, NOT inset:0/100%: a fixed element's
+    // containing block excludes the parent's classic scrollbar, so a 100%-wide
+    // iframe laid the destination out ~15px narrower than the real viewport it
+    // is about to get — and every centred thing on it jumped sideways the
+    // instant the navigation took over. Fixed overflow makes no scrollbar.
     const ifr = document.createElement('iframe');
     ifr.style.cssText =
-      'position:fixed;inset:0;border:none;width:100%;height:100%;z-index:9990;pointer-events:none;';
+      'position:fixed;top:0;left:0;border:none;z-index:9990;pointer-events:none;' +
+      'width:' + window.innerWidth + 'px;height:' + window.innerHeight + 'px;';
     ifr.style.background = bodyBg();
     ifr.src = href;
     document.body.appendChild(ifr);

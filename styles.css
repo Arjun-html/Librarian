@@ -16,6 +16,13 @@
     --plate-hover: saturate(0.85) sepia(0.05) contrast(1) brightness(1);
 }
 
+/* Always reserve the scrollbar gutter. Without it a page shifts sideways by
+   half a scrollbar the moment one appears (covers finishing loading, a filter
+   hiding tiles), which reads as a jolt right after a page turn lands. */
+html {
+    scrollbar-gutter: stable;
+}
+
 * {
     margin: 0;
     padding: 0;
