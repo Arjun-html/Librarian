@@ -221,6 +221,7 @@
 
   let flipping = false;
   let overlay = null;         // [iframe, canvas] currently covering the page
+  let navTimer = null;
 
   /* Back/forward can restore this page from the bfcache mid-flip, with the
    * iframe still painted over it — showing the wrong page. Tear it down. */
@@ -228,6 +229,7 @@
     if (overlay) overlay.forEach(el => el.remove());
     overlay = null;
     flipping = false;
+    clearTimeout(navTimer);
   }
   window.addEventListener('pageshow', clearOverlay);
 
@@ -240,9 +242,27 @@
     // after the seamless reveal, which reads as a flash.
     try { sessionStorage.setItem('arjun_flip_at', String(Date.now())); } catch (e) {}
 
+    // Navigation must never depend on the animation finishing. requestAnimationFrame
+    // stops firing entirely in a backgrounded or occluded tab, and html2canvas can
+    // stall on a slow image — either one used to leave the reader stranded on the
+    // old URL under an opaque overlay of the page they asked for, with no history
+    // entry to go back to. A wall-clock timer navigates regardless; rAF only paints.
+    let navigated = false;
+    function go() {
+      if (navigated) return;
+      navigated = true;
+      clearTimeout(navTimer);
+      window.location.href = href;
+    }
+    navTimer = setTimeout(go, dur + 900);   // generous: the capture may still be running
+
     // Prefer the capture the prewarm kicked off; only start one if there is none.
     if (snapPromise) await snapPromise;
     else if (!snap) await takeSnapshot();
+    if (navigated) return;                  // the safety net already fired
+
+    clearTimeout(navTimer);
+    navTimer = setTimeout(go, dur + 80);    // capture done: hold to the real deadline
 
     const ifr = document.createElement('iframe');
     ifr.style.cssText =
@@ -273,7 +293,7 @@
         draw(o.ctx, o.W, o.H, ease(raw), sheet);
       }
       if (raw < 1) requestAnimationFrame(tick);
-      else window.location.href = href;
+      else go();
     }(performance.now()));
   }
 
