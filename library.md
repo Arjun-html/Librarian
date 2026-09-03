@@ -339,7 +339,7 @@ The course-work ended up being a _bit_ lighter than that, and I had so much fun 
 
 ### 10. Inside the Black Box: A Simple Guide to Systematic Trading
 **Author:** Rishi Narang  
-**Status:** Reading List  
+**Status:** Reading  
 **My Notes:** —
 
 **AI Notes:** Practical guide to quantitative and algorithmic trading. Covers systematic approach to developing trading strategies, backtesting, risk management, and implementation challenges. Balances theory with real-world considerations.
@@ -651,4 +651,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** September 3, 2026  
-**Total Books:** 61 (25 Read, 20 Reading, 16 Reading List)
+**Total Books:** 61 (25 Read, 21 Reading, 15 Reading List)
