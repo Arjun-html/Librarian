@@ -243,7 +243,7 @@
 
 ### 21. Introduction to Probability, Statistics, and Random Processes
 **Author:** Hossein Pishro-Nik  
-**Status:** Reading List  
+**Status:** Reading  
 **My Notes:** —
 
 **AI Notes:** —
@@ -651,4 +651,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** September 3, 2026  
-**Total Books:** 61 (25 Read, 19 Reading, 17 Reading List)
+**Total Books:** 61 (25 Read, 20 Reading, 16 Reading List)
