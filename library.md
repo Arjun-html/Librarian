@@ -88,16 +88,7 @@
 
 ---
 
-### 4. Digital Design
-**Author:** Morris Mano  
-**Status:** Reading List  
-**My Notes:** —
-
-**AI Notes:** Classic introductory textbook on digital logic design and computer organization. Covers Boolean algebra, combinational circuits, sequential circuits, and the design of digital systems from logic gates to complete processors.
-
----
-
-### 5. Microelectronic Circuits
+### 4. Microelectronic Circuits
 **Author:** Adel S. Sedra & Kenneth C. Smith  
 **Status:** Reading List  
 **My Notes:** —
@@ -106,7 +97,7 @@
 
 ---
 
-### 6. Bayesian Statistics the Fun Way
+### 5. Bayesian Statistics the Fun Way
 **Author:** Will Kurt  
 **Status:** Reading List  
 **My Notes:** —
@@ -115,7 +106,7 @@
 
 ---
 
-### 7. The Elements of Statistical Learning
+### 6. The Elements of Statistical Learning
 **Author:** Trevor Hastie, Robert Tibshirani & Jerome Friedman  
 **Status:** Reading List  
 **My Notes:** —
@@ -124,7 +115,7 @@
 
 ---
 
-### 8. Finite Markov Chains
+### 7. Finite Markov Chains
 **Author:** John G. Kemeny & J. Laurie Snell  
 **Status:** Reading List  
 **My Notes:** —
@@ -133,7 +124,7 @@
 
 ---
 
-### 9. Pleasures of Probability
+### 8. Pleasures of Probability
 **Author:** Richard Isaac  
 **Status:** Reading  
 **My Notes:** Covered the first few chapters
@@ -142,7 +133,7 @@
 
 ---
 
-### 10. Mathematical Introduction to Linear Programming and Game Theory
+### 9. Mathematical Introduction to Linear Programming and Game Theory
 **Author:** Louis J. Billera & Susan Ott  
 **Status:** Reading List  
 **My Notes:** —
@@ -151,7 +142,7 @@
 
 ---
 
-### 11. Why Math?
+### 10. Why Math?
 **Author:** R.D. Driver  
 **Status:** Reading List  
 **My Notes:** —
@@ -160,7 +151,7 @@
 
 ---
 
-### 12. Linear Algebra Done Right
+### 11. Linear Algebra Done Right
 **Author:** Sheldon Axler  
 **Status:** Reading List  
 **My Notes:** —
@@ -169,7 +160,7 @@
 
 ---
 
-### 13. Div, Grad, Curl, and All that: An Informal Text on Vector Calculus
+### 12. Div, Grad, Curl, and All that: An Informal Text on Vector Calculus
 **Author:** H. M. Schey  
 **Status:** Reading  
 **My Notes:** This text gives that intuition for vector through the lens of an electrical/electronics engineer or physicist's view. Reading through the sections on Gauss made me revise my own understanding, and the problems are fun to work through too.
@@ -178,7 +169,7 @@
 
 ---
 
-### 14. Wireless Connectivity: An Intuitive and Fundamental Guide
+### 13. Wireless Connectivity: An Intuitive and Fundamental Guide
 **Author:** Petar Popovski  
 **Status:** Reading  
 **My Notes:** —
@@ -187,7 +178,7 @@
 
 ---
 
-### 15. Thomas' Calculus
+### 14. Thomas' Calculus
 **Author:** George B. Thomas, Ross L. Finney, Maurice D. Weir & Frank R. Giordano  
 **Status:** Reading  
 **My Notes:** —
@@ -196,7 +187,7 @@
 
 ---
 
-### 16. Calculus: Early Transcendental Functions (Multivariable)
+### 15. Calculus: Early Transcendental Functions (Multivariable)
 **Author:** Robert T. Smith & Roland B. Minton  
 **Status:** Reading  
 **My Notes:** —
@@ -205,7 +196,7 @@
 
 ---
 
-### 17. Structures, or Why Things Don't Fall Down
+### 16. Structures, or Why Things Don't Fall Down
 **Author:** J.E. Gordon  
 **Status:** Reading  
 **My Notes:** —
@@ -214,7 +205,7 @@
 
 ---
 
-### 18. An Introduction to Thermal Physics
+### 17. An Introduction to Thermal Physics
 **Author:** Daniel V. Schroeder  
 **Status:** Reading  
 **My Notes:** —
@@ -223,7 +214,7 @@
 
 ---
 
-### 19. A Brief Introduction to Fluid Mechanics
+### 18. A Brief Introduction to Fluid Mechanics
 **Author:** Donald F. Young, Bruce R. Munson & Theodore H. Okiishi  
 **Status:** Reading  
 **My Notes:** —
@@ -232,7 +223,7 @@
 
 ---
 
-### 20. RFID Design Fundamentals and Applications
+### 19. RFID Design Fundamentals and Applications
 **Author:** Albert Lozano-Nieto  
 **Status:** Reading  
 **My Notes:** —
@@ -241,7 +232,7 @@
 
 ---
 
-### 21. Introduction to Probability, Statistics, and Random Processes
+### 20. Introduction to Probability, Statistics, and Random Processes
 **Author:** Hossein Pishro-Nik  
 **Status:** Reading  
 **My Notes:** —
@@ -250,7 +241,7 @@
 
 ---
 
-### 22. Digital Design and Computer Architecture, 2nd Edition
+### 21. Digital Design and Computer Architecture, 2nd Edition
 **Author:** David Harris & Sarah Harris  
 **Status:** Reading  
 **My Notes:** —
@@ -660,4 +651,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** September 4, 2026  
-**Total Books:** 62 (25 Read, 22 Reading, 15 Reading List)
+**Total Books:** 61 (25 Read, 22 Reading, 14 Reading List)
