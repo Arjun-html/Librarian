@@ -250,6 +250,15 @@
 
 ---
 
+### 22. Digital Design and Computer Architecture, 2nd Edition
+**Author:** David Harris & Sarah Harris  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Finance
 
 ### 1. A Practical Guide to Quantitative Finance Interviews
@@ -650,5 +659,5 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
-**Last Updated:** September 3, 2026  
-**Total Books:** 61 (25 Read, 21 Reading, 15 Reading List)
+**Last Updated:** September 4, 2026  
+**Total Books:** 62 (25 Read, 22 Reading, 15 Reading List)
