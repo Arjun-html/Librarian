@@ -16,6 +16,7 @@ Run:   python librarian_gui.py
 import re
 import shutil
 import sqlite3
+import subprocess
 import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
@@ -269,6 +270,7 @@ class LibrarianGUI(tk.Tk):
         ttk.Button(btns, text='Delete + Regenerate',
                    command=lambda: self.delete(regenerate=True)).pack(side='left', padx=4)
         ttk.Button(btns, text='Regenerate site', command=self.regenerate).pack(side='left', padx=4)
+        ttk.Button(btns, text='Publish to GitHub', command=self.publish).pack(side='left', padx=4)
 
         form.columnconfigure(1, weight=1)
 
@@ -549,6 +551,30 @@ class LibrarianGUI(tk.Tk):
             messagebox.showerror('Generate failed', str(exc))
             return
         self.status(prefix + 'Regenerated index.html, library.html, books/ + library.md.')
+
+    def publish(self):
+        """Commit and push the generated site so the live GitHub Pages site updates."""
+        if not messagebox.askyesno(
+                'Publish to GitHub',
+                'This will commit all changes and push to GitHub, updating the live site.\n\n'
+                'Make sure you\'ve clicked "Regenerate site" first. Continue?'):
+            return
+        try:
+            subprocess.run(['git', 'add', '-A'], cwd=ROOT, check=True,
+                            capture_output=True, text=True)
+            status = subprocess.run(['git', 'status', '--porcelain'], cwd=ROOT,
+                                     check=True, capture_output=True, text=True)
+            if not status.stdout.strip():
+                self.status('Nothing to publish — already up to date.')
+                return
+            subprocess.run(['git', 'commit', '-m', 'Update library'], cwd=ROOT,
+                            check=True, capture_output=True, text=True)
+            subprocess.run(['git', 'push'], cwd=ROOT, check=True,
+                            capture_output=True, text=True)
+        except subprocess.CalledProcessError as exc:
+            messagebox.showerror('Publish failed', exc.stderr or str(exc))
+            return
+        self.status('Published — pushed to GitHub.')
 
 
 if __name__ == '__main__':
