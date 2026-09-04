@@ -250,6 +250,15 @@
 
 ---
 
+### 22. Fundamentals of Digital Logic with VHDL Design
+**Author:** Stephen D. Brown & Zvonko G. Vranesic  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Finance
 
 ### 1. A Practical Guide to Quantitative Finance Interviews
@@ -651,4 +660,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** September 4, 2026  
-**Total Books:** 61 (25 Read, 22 Reading, 14 Reading List)
+**Total Books:** 62 (25 Read, 23 Reading, 14 Reading List)
