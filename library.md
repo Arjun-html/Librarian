@@ -59,6 +59,15 @@
 
 ---
 
+### 7. Programming Python, 4th Edition
+**Author:** Mark Lutz  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Engineering & Mathematics
 
 ### 1. Fundamentals of Electric Circuits
@@ -659,5 +668,5 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
-**Last Updated:** September 4, 2026  
-**Total Books:** 62 (25 Read, 23 Reading, 14 Reading List)
+**Last Updated:** September 13, 2026  
+**Total Books:** 63 (25 Read, 24 Reading, 14 Reading List)
