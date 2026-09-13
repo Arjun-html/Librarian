@@ -20,6 +20,7 @@
     --soft-black: #1d1712;
 
     --display: 'Newsreader', Georgia, serif;
+    --headline: 'Libre Bodoni', var(--display);   /* front-page story headlines */
 
     /* Book covers as offset-printed plates: colour pulled back and warmed,
        but detail and hue kept legible. Not greyscale. */
@@ -72,11 +73,12 @@ nav {
 }
 
 .logo {
-    font-family: 'ITC Fenice', var(--display);
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-family: 'Libre Bodoni', var(--display);
+    font-size: 1.55rem;
+    font-weight: 500;
+    font-style: italic;
     color: var(--soft-black);
-    letter-spacing: -0.5px;
+    letter-spacing: 0;
 }
 
 nav a {
@@ -547,30 +549,30 @@ nav a:focus-visible {
 }
 
 .story-headline-lead {
-    font-family: var(--display);
+    font-family: var(--headline);
     font-size: clamp(1.55rem, 2.6vw, 2.3rem);
     line-height: 1.12;
     color: #0a0a0a;
     margin-bottom: 0.5rem;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .story-headline {
-    font-family: var(--display);
+    font-family: var(--headline);
     font-size: 1.1rem;
     line-height: 1.22;
     color: #0a0a0a;
     margin-bottom: 0.35rem;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .story-headline-sm {
-    font-family: var(--display);
+    font-family: var(--headline);
     font-size: 0.98rem;
     line-height: 1.25;
     color: #0a0a0a;
     margin-bottom: 0.3rem;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .story-deck {
