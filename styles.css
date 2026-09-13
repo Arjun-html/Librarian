@@ -1,3 +1,14 @@
+/* ITC Fenice Bold for the nav logo only. Self-hosted (fonts/), with the
+   system install preferred if present. */
+@font-face {
+    font-family: 'ITC Fenice';
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: local('Fenice Bold'), local('FeniceBold'),
+         url('fonts/Fenice-Bold.woff2') format('woff2');
+}
+
 :root {
     /* Paper stock: FT salmon. --cream keeps its name so every existing rule
        picks up the new stock without a rename. */
@@ -61,7 +72,7 @@ nav {
 }
 
 .logo {
-    font-family: var(--display);
+    font-family: 'ITC Fenice', var(--display);
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--soft-black);
