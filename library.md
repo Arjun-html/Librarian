@@ -268,6 +268,15 @@
 
 ---
 
+### 23. Quantum Computing Since Democritus
+**Author:** Scott Aaronson  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Finance
 
 ### 1. A Practical Guide to Quantitative Finance Interviews
@@ -678,4 +687,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** October 23, 2026  
-**Total Books:** 64 (31 Read, 19 Reading, 14 Reading List)
+**Total Books:** 65 (31 Read, 20 Reading, 14 Reading List)
