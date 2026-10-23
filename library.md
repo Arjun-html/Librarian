@@ -207,7 +207,7 @@
 
 ### 16. Structures, or Why Things Don't Fall Down
 **Author:** J.E. Gordon  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** —
 
 **AI Notes:** —
@@ -687,4 +687,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** October 23, 2026  
-**Total Books:** 65 (31 Read, 20 Reading, 14 Reading List)
+**Total Books:** 65 (32 Read, 19 Reading, 14 Reading List)
