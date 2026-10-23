@@ -189,7 +189,7 @@
 
 ### 14. Thomas' Calculus
 **Author:** George B. Thomas, Ross L. Finney, Maurice D. Weir & Frank R. Giordano  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** —
 
 **AI Notes:** —
@@ -198,7 +198,7 @@
 
 ### 15. Calculus: Early Transcendental Functions (Multivariable)
 **Author:** Robert T. Smith & Roland B. Minton  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** —
 
 **AI Notes:** —
@@ -216,7 +216,7 @@
 
 ### 17. An Introduction to Thermal Physics
 **Author:** Daniel V. Schroeder  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** —
 
 **AI Notes:** —
@@ -225,7 +225,7 @@
 
 ### 18. A Brief Introduction to Fluid Mechanics
 **Author:** Donald F. Young, Bruce R. Munson & Theodore H. Okiishi  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** —
 
 **AI Notes:** —
@@ -234,7 +234,7 @@
 
 ### 19. RFID Design Fundamentals and Applications
 **Author:** Albert Lozano-Nieto  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** —
 
 **AI Notes:** —
@@ -678,4 +678,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** October 23, 2026  
-**Total Books:** 64 (26 Read, 24 Reading, 14 Reading List)
+**Total Books:** 64 (31 Read, 19 Reading, 14 Reading List)
