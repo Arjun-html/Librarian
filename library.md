@@ -400,6 +400,15 @@ The course-work ended up being a _bit_ lighter than that, and I had so much fun 
 
 ---
 
+### 15. Reminiscences of a Stock Operator
+**Author:** Edwin Lefèvre  
+**Status:** Read  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Greater Awareness & Philosophy
 
 ### 1. The Coddling of the American Mind
@@ -668,5 +677,5 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
-**Last Updated:** September 13, 2026  
-**Total Books:** 63 (25 Read, 24 Reading, 14 Reading List)
+**Last Updated:** October 23, 2026  
+**Total Books:** 64 (26 Read, 24 Reading, 14 Reading List)
