@@ -16,7 +16,7 @@
 
 ### 2. Java Software Solutions
 **Author:** Lewis J. Loftus  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** Almost finished the book, was doing it for my java course this semester, even a middle schooler can read and work through this book
 
 **AI Notes:** An introductory Java programming textbook that emphasizes problem-solving and object-oriented programming concepts. Known for its clear explanations, detailed examples, and approachable style that makes it accessible even to beginners.
@@ -696,4 +696,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** October 30, 2026  
-**Total Books:** 66 (36 Read, 13 Reading, 17 Reading List)
+**Total Books:** 66 (37 Read, 12 Reading, 17 Reading List)
