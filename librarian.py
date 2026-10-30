@@ -517,14 +517,14 @@ def render_hero(conn):
     sides   = [b for b in books if b['hero_slot'] == 'side']
     bottoms = [b for b in books if b['hero_slot'] == 'bottom']
 
-    top_parts = []
+    lead_parts = []
     for b in lead:
         src = _hero_cover_src(b)
         img = f'<img src="{e(src)}" alt="{e(b["title"])}" onerror="this.style.display=\'none\'">' if src else ''
         cover = _link(b, img) if img else ''
         excerpt = _book_excerpt(b)
         body = f'\n                    <p class="story-body">{e(excerpt)}</p>' if excerpt else ''
-        top_parts.append(
+        lead_parts.append(
             f'                <!-- LEAD STORY: {e(b["title"])} -->\n'
             f'                <div class="story-lead">\n'
             f'                    <div class="story-kicker">{e(b["hero_kicker"] or "")}</div>\n'
@@ -538,11 +538,12 @@ def render_hero(conn):
             f'                </div>'
         )
 
+    side_parts = []
     for b in sides:
         src = _hero_cover_src(b)
         img = f'<img src="{e(src)}" alt="{e(b["title"])}" onerror="this.style.display=\'none\'">' if src else ''
         cover = _link(b, img) if img else ''
-        top_parts.append(
+        side_parts.append(
             f'                <div class="story-side">\n'
             f'                    <div class="story-kicker">{e(b["hero_kicker"] or "")}</div>\n'
             f'                    <div class="story-img-sm">\n'
@@ -555,13 +556,8 @@ def render_hero(conn):
             f'                </div>'
         )
 
-    newspaper_top = (
-        '            <!-- Top section -->\n'
-        '            <div class="newspaper-top">\n\n'
-        + '\n\n'.join(top_parts) +
-        '\n\n            </div><!-- /newspaper-top -->'
-    )
-
+    # The smaller stories sit directly under the lead, in its column, so the
+    # lead and the side column come out the same height instead of leaving a gap.
     bottom_html = ''
     if bottoms:
         bottom_parts = []
@@ -570,29 +566,40 @@ def render_hero(conn):
             img = f'<img src="{e(src)}" alt="{e(b["title"])}" onerror="this.style.display=\'none\'">' if src else ''
             cover = _link(b, img) if img else ''
             bottom_parts.append(
-                f'                <div class="story-bottom">\n'
-                f'                    <div class="story-kicker">{e(b["hero_kicker"] or "")}</div>\n'
-                f'                    <div class="story-img-sm">\n'
-                f'                        {cover}\n'
-                f'                    </div>\n'
-                f'                    <h3 class="story-headline-sm">{_link(b, e(b["hero_headline"] or b["title"]))}</h3>\n'
-                f'                    <div class="story-deck">{e(b["hero_deck"] or "")}</div>\n'
-                f'                    <div class="story-byline">{_byline(b)}</div>\n'
-                f'                    <span class="story-progress">{e(b["hero_progress"] or "")}</span>\n'
-                f'                </div>'
+                f'                    <div class="story-bottom">\n'
+                f'                        <div class="story-kicker">{e(b["hero_kicker"] or "")}</div>\n'
+                f'                        <div class="story-img-sm">\n'
+                f'                            {cover}\n'
+                f'                        </div>\n'
+                f'                        <h3 class="story-headline-sm">{_link(b, e(b["hero_headline"] or b["title"]))}</h3>\n'
+                f'                        <div class="story-deck">{e(b["hero_deck"] or "")}</div>\n'
+                f'                        <div class="story-byline">{_byline(b)}</div>\n'
+                f'                        <span class="story-progress">{e(b["hero_progress"] or "")}</span>\n'
+                f'                    </div>'
             )
         bottom_html = (
-            '\n\n            <!-- Bottom row: ' + str(len(bottoms)) + ' stories -->\n'
-            '            <div class="newspaper-bottom-row">\n\n'
+            '\n\n                <!-- Smaller stories: ' + str(len(bottoms)) + ' -->\n'
+            '                <div class="newspaper-bottom-row">\n\n'
             + '\n\n'.join(bottom_parts) +
-            '\n\n            </div><!-- /newspaper-bottom-row -->'
+            '\n\n                </div><!-- /newspaper-bottom-row -->'
         )
+
+    newspaper_top = (
+        '            <!-- Top section -->\n'
+        '            <div class="newspaper-top">\n\n'
+        '                <div class="story-main-col">\n\n'
+        + '\n\n'.join(lead_parts) + bottom_html +
+        '\n\n                </div><!-- /story-main-col -->\n\n'
+        '                <div class="story-side-col">\n\n'
+        + '\n\n'.join(side_parts) +
+        '\n\n                </div><!-- /story-side-col -->\n\n'
+        '            </div><!-- /newspaper-top -->'
+    )
 
     return (
         banner + '\n\n'
         '        <div class="newspaper-content">\n\n'
-        '            ' + newspaper_top + '\n'
-        + bottom_html + '\n\n'
+        '            ' + newspaper_top + '\n\n'
         '        </div><!-- /newspaper-content -->\n'
     )
 

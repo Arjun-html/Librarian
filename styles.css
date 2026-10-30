@@ -464,25 +464,31 @@ nav a:focus-visible {
     margin: 0 0.5rem;
 }
 
-/* Top grid: lead (2 cols) + right sidebar (1 col, 2 stories stacked) */
+/* Top grid: a wide column (the lead, with the smaller stories directly under
+   it) beside a narrow column of side stories. Each column sizes itself, so
+   the lead never floats above a gap. */
 .newspaper-top {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: 2fr 1fr;
     border-bottom: 2px solid #222;
 }
 
-.story-lead {
-    grid-column: 1 / 3;
-    grid-row: 1 / 3;
-    padding: 1.5rem 2rem 1.5rem 0;
+.story-main-col {
+    min-width: 0;
     border-right: 1px solid var(--light-taupe);
+}
+
+.story-side-col {
+    min-width: 0;
+}
+
+.story-lead {
+    padding: 1.5rem 2rem 1.5rem 0;
     cursor: pointer;
     transition: background 0.2s;
 }
 
 .story-side {
-    grid-column: 3;
     padding: 1.2rem 0 1.2rem 1.5rem;
     cursor: pointer;
     transition: background 0.2s;
@@ -492,10 +498,15 @@ nav a:focus-visible {
     border-top: 1px solid var(--light-taupe);
 }
 
-/* Bottom 3 equal stories */
+/* Smaller stories, two across, directly beneath the lead */
 .newspaper-bottom-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--light-taupe);
+}
+
+.story-main-col .story-bottom:first-child {
+    padding-left: 0;
 }
 
 .story-bottom {
@@ -676,13 +687,15 @@ nav a:focus-visible {
     .masthead-name { font-size: 2.4rem; letter-spacing: -1px; }
     .masthead-vol { flex-direction: column; gap: 0.15rem; text-align: center; }
     .newspaper-top { grid-template-columns: 1fr; }
-    .story-lead { grid-column: 1; grid-row: 1; border-right: none; border-bottom: 1px solid var(--light-taupe); padding-right: 0; }
+    .story-main-col { border-right: none; border-bottom: 1px solid var(--light-taupe); }
+    .story-lead { padding-right: 0; }
     .story-img-lead { float: none; width: 138px; height: 196px; margin: 0 0 1rem; }
     .about-inner { columns: 1; }
     /* justified text opens rivers at this measure */
     .story-body { text-align: left; }
-    .story-side { grid-column: 1; padding-left: 0; border-top: 1px solid var(--light-taupe); }
+    .story-side { padding-left: 0; border-top: 1px solid var(--light-taupe); }
     .newspaper-bottom-row { grid-template-columns: 1fr; }
+    .story-bottom { padding-left: 0; padding-right: 0; }
     .story-bottom + .story-bottom { border-left: none; border-top: 1px solid var(--light-taupe); }
 }
 
