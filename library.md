@@ -418,6 +418,15 @@ The course-work ended up being a _bit_ lighter than that, and I had so much fun 
 
 ---
 
+### 16. Fooling Some of the People All of the Time
+**Author:** David Einhorn  
+**Status:** Reading  
+**My Notes:** —
+
+**AI Notes:** —
+
+---
+
 ## Greater Awareness & Philosophy
 
 ### 1. The Coddling of the American Mind
@@ -686,5 +695,5 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 
 ---
 
-**Last Updated:** October 23, 2026  
-**Total Books:** 65 (32 Read, 19 Reading, 14 Reading List)
+**Last Updated:** October 30, 2026  
+**Total Books:** 66 (32 Read, 20 Reading, 14 Reading List)
