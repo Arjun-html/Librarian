@@ -7,7 +7,7 @@
 
 ### 1. Python for Finance
 **Author:** Yves Hilpisch  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** I am halfway through, good book that clearly shows what resources do and need in python
 
 **AI Notes:** A comprehensive guide to financial analysis using Python. Covers data analysis, visualization, and algorithmic trading. Practical approach to implementing financial concepts in Python, making it accessible for practitioners.
@@ -135,7 +135,7 @@
 
 ### 8. Pleasures of Probability
 **Author:** Richard Isaac  
-**Status:** Reading  
+**Status:** Reading List  
 **My Notes:** Covered the first few chapters
 
 **AI Notes:** An intuitive introduction to probability theory emphasizing conceptual understanding. Uses games, puzzles, and real-world examples to build probability intuition. Accessible yet mathematically sound.
@@ -171,7 +171,7 @@
 
 ### 12. Div, Grad, Curl, and All that: An Informal Text on Vector Calculus
 **Author:** H. M. Schey  
-**Status:** Reading  
+**Status:** Reading List  
 **My Notes:** This text gives that intuition for vector through the lens of an electrical/electronics engineer or physicist's view. Reading through the sections on Gauss made me revise my own understanding, and the problems are fun to work through too.
 
 **AI Notes:** —
@@ -261,7 +261,7 @@
 
 ### 22. Fundamentals of Digital Logic with VHDL Design
 **Author:** Stephen D. Brown & Zvonko G. Vranesic  
-**Status:** Reading  
+**Status:** Reading List  
 **My Notes:** —
 
 **AI Notes:** —
@@ -375,7 +375,7 @@ The course-work ended up being a _bit_ lighter than that, and I had so much fun 
 
 ### 11. Margin of Safety
 **Author:** Seth A. Klarman  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** —
 
 **AI Notes:** —
@@ -440,7 +440,7 @@ The course-work ended up being a _bit_ lighter than that, and I had so much fun 
 
 ### 2. The Prize: The Epic Quest for Oil, Money & Power
 **Author:** Daniel Yergin  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** _The Prize_ offered a fascinating perspective on the global oil industry and how both sides of the equation—the resource-exporting countries and the resource-importing nations—rarely see eye-to-eye.
 
 As an economic historian, Yergin could show us how two conflicting narratives arise:
@@ -572,7 +572,7 @@ When builders don't write down their philosophy, we end up building technology w
 
 ### 14. Money, War, Sex, Karma
 **Author:** David Loy  
-**Status:** Reading  
+**Status:** Read  
 **My Notes:** David Loy’s _Money, War, Sex, Karma_ targets a fundamental human vulnerability: how our modern obsessions of accumulation, conflict, and desire are collective expressions of our deepest psychological anxieties. Reading through it, two core takeaways reshape how I view both intellectual frameworks and personal choices.
 
 ### Takeaway 1: The Trap of Conceptual Rigidity
@@ -696,4 +696,4 @@ Maybe the activities that seem to show low correlation have intrinsic value on a
 ---
 
 **Last Updated:** October 30, 2026  
-**Total Books:** 66 (32 Read, 20 Reading, 14 Reading List)
+**Total Books:** 66 (36 Read, 13 Reading, 17 Reading List)
